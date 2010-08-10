@@ -1,13 +1,8 @@
-CrmMergeContacts
-================
+Fat Free CRM - Merge Contacts
+=============================
 
-Introduction goes here.
-
-
-Example
-=======
-
-Example goes here.
+This plugin provides functionality to merge duplicate contacts.
 
 
-Copyright (c) 2010 [name of plugin creator], released under the MIT license
+Copyright (c) 2010 Nathan Broadbent, Crossroads Foundation, released under the MIT license
+
