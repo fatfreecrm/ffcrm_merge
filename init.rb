@@ -5,6 +5,7 @@ FatFreeCRM::Plugin.register(:crm_merge_contacts, initializer) do
         author "Nathan Broadbent"
        version "0.1"
    description "Basic contact merging"
+   dependencies :haml, :simple_column_search
 end
 
 # Require Merge modules
