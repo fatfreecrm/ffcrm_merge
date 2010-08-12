@@ -46,7 +46,6 @@ describe Contact do
     %w(first_name last_name access facebook twitter).each do |attr|
       @contact.send(attr.to_sym).should == dup_contact_attr[attr]
     end
-
   end
 end
 
