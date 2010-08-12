@@ -19,7 +19,6 @@ describe Contact do
 
     # Check that the duplicate contact has been merged
     @contact.merge_attributes.should == dup_contact_attr
-
     @contact.user.should == @dup_contact.user
     @contact.lead.should == @dup_contact.lead
     @contact.account.should == @dup_contact.account
@@ -41,7 +40,6 @@ describe Contact do
     ignored_attributes.each do |attr|
       @contact.send(attr.to_sym).should_not == dup_contact_attr[attr]
     end
-
     # Check that other fields have been merged
     %w(first_name last_name access facebook twitter).each do |attr|
       @contact.send(attr.to_sym).should == dup_contact_attr[attr]
