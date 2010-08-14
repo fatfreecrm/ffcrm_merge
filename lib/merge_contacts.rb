@@ -29,7 +29,12 @@ module Merge
       end
 
       master_contact.save!
-      self.destroy!
+
+      # Create the contact alias and destroy the merged contact.
+      if ContactAlias.create(:contact => master_contact,
+                             :destroyed_contact_id => self.id)
+        self.destroy!
+      end
     end
 
     # Defines the list of Contact class attributes we want to merge.

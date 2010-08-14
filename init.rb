@@ -9,7 +9,7 @@ FatFreeCRM::Plugin.register(:crm_merge_contacts, initializer) do
 end
 
 # Require Merge modules
-require File.join(File.dirname(__FILE__), 'lib', 'merge_contacts.rb')
+require "merge_contacts"
 
 # Require *.rb from app_extensions
 require 'find'

@@ -26,6 +26,9 @@ describe Contact do
     dup_contact_emails.each do |email|
       @contact.emails.include?(email).should == true
     end
+
+    # Check that the contact alias has been created correctly.
+    ContactAlias.find_by_destroyed_contact_id(@dup_contact.id).contact.should == @contact
   end
 
   it "should be able to ignore some attributes when merging" do
