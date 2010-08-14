@@ -17,6 +17,11 @@
 
 ContactsController.class_eval do
 
+  # GET /contacts/merge/1
+  #----------------------------------------------------------------------------
+  def merge
+  end
+
   # Looks up the ContactAlias table to see if the requested id
   # matches a previously merged contact.
   # Returns the new id if it does,
@@ -27,7 +32,6 @@ ContactsController.class_eval do
       contact_id
     end
   end
-
 
   # GET /contacts/1
   # GET /contacts/1.xml                                                    HTML
