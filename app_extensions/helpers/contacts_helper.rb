@@ -16,16 +16,16 @@
 #------------------------------------------------------------------------------
 
 ContactsHelper.module_eval do
+
+  # Adds 'edit_action => merge' to 'link_to_edit' generator.
   def link_to_merge(contact)
     link_to_remote(t(:merge),
       :method => :get,
-      :url    => send("merge_contact_path", contact),
-      :with   => "{ previous: crm.find_form('merge_contact') }"
+      :url    => send("edit_contact_path", contact),
+      :with   => %Q"{ previous: crm.find_form('edit_contact'),
+                      edit_action: 'merge' }"
     )
   end
 
-  def merge_contact_path(contact)
-    "/contacts/merge/#{contact.id}"
-  end
 end
 
