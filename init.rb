@@ -8,12 +8,5 @@ FatFreeCRM::Plugin.register(:crm_merge_contacts, initializer) do
    dependencies :haml, :simple_column_search
 end
 
-# Require Merge modules
-require "merge_contacts"
-
-# Require *.rb from app_extensions
-require 'find'
-Find.find(File.join(File.dirname(__FILE__), 'app_extensions')) do |file|
-  require file if file.end_with?(".rb")
-end
+require "crm_merge_contacts"
 
