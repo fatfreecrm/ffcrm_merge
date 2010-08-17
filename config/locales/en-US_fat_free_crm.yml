@@ -4,4 +4,6 @@ en-US:
   #----------------------------------------------------------------------------
   merge: Merge
   merge_contacts: Merge Contacts
+  merge_with: Merge With...
+  merge_info_small: Find the contact you would like to merge with.
 
