@@ -29,7 +29,6 @@ describe ContactsController do
         @contact = Factory(:contact, :user => @current_user).destroy
 
         get :show, :id => @contact.id
-        flash[:warning].should_not == nil
         response.should redirect_to(contacts_path)
       end
     end

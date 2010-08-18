@@ -7,6 +7,10 @@ if params[:cancel].true?     # <----------------- Hide [Edit Contact]
     page.call "crm.set_title", :edit_contact, h(@contact.full_name)
   else                                            # Called from contacts list item...
     page[id].replace :partial => "contact", :collection => [ @contact ]
+
+    # Re-attach the merge select popup click event
+    page << render(:partial => "common/merge_select_popup",
+                     :locals  => { :asset => @contact })
   end
 
 else # <----------------------------------------- Show [Edit Contact] or [Merge Contact] form.
@@ -24,7 +28,7 @@ else # <----------------------------------------- Show [Edit Contact] or [Merge 
     page.call "crm.highlight_off", id             # Disable onMouseOver for the list item.
     page.call "crm.hide_form", :create_contact    # Hide [Create Contact] form if any.
 
-    page[id].replace_html :partial => edit_action  # Show [Edit Contact] or [Merge Contact] form.
+    page[id].replace_html :partial => edit_action # Show [Edit Contact] or [Merge Contact] form.
 
   elsif params[:cancel].false?                    # Called from title of the contact landing page...
     page[:edit_contact].replace_html :partial => edit_action

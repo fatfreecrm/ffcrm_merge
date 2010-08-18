@@ -4,6 +4,8 @@ en-US:
   #----------------------------------------------------------------------------
   merge: Merge
   merge_contacts: Merge Contacts
-  merge_with: Merge With...
-  merge_info_small: Find the contact you would like to merge with.
+  merge_popup_label: Which contact would you like to merge into?
+  merge_contact_with_master: Merge %{contact} into %{master_contact}
+  duplicate_contact: Duplicate Contact
+  master_contact: Master Contact
 

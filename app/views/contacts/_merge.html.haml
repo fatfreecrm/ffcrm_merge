@@ -1,16 +1,26 @@
 .remote
-  - remote_form_for(@contact, :html => one_submit_only(:contact)) do |f|
+  - remote_form_for(@contact, :url => merge_contact_path(@contact.id, @master_contact.id), :html => one_submit_only(:contact)) do |f|
+
     = link_to_close edit_contact_path(@contact)
-    = subtitle :merge_with, false, t(:merge_with)
+    .subtitle{ :style => "width:95%; padding:3px;" }
+      = t(:merge_contact_with_master, :contact => @contact.name, :master_contact => @master_contact.name)
     .section
-      %small#merge_with_intro
-        = t(:merge_info_small)
       #merge_with
-        %table{ :width => 500, :cellpadding => 0, :cellspacing => 0 }
+        %table{ :cellpadding => "3px", :style => "text-align:left; border-collapse: collapse; border: none;" }
           %tr
-            %td{ :valign => :top }
-              .label #{t :contact}:
-              =# text_field :contact, :style => "width:240px"
+            %th
+            %th{ :valign => :top, :style => "font-size: 13px;" }
+              = "#{t(:duplicate_contact)}: #{@contact.name}"
+            %th{ :valign => :top, :style => "font-size: 13px;" }
+              = "#{t(:master_contact)}: #{@master_contact.name}"
+            - @contact.merge_attributes.keys.each do |attribute|
+              %tr{ :style => "border-bottom:1px dotted silver;"}
+                %th{ :width => "20%" }
+                  .label #{attribute.humanize}
+                %td
+                  .label #{@contact.send(attribute)}
+                %td
+                  .label #{@master_contact.send(attribute)}
 
     .buttonbar
       = f.submit t(:merge_contacts), :onclick => "crm.merge_contacts(); return false;"

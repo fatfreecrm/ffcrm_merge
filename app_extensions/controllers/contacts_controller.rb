@@ -28,6 +28,26 @@ ContactsController.class_eval do
     end
   end
 
+  # GET /contacts/1/edit                                                   AJAX
+  #----------------------------------------------------------------------------
+  def edit
+    @contact  = Contact.my(@current_user).find(params[:id])
+    # Added 'master_contact' lookup for a merge request.
+    @master_contact = Contact.my(@current_user).find(params[:merge_into]) if params[:merge_into]
+
+    @users    = User.except(@current_user).all
+    @account  = @contact.account || Account.new(:user => @current_user)
+    @accounts = Account.my(@current_user).all(:order => "name")
+    if params[:previous] =~ /(\d+)\z/
+      @previous = Contact.my(@current_user).find($1)
+    end
+
+  rescue ActiveRecord::RecordNotFound
+    @previous ||= $1.to_i
+    respond_to_not_found(:js) unless @contact
+  end
+
+
   # GET /contacts/1
   # GET /contacts/1.xml                                                    HTML
   #----------------------------------------------------------------------------

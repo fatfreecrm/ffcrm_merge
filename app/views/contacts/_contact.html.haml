@@ -4,10 +4,12 @@
   = gravatar_for(contact, :size => gravatar_size)
 
   .tools{ invisible, :id => dom_id(contact, :tools) }
-    = link_to_merge(contact) + " | "
+    = link_to(t('merge'), "#", :id => "merge_contact_#{contact.id}") + " | "
     = link_to_edit(contact) + " | "
     = link_to_discard(contact) + " | " if shown_on_landing_page?
     = link_to_delete(contact)
+
+    = load_merge_select_popup_for(contact)
 
   .indentslim
     = link_to(h(contact.full_name(@current_user.preference[:contacts_naming])), contact)
