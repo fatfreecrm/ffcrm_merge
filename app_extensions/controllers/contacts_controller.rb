@@ -17,22 +17,33 @@
 
 ContactsController.class_eval do
 
-  # Looks up the ContactAlias table to see if the requested id
-  # matches a previously merged contact.
-  # Returns the new id if it does,
-  def contact_alias_or_default(contact_id)
-    if contact_alias = ContactAlias.find_by_destroyed_contact_id(contact_id)
-      contact_alias.contact_id
-    else
-      contact_id
+  # PUT /contacts/1/merge/2                                                AJAX
+  #----------------------------------------------------------------------------
+  def merge
+    # Find which fields we want to ignore from the duplicate contact.
+    ignored_merge_fields = params[:ignore].select{|k,v| v == "yes" }.map{|a| a[0] }
+
+    @contact = Contact.my(@current_user).find(params[:id])
+    @master_contact = Contact.my(@current_user).find(params[:master_id])
+
+    unless @contact.merge_with(@master_contact, ignored_merge_fields)
+      @contact.errors.add_to_base(t('merge_error'))
     end
+    respond_to do |format|
+      format.js
+    end
+
+    rescue ActiveRecord::RecordNotFound
+      respond_to_not_found(:js, :xml)
   end
+
 
   # GET /contacts/1/edit                                                   AJAX
   #----------------------------------------------------------------------------
   def edit
     @contact  = Contact.my(@current_user).find(params[:id])
-    # Added 'master_contact' lookup for a merge request.
+
+    # 'master_contact' lookup for a merge request.
     @master_contact = Contact.my(@current_user).find(params[:merge_into]) if params[:merge_into]
 
     @users    = User.except(@current_user).all
@@ -92,6 +103,19 @@ ContactsController.class_eval do
 
   rescue ActiveRecord::RecordNotFound
     respond_to_not_found(:js, :xml)
+  end
+
+  private
+
+  # Looks up the ContactAlias table to see if the requested id
+  # matches a previously merged contact.
+  # Returns the new id if it does,
+  def contact_alias_or_default(contact_id)
+    if contact_alias = ContactAlias.find_by_destroyed_contact_id(contact_id)
+      contact_alias.contact_id
+    else
+      contact_id
+    end
   end
 
 end

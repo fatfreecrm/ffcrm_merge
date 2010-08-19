@@ -1,11 +1,9 @@
 ContactsHelper.module_eval do
 
-  def link_to_new_window(text, path)
-    link_to(text, path, :target => "_blank")
-  end
-
-  # Returns a list of merge attributes to be displayed in the
-  # merge selection table. ('html' param generates html links if true)
+  # Transforms the list of merge attributes into a display
+  # format (ie, with links / model associations), to be
+  # displayed in the merge selection table.
+  # --------------------------------------------------------
   def pretty_merge_attributes(contact, html = true)
     attr_hash = contact.merge_attributes
     # ------ Humanize attributes
@@ -40,8 +38,39 @@ ContactsHelper.module_eval do
     attr_hash
   end
 
-  # Returns an hash with default merge attributes.
-  # (Master value is default)
+  def link_to_new_window(text, path)
+    link_to(text, path, :target => "_blank")
+  end
+
+  def ordered_merge_attributes
+    %w(
+      first_name
+      last_name
+      email
+      alt_email
+      phone
+      mobile
+      fax
+      do_not_call
+      born_on
+      title
+      background_info
+      source
+      department
+      facebook
+      twitter
+      blog
+      linkedin
+      user_id
+      assigned_to
+      reports_to
+      lead_id
+      access
+      )
+  end
+
+  # Returns a hash with default merge attributes for radio buttons.
+  # (master contact is default)
   # --------------------------------------------------------
   def calculate_default_merge(contact_attr, master_attr)
     merge = {}
@@ -56,6 +85,9 @@ ContactsHelper.module_eval do
     merge
   end
 
+  # Generates a radio button for selecting which attributes
+  # to ignore from the duplicate contact.
+  # --------------------------------------------------------
   def ignore_merge_radio_button(value, attribute, merge_case)
     case merge_case
     when :master
@@ -63,8 +95,9 @@ ContactsHelper.module_eval do
     when :duplicate
       checked = value == "no"  ? {:checked => "checked"} : {}
     end
-    tag("input", {:type => "radio",
-                  :name => "ignore[#{attribute}]",
+    tag("input", {:type  => "radio",
+                  :name  => "ignore[#{attribute}]",
+                  :id    => "ignore_#{attribute}_#{value}",
                   :value => value
                   }.merge(checked))
   end

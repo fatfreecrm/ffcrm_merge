@@ -9,4 +9,6 @@ en-US:
   duplicate_contact: Duplicate Contact
   master_contact: Master Contact
   merge_into_info: Please select which fields you would like to merge
+  confirm_merge: Are you sure you want to merge these contacts? This action is final and cannot be reversed.
+  merge_error: Sorry, an error occurred while trying to merge contacts.
 

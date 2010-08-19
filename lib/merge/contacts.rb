@@ -20,17 +20,19 @@ module Merge
       # ------ Merge 'has_many' associations
       %w(opportunities tasks activities emails).each do |attr|
         unless ignored_attr.include?(attr)
-          master_contact.send(attr) << self.send(attr)
+          master_assets = master_contact.send(attr)
+          master_contact.send(attr + "=", master_assets + self.send(attr))
         end
       end
-
-      master_contact.save!
-
-      # Create the contact alias and destroy the merged contact.
-      if ContactAlias.create(:contact => master_contact,
-                             :destroyed_contact_id => self.id)
-        self.destroy!
+      if master_contact.save!
+        # Create the contact alias and destroy the merged contact.
+        if ContactAlias.create(:contact => master_contact,
+                               :destroyed_contact_id => self.id)
+          self.destroy!
+          return true
+        end
       end
+      false
     end
 
     # Defines the list of Contact class attributes we want to merge.
