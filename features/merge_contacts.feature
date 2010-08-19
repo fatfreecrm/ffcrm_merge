@@ -14,7 +14,6 @@ Feature: Merge Contacts
     And I fill in "auto_complete_query" with "Reginald"
     And I should see "Reginald Harry Junior" within "#auto_complete_dropdown"
     And I click the first autocomplete dropdown option
-    Then I should see "Merge George Foreman Grill Expert into Reginald Harry Junior"
     And I should see "Duplicate Contact: George Foreman Grill Expert"
     And I should see "Master Contact: Reginald Harry Junior"
 

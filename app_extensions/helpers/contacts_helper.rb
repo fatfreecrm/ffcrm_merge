@@ -13,12 +13,12 @@ ContactsHelper.module_eval do
     # ------ Make websites into links and emails into mailto links
     if html
       %w(blog linkedin facebook twitter).each do |attribute|
-        if link = attr_hash[attribute]
+        if link = attr_hash[attribute] and not link.blank?
           attr_hash[attribute] = link_to_new_window(link, link)
         end
       end
       %w(email alt_email).each do |attribute|
-        if email = attr_hash[attribute]
+        if email = attr_hash[attribute] and not email.blank?
           attr_hash[attribute] = mail_to(email)
         end
       end
@@ -38,6 +38,35 @@ ContactsHelper.module_eval do
       attr_hash['lead_id'] = html ? link_to_new_window(lead.full_name, lead_path(lead)) : lead.full_name
     end
     attr_hash
+  end
+
+  # Returns an hash with default merge attributes.
+  # (Master value is default)
+  # --------------------------------------------------------
+  def calculate_default_merge(contact_attr, master_attr)
+    merge = {}
+    contact_attr.each do |attribute, dup_value|
+      master_value = master_attr[attribute]
+      if not master_value.blank?
+        merge[attribute] = :master
+      elsif not dup_value.blank?
+        merge[attribute] = :duplicate
+      end
+    end
+    merge
+  end
+
+  def ignore_merge_radio_button(value, attribute, merge_case)
+    case merge_case
+    when :master
+      checked = value == "yes" ? {:checked => "checked"} : {}
+    when :duplicate
+      checked = value == "no"  ? {:checked => "checked"} : {}
+    end
+    tag("input", {:type => "radio",
+                  :name => "ignore[#{attribute}]",
+                  :value => value
+                  }.merge(checked))
   end
 
 end

@@ -8,4 +8,5 @@ en-US:
   merge_contact_with_master: Merge %{contact} into %{master_contact}
   duplicate_contact: Duplicate Contact
   master_contact: Master Contact
+  merge_into_info: Please select which fields you would like to merge
 
