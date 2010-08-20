@@ -1,11 +1,15 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-require 'ap'
-
 describe Contact do
   before :each do
-    @contact = Factory(:contact)
-    @dup_contact = Factory(:contact)
+    @contact     = Factory(:contact,
+                           :title           => "Master Contact",
+                           :source          => "Master Source",
+                           :background_info => "Master Background Info")
+    @dup_contact = Factory(:contact,
+                           :title           => "Duplicate Contact",
+                           :source          => "Duplicate Source",
+                           :background_info => "Duplicate Background Info")
     4.times do
       Factory(:email, :mediator => @contact)
       Factory(:email, :mediator => @dup_contact)
@@ -46,7 +50,7 @@ describe Contact do
     # Save the attributes we want to match
     dup_contact_attr = @dup_contact.merge_attributes
 
-    @dup_contact.merge_with(@contact, %w(title source background_info))
+    @dup_contact.merge_with(@contact, ignored_attributes)
 
     # Check that the duplicate contact has ignored some attributes
     ignored_attributes.each do |attr|
