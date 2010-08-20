@@ -22,7 +22,7 @@ module Merge
         end
       end
       # ------ Merge 'has_many' associations
-      %w(opportunities tasks activities emails).each do |attr|
+      %w(opportunities tasks emails).each do |attr|
         unless ignored_attr.include?(attr)
           master_assets = master_contact.send(attr)
           master_contact.send(attr + "=", master_assets + self.send(attr))

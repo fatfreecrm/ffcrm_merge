@@ -21,8 +21,7 @@ describe Contact do
     dup_contact_attr  = @dup_contact.merge_attributes
     dup_has_many_hash = {:emails        => @dup_contact.emails,
                          :opportunities => @dup_contact.opportunities,
-                         :tasks         => @dup_contact.tasks,
-                         :activities    => @dup_contact.activities}
+                         :tasks         => @dup_contact.tasks}
 
     @dup_contact.merge_with(@contact)
 
@@ -39,6 +38,9 @@ describe Contact do
         @contact.send(method).include?(asset).should == true
       end
     end
+
+    # Duplicate contacts activities should have been destroyed.
+    @dup_contact.activities.should be_empty
 
     # Check that the contact alias has been created correctly.
     ContactAlias.find_by_destroyed_contact_id(@dup_contact.id).contact.should == @contact
