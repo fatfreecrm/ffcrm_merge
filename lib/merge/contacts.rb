@@ -4,6 +4,10 @@ module Merge
     # into the master contact.
     # All attributes from 'self' are default, unless defined in options.
     def merge_with(master_contact, ignored_attr = [])
+      # Just in case a user tries to merge a contact with itself,
+      # even though the interface prevents this from happening.
+      return false if master_contact == self
+
       # ------ Remove ignored attributes from this contact
       merge_attr = self.merge_attributes
       ignored_attr.each do |attr|

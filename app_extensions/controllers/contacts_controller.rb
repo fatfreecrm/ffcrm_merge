@@ -26,9 +26,15 @@ ContactsController.class_eval do
     @contact = Contact.my(@current_user).find(params[:id])
     @master_contact = Contact.my(@current_user).find(params[:master_id])
 
-    unless @contact.merge_with(@master_contact, ignored_merge_fields)
+    # Reverse the master and duplicate if :reverse_merge is true
+    @reverse_merge = params[:reverse_merge] == "true" ? true : false
+    c = [@contact, @master_contact]
+    duplicate, master = @reverse_merge ? c.reverse : c
+
+    unless duplicate.merge_with(master, ignored_merge_fields)
       @contact.errors.add_to_base(t('merge_error'))
     end
+
     respond_to do |format|
       format.js
     end

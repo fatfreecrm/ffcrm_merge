@@ -9,11 +9,19 @@ if @contact.errors.empty?
     page.call "crm.set_title", :edit_contact, @contact.full_name
     page << refresh_sidebar(:show, :summary)
   else
-    page[id].remove
+    # If successful, and a reverse_merge has been done,
+    # reverse which elements to update on the page.
+    c = [@contact, @master_contact]
+    duplicate, master = @reverse_merge ? c.reverse : c
+    dup_id, master_id = dom_id(duplicate), dom_id(master)
 
-    # Update and highlight master contact if it exists on the page
+    # Remove the duplicate contact if it exists on the page.
+    page << "if($('#{dup_id}')){"
+      page[dup_id].remove
+    page << "}"
+    # Update and highlight master contact if it exists on the page.
     page << "if($('#{master_id}')){"
-      page[master_id].replace :partial => "contact", :collection => [ @master_contact ]
+      page[master_id].replace :partial => "contact", :collection => [ master ]
       page[master_id].visual_effect :highlight, :duration => 5
     page << "}"
 
