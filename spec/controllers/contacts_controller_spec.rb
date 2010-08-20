@@ -56,5 +56,39 @@ describe ContactsController do
     end
 
   end
+
+  describe "auto complete with ignored ids param" do
+    before(:each) do
+      @matched = (1..5).map{|i| Factory(:contact,
+                                        :first_name => "Test",
+                                        :id => i)}
+      @ignored = (6..7).map{|i| Factory(:contact,
+                                        :first_name => "Test",
+                                        :id => i)}
+    end
+
+    # POST /contacts/auto_complete/query                                     AJAX
+    #----------------------------------------------------------------------------
+    it "should be able to function without the ignored param" do
+      post :auto_complete, :auto_complete_query => "Test"
+      assigns[:query].should == "Test"
+      # Should return all @matched and @ignored contacts
+      # (test the sorted results)
+      sorted_result = assigns[:auto_complete].sort{|a,b| a.id <=> b.id}
+      sorted_result.should == (@matched + @ignored)
+    end
+
+    # POST /contacts/auto_complete/query?ignored=6,7                                   AJAX
+    #----------------------------------------------------------------------------
+    it "should be able to ignore given ids" do
+      post :auto_complete, :auto_complete_query => "Test",
+                           :ignored => "6,7"
+      assigns[:query].should == "Test"
+      # Should not include @ignored contacts
+      # (test the sorted results)
+      sorted_result = assigns[:auto_complete].sort {|a,b| a.id <=> b.id}
+      sorted_result.should == @matched
+    end
+  end
 end
 

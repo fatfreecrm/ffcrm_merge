@@ -12,7 +12,7 @@
       $("jumpbox_menu").hide();
       $("jumpbox_label").innerHTML = "#{t('merge_popup_label')}"
       $("jumpbox_label").show();
-      crm.auto_complete("#{popup}", "#{asset.id}", false, "merge");
+      crm.auto_complete("#{popup}", "#{asset.id}", false, ["#{asset.id}"], "merge");
     },
     after_show  : function() {
       $("auto_complete_query").focus();

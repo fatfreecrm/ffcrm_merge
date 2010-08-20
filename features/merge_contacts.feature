@@ -63,3 +63,19 @@ Feature: Merge Contacts
     And I should see "1111-1111"
     And I should see "(222)2222222222"
 
+  Scenario: A contact should not be able to merge with itself
+    Given a logged in user
+    And two duplicate contacts
+    And I go to the contacts page
+    And I move the mouse over "contact_1"
+    And I follow "Merge" within "#contact_1"
+    And I fill in "auto_complete_query" with "One"
+    Then I should see "No contacts match One" within "#auto_complete_dropdown"
+    When I fill in "auto_complete_query" with "Two"
+    Then I should see "Test User Two" within "#auto_complete_dropdown"
+    When I move the mouse over "contact_2"
+    And I follow "Merge" within "#contact_2"
+    And I fill in "auto_complete_query" with "Test User"
+    Then I should see "Test User One" within "#auto_complete_dropdown"
+    And I should not see "Test User Two" within "#auto_complete_dropdown"
+
