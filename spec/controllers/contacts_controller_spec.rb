@@ -26,7 +26,7 @@ describe ContactsController do
       end
 
       it "should redirect to contact index if contact cannot be found anywhere" do
-        @contact = Factory(:contact, :user => @current_user).destroy
+        @contact = Factory(:contact, :id => 50).destroy
 
         get :show, :id => @contact.id
         response.should redirect_to(contacts_path)
