@@ -32,6 +32,12 @@ Feature: Merge Contacts
     And I should see "testuserone@test.com"
     And I should see "2222-2222"
     And I should see "(111)1111111111"
+    And I should see "Test Task One"
+    And I should see "Test Task Two"
+    And I should see "Test Opportunity One"
+    And I should see "Test Opportunity Two"
+    And I should see "Test Email One"
+    And I should see "Test Email Two"
 
   Scenario: User should be able to reverse the master and duplicate contacts
     Given a logged in user

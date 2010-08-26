@@ -21,17 +21,27 @@ module Merge
           master_contact.send(attr + "=", self.send(attr))
         end
       end
-      # ------ Merge 'has_many' associations
-      %w(opportunities tasks emails).each do |attr|
-        unless ignored_attr.include?(attr)
-          master_assets = master_contact.send(attr)
-          master_contact.send(attr + "=", master_assets + self.send(attr))
+      # ------ Merge 'has_many' associations (each requires a special case)
+      self.tasks.each do |t|
+        t.asset = master_contact; t.save!
+      end
+      self.emails.each do |e|
+        e.mediator = master_contact; e.save!
+      end
+      # Find all ContactOpportunity records with the duplicate contact,
+      # and only add the master contact if it is not already added to the opportunity.
+      ContactOpportunity.find_all_by_contact_id(self.id).each do |co|
+        unless co.opportunity.contacts.include?(master_contact)
+          co.contact_id = master_contact.id; co.save!
         end
       end
+
       if master_contact.save!
         # Create the contact alias and destroy the merged contact.
         if ContactAlias.create(:contact => master_contact,
                                :destroyed_contact_id => self.id)
+          # Must force a reload of the contact, and shake off all migrated assets.
+          self.reload
           self.destroy!
           return true
         end

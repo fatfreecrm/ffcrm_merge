@@ -5,6 +5,18 @@ Given /^two duplicate contacts$/ do
                                    :mobile     => "(111)1111111111",
                                    :email      => "testuserone@example.com",
                                    :alt_email  => "testuserone@test.com")
+
+  @tasks = %w(One Two).map {|n| Factory(:task,   :asset => @dup_contact,
+                                                 :name  => "Test Task #{n}")}
+
+  @emails = %w(One Two).map {|n| Factory(:email, :mediator => @dup_contact,
+                                                 :subject  => "Test Email #{n}")}
+
+  @opportunities = %w(One Two).map {|n| Factory(:contact_opportunity,
+                                                :contact => @dup_contact,
+                            :opportunity => Factory(:opportunity,
+                                                    :name => "Test Opportunity #{n}"))}
+
   @contact     = Factory(:contact, :first_name => "Test User",
                                    :last_name  => "Two",
                                    :phone      => "2222-2222",
