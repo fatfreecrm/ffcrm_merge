@@ -1,6 +1,6 @@
 require "fat_free_crm"
 
-FatFreeCRM::Plugin.register(:crm_merge_contacts, initializer) do
+FatFreeCRM::Plugin.register(:crm_merge_contacts, self) do
           name "Fat Free Merge Contacts"
         author "Nathan Broadbent"
        version "1.2"
@@ -9,4 +9,3 @@ FatFreeCRM::Plugin.register(:crm_merge_contacts, initializer) do
 end
 
 require "crm_merge_contacts"
-

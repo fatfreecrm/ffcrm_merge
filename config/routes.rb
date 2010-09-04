@@ -1,8 +1,8 @@
-ActionController::Routing::Routes.draw do |map|
+FatFreeCrm::Application.routes.draw do
 
-  map.merge_contact 'contacts/:id/merge/:master_id',
-                    :controller => 'contacts',
-                    :action => 'merge'
+  match '/contacts/:id/merge/:master_id',
+          :controller => 'contacts',
+          :action => 'merge',
+          :as => :merge_contact
 
 end
-

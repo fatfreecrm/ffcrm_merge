@@ -76,7 +76,7 @@ ContactsController.class_eval do
     @users    = User.except(@current_user).all
     @account  = @contact.account || Account.new(:user => @current_user)
     @accounts = Account.my(@current_user).all(:order => "name")
-    if params[:previous] =~ /(\d+)\z/
+    if params[:previous].to_s =~ /(\d+)\z/
       @previous = Contact.my(@current_user).find($1)
     end
 
