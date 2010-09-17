@@ -1,8 +1,11 @@
 class MergeViewHooks < FatFreeCRM::Callback::Base
 
-  def javascript_epilogue(view, context = {})
-    # Load the crm_merge.js file in the same directory.
-    File.open(File.join(File.dirname(__FILE__), 'crm_merge.js'), 'r').read
+  def javascript_includes(view, context = {})
+    view.javascript_include_tag('crm_merge_contacts.js')
+  end
+  
+  def contact_tools_before(view, context = {})   
+    view.render(:partial => "/contacts/merge_contact_tool", :locals => {:contact => context[:contact]})
   end
 
 end
