@@ -41,7 +41,3 @@ When /^I force the confirm dialog to return true$/ do
   end
 end
 
-Then /^I should pause$/ do
-  sleep 1000
-end
-
