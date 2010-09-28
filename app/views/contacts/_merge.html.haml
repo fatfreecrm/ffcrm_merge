@@ -22,7 +22,7 @@
           %tr
             %th
               %small
-                = link_to(t('switch_duplicate_and_master'), "#", :onclick => "crm.load_merge_form('contacts', '#{@master_contact.id}', '#{@contact.id}', #{!reverse_merge});")
+                = link_to(t('switch_duplicate_and_master').html_safe, "#", :onclick => "crm.load_merge_form('contacts', '#{@master_contact.id}', '#{@contact.id}', #{!reverse_merge});")
             %th{ :valign => :top, :style => "font-size: 13px;", :width => "40%" }
               = "#{t(:duplicate_contact)}: #{duplicate.name}"
             %th{ :valign => :top, :style => "font-size: 13px;", :width => "40%" }

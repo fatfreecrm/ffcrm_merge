@@ -15,7 +15,8 @@ Given /^two duplicate contacts$/ do
   @opportunities = %w(One Two).map {|n| Factory(:contact_opportunity,
                                                 :contact => @dup_contact,
                             :opportunity => Factory(:opportunity,
-                                                    :name => "Test Opportunity #{n}"))}
+                                                    :name => "Test Opportunity #{n}",
+                                                    :account => Factory(:account)))}
 
   @contact     = Factory(:contact, :first_name => "Test User",
                                    :last_name  => "Two",
