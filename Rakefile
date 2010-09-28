@@ -1,13 +1,8 @@
-require 'rubygems'
+# Add your own tasks in files placed in lib/tasks ending in .rake,
+# for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
+
+require File.expand_path('../../../../config/application', __FILE__)
 require 'rake'
-require 'spec/rake/spectask'
 
-desc 'Default: run specs.'
-task :default => :spec
-
-desc 'Run the specs'
-Spec::Rake::SpecTask.new(:spec) do |t|
-  t.spec_opts = ['--colour --format progress --loadby mtime --reverse']
-  t.spec_files = FileList['spec/**/*_spec.rb']
-end
+FatFreeCrm::Application.load_tasks
 
