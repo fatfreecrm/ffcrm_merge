@@ -1,5 +1,6 @@
 Given /^two duplicate contacts$/ do
-  @dup_contact = Factory(:contact, :first_name => "Test User",
+  @dup_contact = Factory(:contact, :id         => 1,
+                                   :first_name => "Test User",
                                    :last_name  => "One",
                                    :phone      => "1111-1111",
                                    :mobile     => "(111)1111111111",
@@ -18,7 +19,8 @@ Given /^two duplicate contacts$/ do
                                                     :name => "Test Opportunity #{n}",
                                                     :account => Factory(:account)))}
 
-  @contact     = Factory(:contact, :first_name => "Test User",
+  @contact     = Factory(:contact, :id         => 2,
+                                   :first_name => "Test User",
                                    :last_name  => "Two",
                                    :phone      => "2222-2222",
                                    :mobile     => "(222)2222222222",
