@@ -5,7 +5,7 @@
   new crm.Popup({
     trigger     : "merge_#{singular}_#{asset.id}",
     target      : "jumpbox",
-    under       : "contact_#{asset.id}",
+    under       : "#{singular}_#{asset.id}",
     appear      : 0.3,
     fade        : 0.3,
     before_show : function() {
