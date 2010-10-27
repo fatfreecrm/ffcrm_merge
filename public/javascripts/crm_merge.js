@@ -2,11 +2,16 @@ crm.load_merge_form = function(controller, master_id, dup_id, reverse_merge) {
   // Fires a request similar to the 'edit' link,
   // but sets the edit_action to 'merge', and defines
   // which asset to merge with.
+  
+  // pluralizations for each model.
+  var asset_name = {contacts: 'contact',
+                    accounts: 'account'}
+  
   new Ajax.Request('/' + controller + '/' + dup_id + '/edit', {
     asynchronous  : true,
     evalScripts:true,
     method:'get',
-    parameters: { previous      : crm.find_form('edit_contact'),
+    parameters: { previous      : crm.find_form('edit_' + asset_name[controller]),
                   edit_action   : 'merge',
                   merge_into    : master_id,
                   reverse_merge : !!reverse_merge }
@@ -16,7 +21,7 @@ crm.load_merge_form = function(controller, master_id, dup_id, reverse_merge) {
 // Added optional 'action' param, to allow a 'merge' callback to
 // be fired, as well as the regular 'add asset to related'
 // AJAX request. Also added 'ignored_ids' param to specify a collection
-// of asset ids to ignore. (Currently only enabled for ContactsController).
+// of asset ids to ignore. (Currently only enabled for ContactsController and AccountsController).
 //----------------------------------------------------------------------------
 crm.auto_complete = function(controller, related, focus, ignored_ids, action) {
   if (this.autocompleter) {

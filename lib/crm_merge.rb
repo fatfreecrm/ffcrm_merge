@@ -1,4 +1,5 @@
 require 'merge/contacts'
+require 'merge/accounts'
 require 'merge/merge_view_hooks'
 
 # Require *.rb from app_extensions

@@ -10,7 +10,7 @@
     fade        : 0.3,
     before_show : function() {
       $("jumpbox_menu").hide();
-      $("jumpbox_label").innerHTML = "#{t('merge_popup_label')}"
+      $("jumpbox_label").innerHTML = "#{t('merge_asset_popup_label', :asset => asset)}"
       $("jumpbox_label").show();
       crm.auto_complete("#{popup}", "#{asset.id}", false, ["#{asset.id}"], "merge");
     },

@@ -15,24 +15,24 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #------------------------------------------------------------------------------
 
-ContactsController.class_eval do
+AccountsController.class_eval do
 
-  # PUT /contacts/1/merge/2                                                AJAX
+  # PUT /accounts/1/merge/2                                                AJAX
   #----------------------------------------------------------------------------
   def merge
-    # Find which fields we want to ignore from the duplicate contact.
+    # Find which fields we want to ignore from the duplicate account.
     ignored_merge_fields = params[:ignore].select{|k,v| v == "yes" }.map{|a| a[0] }
 
-    @contact = Contact.my(@current_user).find(params[:id])
-    @master_contact = Contact.my(@current_user).find(params[:master_id])
+    @account = Account.my(@current_user).find(params[:id])
+    @master_account = Account.my(@current_user).find(params[:master_id])
 
     # Reverse the master and duplicate if :reverse_merge is true
     @reverse_merge = params[:reverse_merge] == "true" ? true : false
-    c = [@contact, @master_contact]
+    c = [@account, @master_account]
     duplicate, master = @reverse_merge ? c.reverse : c
 
     unless duplicate.merge_with(master, ignored_merge_fields)
-      @contact.errors.add_to_base(t('contact_merge_error'))
+      @account.errors.add_to_base(t('contact_merge_error'))
     end
 
     respond_to do |format|
@@ -44,13 +44,13 @@ ContactsController.class_eval do
   end
 
 
-  # Overwrite auto_complete just for ContactsController,
-  # giving the ability to ignore specific contact ids.
+  # Overwrite auto_complete just for AccountsController,
+  # giving the ability to ignore specific account ids.
   #----------------------------------------------------
   def auto_complete
     @query = params[:auto_complete_query]
     @auto_complete = hook(:auto_complete, self, :query => @query, :user => @current_user)
-    # Filter out ignored contact(s) if param was given.
+    # Filter out ignored account(s) if param was given.
     if params[:ignored]
       ignored_ids = params[:ignored].split(",").map{|i| i.to_i }
       @auto_complete[0] = @auto_complete[0].select{|a| !ignored_ids.include?(a.id) }
@@ -65,66 +65,58 @@ ContactsController.class_eval do
   end
 
 
-  # GET /contacts/1/edit                                                   AJAX
+  # GET /accounts/1/edit                                                   AJAX
   #----------------------------------------------------------------------------
   def edit
-    @contact  = Contact.my(@current_user).find(params[:id])
+    @account  = Account.my(@current_user).find(params[:id])
 
-    # 'master_contact' lookup for a merge request.
-    @master_contact = Contact.my(@current_user).find(params[:merge_into]) if params[:merge_into]
+    # 'master_account' lookup for a merge request.
+    @master_account = Account.my(@current_user).find(params[:merge_into]) if params[:merge_into]
 
     @users    = User.except(@current_user).all
-    @account  = @contact.account || Account.new(:user => @current_user)
-    @accounts = Account.my(@current_user).all(:order => "name")
     if params[:previous].to_s =~ /(\d+)\z/
-      @previous = Contact.my(@current_user).find($1)
+      @previous = Account.my(@current_user).find($1)
     end
 
   rescue ActiveRecord::RecordNotFound
     @previous ||= $1.to_i
-    respond_to_not_found(:js) unless @contact
+    respond_to_not_found(:js) unless @account
   end
 
 
-  # GET /contacts/1
-  # GET /contacts/1.xml                                                    HTML
+  # GET /accounts/1
+  # GET /accounts/1.xml                                                    HTML
   #----------------------------------------------------------------------------
   def show
-    @contact = Contact.my(@current_user).find(contact_alias_or_default(params[:id]))
+    @account = Account.my(@current_user).find(account_alias_or_default(params[:id]))
     @stage = Setting.unroll(:opportunity_stage)
     @comment = Comment.new
 
-    @timeline = Timeline.find(@contact)
+    @timeline = Timeline.find(@account)
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @contact }
+      format.xml  { render :xml => @account }
     end
 
   rescue ActiveRecord::RecordNotFound
     respond_to_not_found(:html, :xml)
   end
 
-  # PUT /contacts/1
-  # PUT /contacts/1.xml                                                    AJAX
+  # PUT /accounts/1
+  # PUT /accounts/1.xml                                                    AJAX
   #----------------------------------------------------------------------------
   def update
-    @contact = Contact.my(@current_user).find(contact_alias_or_default(params[:id]))
+    @account = Account.my(@current_user).find(account_alias_or_default(params[:id]))
 
     respond_to do |format|
-      if @contact.update_with_account_and_permissions(params)
+      if @account.update_with_account_and_permissions(params)
         format.js
         format.xml  { head :ok }
       else
         @users = User.except(@current_user).all
-        @accounts = Account.my(@current_user).all(:order => "name")
-        if @contact.account
-          @account = Account.find(@contact.account.id)
-        else
-          @account = Account.new(:user => @current_user)
-        end
         format.js
-        format.xml  { render :xml => @contact.errors, :status => :unprocessable_entity }
+        format.xml  { render :xml => @account.errors, :status => :unprocessable_entity }
       end
     end
 
@@ -134,14 +126,14 @@ ContactsController.class_eval do
 
   private
 
-  # Looks up the ContactAlias table to see if the requested id
-  # matches a previously merged contact.
+  # Looks up the AccountAlias table to see if the requested id
+  # matches a previously merged account.
   # Returns the new id if it does,
-  def contact_alias_or_default(contact_id)
-    if contact_alias = ContactAlias.find_by_destroyed_contact_id(contact_id)
-      contact_alias.contact_id
+  def account_alias_or_default(account_id)
+    if account_alias = AccountAlias.find_by_destroyed_account_id(account_id)
+      account_alias.account_id
     else
-      contact_id
+      account_id
     end
   end
 

@@ -1,0 +1,3 @@
+= link_to(t('merge'), "#", :id => "merge_account_#{account.id}") + " | "
+= load_merge_select_popup_for(account)
+= javascript_tag(render(:partial => "common/merge_select_popup", :locals  => { :asset => account }))

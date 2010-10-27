@@ -1,15 +1,15 @@
 en-US:
 
-  # Merge Contacts
+  # Merge
   #----------------------------------------------------------------------------
   merge: Merge
-  merge_contacts: Merge Contacts
-  merge_popup_label: Which contact would you like to merge into?
-  merge_contact_with_master: Merge %{contact} into %{master_contact}
-  duplicate_contact: Duplicate Contact
-  master_contact: Master Contact
   merge_into_info: Please select which fields you would like to merge
-  confirm_merge: Are you sure you want to merge these contacts? This action is final and cannot be reversed.
-  merge_error: Sorry, an error occurred while trying to merge contacts.
   switch_duplicate_and_master: Duplicate &lt;==&gt; Master
+  
+  merge_assets: Merge %{assets}
+  merge_asset_popup_label: Which %{asset} would you like to merge into?
+  duplicate_asset: Duplicate %{asset}
+  master_asset: Master %{asset}
+  confirm_assets_merge: Are you sure you want to merge these %{assets}? This action is final and cannot be reversed.
+  assets_merge_error: Sorry, an error occurred while trying to merge %{assets}.
 

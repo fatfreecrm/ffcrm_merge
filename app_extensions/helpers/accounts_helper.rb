@@ -1,11 +1,11 @@
-ContactsHelper.module_eval do
+AccountsHelper.module_eval do
 
   # Transforms the list of merge attributes into a display
   # format (ie, with links / model associations), to be
   # displayed in the merge selection table.
   # --------------------------------------------------------
-  def contact_merge_attributes(contact, html = true)
-    attr_hash = contact.merge_attributes
+  def account_merge_attributes(account, html = true)
+    attr_hash = account.merge_attributes
     # ------ Humanize attributes
     attr_hash['source'] = attr_hash['source'].humanize if attr_hash['source']
     # ------ Make websites into links and emails into mailto links
@@ -38,29 +38,17 @@ ContactsHelper.module_eval do
     attr_hash
   end
 
-  def ordered_contact_merge_attributes
+  def ordered_account_merge_attributes
     %w(
-      first_name
-      last_name
+      name
       email
-      alt_email
+      website
       phone
-      mobile
+      toll_free_phone
       fax
-      do_not_call
-      born_on
-      title
       background_info
-      source
-      department
-      facebook
-      twitter
-      blog
-      linkedin
       user_id
       assigned_to
-      reports_to
-      lead_id
       access
     )
   end
