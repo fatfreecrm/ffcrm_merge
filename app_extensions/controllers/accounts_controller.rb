@@ -110,7 +110,7 @@ AccountsController.class_eval do
     @account = Account.my(@current_user).find(account_alias_or_default(params[:id]))
 
     respond_to do |format|
-      if @account.update_with_account_and_permissions(params)
+      if @account.update_with_permissions(params[:account], params[:users])
         format.js
         format.xml  { head :ok }
       else
