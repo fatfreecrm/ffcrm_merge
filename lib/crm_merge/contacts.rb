@@ -28,6 +28,9 @@ module Merge
       self.emails.each do |e|
         e.mediator = master_contact; e.save!
       end
+      self.comments.each do |c|
+        c.commentable = master_contact; c.save!
+      end
       # Find all ContactOpportunity records with the duplicate contact,
       # and only add the master contact if it is not already added to the opportunity.
       ContactOpportunity.find_all_by_contact_id(self.id).each do |co|

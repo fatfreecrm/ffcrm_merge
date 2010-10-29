@@ -31,6 +31,9 @@ module Merge
       self.emails.each do |e|
         e.mediator = master_account; e.save!
       end
+      self.comments.each do |c|
+        c.commentable = master_account; c.save!
+      end
       
       self.opportunities.each do |o|
         o.account = master_account; o.save!
