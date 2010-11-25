@@ -1,4 +1,4 @@
-FatFreeCrm::Application.routes.draw do
+FatFreeCRM::Application.routes.draw do
 
   match '/contacts/:id/merge/:master_id',
           :controller => 'contacts',
