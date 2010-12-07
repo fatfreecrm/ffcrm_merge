@@ -13,16 +13,19 @@ describe Account do
     4.times do
       Factory(:email, :mediator => @account)
       Factory(:email, :mediator => @dup_account)
+      Factory(:comment, :commentable => @account)
+      Factory(:comment, :commentable => @dup_account)
     end
   end
 
   it "should be able to merge itself into another account" do
     # Store the attributes we want to match
     dup_account_attr  = @dup_account.merge_attributes
-    dup_has_many_hash = {:emails        => @dup_account.emails,
-                         :contacts      => @dup_account.contacts,
-                         :opportunities => @dup_account.opportunities,
-                         :tasks         => @dup_account.tasks}
+    dup_has_many_hash = {:emails        => @dup_account.emails.dup,
+                         :comments      => @dup_account.comments.dup,
+                         :contacts      => @dup_account.contacts.dup,
+                         :opportunities => @dup_account.opportunities.dup,
+                         :tasks         => @dup_account.tasks.dup}
 
     @dup_account.merge_with(@account)
 

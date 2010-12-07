@@ -13,15 +13,18 @@ describe Contact do
     4.times do
       Factory(:email, :mediator => @contact)
       Factory(:email, :mediator => @dup_contact)
+      Factory(:comment, :commentable => @contact)
+      Factory(:comment, :commentable => @dup_contact)      
     end
   end
 
   it "should be able to merge itself into another contact" do
     # Store the attributes we want to match
     dup_contact_attr  = @dup_contact.merge_attributes
-    dup_has_many_hash = {:emails        => @dup_contact.emails,
-                         :opportunities => @dup_contact.opportunities,
-                         :tasks         => @dup_contact.tasks}
+    dup_has_many_hash = {:emails        => @dup_contact.emails.dup,
+                         :comments      => @dup_contact.comments.dup,
+                         :opportunities => @dup_contact.opportunities.dup,
+                         :tasks         => @dup_contact.tasks.dup}
 
     @dup_contact.merge_with(@contact)
 

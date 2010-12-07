@@ -11,6 +11,8 @@ Given /^two duplicate accounts$/ do
 
   @emails = %w(One Two).map {|n| Factory(:email, :mediator => @dup_account,
                                                  :subject  => "Test Email #{n}")}
+  @comments = %w(One Two).map {|n| Factory(:comment, :commentable => @dup_account,
+                                                     :comment     => "Test Comment #{n}")}
 
   @opportunities = %w(One Two).map {|n| Factory(:account_opportunity,
                                                 :account => @dup_account,

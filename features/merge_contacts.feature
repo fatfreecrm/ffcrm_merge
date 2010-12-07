@@ -38,6 +38,8 @@ Feature: Merge Contacts
     And I should see "Test Opportunity Two"
     And I should see "Test Email One"
     And I should see "Test Email Two"
+    And I should see "Test Comment One"
+    And I should see "Test Comment Two"
 
   Scenario: User should be able to reverse the master and duplicate contacts
     Given a logged in user

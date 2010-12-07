@@ -38,6 +38,8 @@ Feature: Merge Accounts
     And I should see "Test Opportunity Two"
     And I should see "Test Email One"
     And I should see "Test Email Two"
+    And I should see "Test Comment One"
+    And I should see "Test Comment Two"    
     And I should see "Test Contact One"
     And I should see "Test Contact Two"
 

@@ -34,7 +34,7 @@ else # <----------------------------------------- Show [Edit Account] or [Merge 
 
   # Only call this method if we are calling a default edit, not a merge.
   if edit_action == "edit"
-    page[:account_first_name].focus
+    page[:account_name].focus
   end
 
 end
