@@ -23,5 +23,12 @@ class ContactAlias < ActiveRecord::Base
   belongs_to :contact
 
   validates_presence_of :contact_id, :destroyed_contact_id
+
+  def self.ids_with_alias(ids)
+    h = {}
+    ids.each { |id| h[id] = id }
+    where(:destroyed_contact_id => ids).each { |a| h[a.destroyed_contact_id] = a.contact_id }
+    h
+  end
 end
 
