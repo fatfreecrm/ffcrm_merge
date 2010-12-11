@@ -45,6 +45,11 @@ module Merge
       self.update_attribute :name, "Soon to be destroyed - #{self.created_at.to_s}"
 
       if master_account.save
+        # Update any existing aliases that were pointing to the duplicate record
+        AccountAlias.find_all_by_account_id(self.id).each do |aa|
+          aa.update_attribute(:account, master_account)
+        end
+        
         # Create the account alias and destroy the merged account.
         if AccountAlias.create(:account => master_account,
                                :destroyed_account_id => self.id)

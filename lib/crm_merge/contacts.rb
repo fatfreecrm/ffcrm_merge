@@ -40,6 +40,11 @@ module Merge
       end
 
       if master_contact.save!
+        # Update any existing aliases that were pointing to the duplicate record
+        ContactAlias.find_all_by_contact_id(self.id).each do |ca|
+          ca.update_attribute(:contact, master_contact)
+        end
+        
         # Create the contact alias and destroy the merged contact.
         if ContactAlias.create(:contact => master_contact,
                                :destroyed_contact_id => self.id)

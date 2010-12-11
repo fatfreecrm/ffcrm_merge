@@ -66,5 +66,18 @@ describe Contact do
       @contact.send(attr.to_sym).should == dup_contact_attr[attr]
     end
   end
+  
+  it "should update existing aliases pointing to the duplicate record" do
+    @ca1 = ContactAlias.create(:contact => @dup_contact,
+                               :destroyed_contact_id => 12345)
+    @ca2 = ContactAlias.create(:contact => @dup_contact,
+                               :destroyed_contact_id => 23456)
+    @dup_contact.merge_with(@contact)
+    
+    @ca1.reload; @ca2.reload
+    @ca1.contact_id.should == @contact.id
+    @ca2.contact_id.should == @contact.id
+  
+  end
 end
 

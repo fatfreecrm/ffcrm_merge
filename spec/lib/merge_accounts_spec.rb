@@ -67,5 +67,18 @@ describe Account do
       @account.send(attr.to_sym).should == dup_account_attr[attr]
     end
   end
+  
+  it "should update existing aliases pointing to the duplicate record" do
+    @aa1 = AccountAlias.create(:account => @dup_account,
+                               :destroyed_account_id => 12345)
+    @aa2 = AccountAlias.create(:account => @dup_account,
+                               :destroyed_account_id => 23456)
+    @dup_account.merge_with(@account)
+    
+    @aa1.reload; @aa2.reload
+    @aa1.account_id.should == @account.id
+    @aa2.account_id.should == @account.id
+  
+  end
 end
 
