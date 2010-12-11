@@ -20,7 +20,7 @@
 # merged into another contact.
 
 class ContactAlias < ActiveRecord::Base
-  belongs_to :contact
+  belongs_to :contact, :dependent => :destroy
 
   validates_presence_of :contact_id, :destroyed_contact_id
 

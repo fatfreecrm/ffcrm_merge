@@ -20,7 +20,7 @@
 # merged into another account.
 
 class AccountAlias < ActiveRecord::Base
-  belongs_to :account
+  belongs_to :account, :dependent => :destroy
 
   validates_presence_of :account_id, :destroyed_account_id
 end

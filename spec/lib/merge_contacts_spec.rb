@@ -79,5 +79,17 @@ describe Contact do
     @ca2.contact_id.should == @contact.id
   
   end
+  
+#  it "should delete any aliases pointing to a record when that record is deleted" do
+#    @ca1 = ContactAlias.create(:contact => @dup_contact,
+#                               :destroyed_contact_id => 12345)
+#    @ca2 = ContactAlias.create(:contact => @dup_contact,
+#                               :destroyed_contact_id => 23456)
+
+#    @dup_contact.destroy
+#    
+#    ContactAlias.find_all_by_contact_id(@dup_contact.id).should be_empty
+#  
+#  end
 end
 
