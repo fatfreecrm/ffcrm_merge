@@ -38,5 +38,6 @@ else # <----------------------------------------- Show [Edit Contact] or [Merge 
     page[:contact_first_name].focus
   end
 
+  hook(:edit_contact_rjs, self, :page => page)
 end
 
