@@ -10,7 +10,7 @@
 - default_merge        = calculate_default_merge(duplicate_attributes, master_attributes)
 
 .remote
-  = form_for(@contact, :url => merge_contact_path(@contact.id, @master_contact.id), :html => one_submit_only(:contact), :remote => true) do |f|
+  - form_for(@contact, :url => merge_contact_path(@contact.id, @master_contact.id), :html => one_submit_only(:contact), :remote => true) do |f|
     = link_to_close edit_contact_path(@contact)
     = f.error_messages
     = hidden_field_tag(:reverse_merge, reverse_merge)

@@ -1,16 +1,12 @@
-- # If we are reversing the merge, we still create a form for the
-- # duplicate account, but pass in the hidden 'reverse_merge' param.
 - reverse_merge        = params[:reverse_merge] == "true" ? true : false
-
 - c = [@account, @master_account]
 - duplicate, master    = reverse_merge ? c.reverse : c
-
 - duplicate_attributes = contact_merge_attributes(duplicate)
 - master_attributes    = contact_merge_attributes(master)
 - default_merge        = calculate_default_merge(duplicate_attributes, master_attributes)
 
 .remote
-  = form_for(@account, :url => merge_account_path(@account.id, @master_account.id), :html => one_submit_only(:account), :remote => true) do |f|
+  - form_for(@account, :url => merge_account_path(@account.id, @master_account.id), :html => one_submit_only(:account), :remote => true) do |f|
     = link_to_close edit_account_path(@account)
     = f.error_messages
     = hidden_field_tag(:reverse_merge, reverse_merge)
@@ -44,4 +40,3 @@
       = f.submit t(:merge_assets, :assets => t(:accounts)), :onclick => "var check=confirm('#{t('confirm_assets_merge', :assets => t(:accounts))}'); if(!check){return false;};"
       #{t :or}
       = link_to_cancel edit_account_path(@account)
-
