@@ -9,7 +9,7 @@ class MergeViewHooks < FatFreeCRM::Callback::Base
   end
 
   def javascript_epilogue(view, context = {})
-    # Load the crm_merge.js file in the same directory.
+    # Load crm_merge.js
     File.open(File.join(File.dirname(__FILE__),'..','..','public','javascripts','crm_merge.js'), 'r').read
   end
 
