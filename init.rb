@@ -1,6 +1,6 @@
 require "fat_free_crm"
 
-FatFreeCRM::Plugin.register(:crm_merge, self) do
+FatFreeCRM::Plugin.register(:crm_merge, initializer) do
           name "Fat Free CRM - Merge Contacts & Accounts"
         author "Nathan Broadbent"
        version "1.2"
@@ -9,6 +9,3 @@ FatFreeCRM::Plugin.register(:crm_merge, self) do
 end
 
 require "crm_merge"
-
-Rails.configuration.middleware.insert_before ::Rack::Lock, ::ActionDispatch::Static, "#{root}/public"
-
