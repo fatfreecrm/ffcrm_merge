@@ -87,21 +87,27 @@ AccountsController.class_eval do
   # GET /accounts/1
   # GET /accounts/1.xml                                                    HTML
   #----------------------------------------------------------------------------
-  def show
-    @account = Account.my(@current_user).find(account_alias_or_default(params[:id]))
-    @stage = Setting.unroll(:opportunity_stage)
-    @comment = Comment.new
+  def show_with_alias_fallback
+    if account_alias = AccountAlias.find_by_destroyed_account_id(params[:id])
+      @account = Account.my(@current_user).find(account_alias.account_id)
+      @stage = Setting.unroll(:opportunity_stage)
+      @comment = Comment.new
 
-    @timeline = Timeline.find(@account)
+      @timeline = Timeline.find(@account)
 
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @account }
+      respond_to do |format|
+        format.html # show.html.erb
+        format.xml  { render :xml => @account }
+      end
+    else
+      # Falls back to original controller method if account is not destroyed
+      show_without_alias_fallback
     end
-
   rescue ActiveRecord::RecordNotFound
     respond_to_not_found(:html, :xml)
   end
+  alias_method_chain :show, :alias_fallback
+  
 
   # PUT /accounts/1
   # PUT /accounts/1.xml                                                    AJAX

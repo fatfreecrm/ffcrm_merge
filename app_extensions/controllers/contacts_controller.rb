@@ -85,25 +85,30 @@ ContactsController.class_eval do
     respond_to_not_found(:js) unless @contact
   end
 
-
   # GET /contacts/1
   # GET /contacts/1.xml                                                    HTML
   #----------------------------------------------------------------------------
-  def show
-    @contact = Contact.my(@current_user).find(contact_alias_or_default(params[:id]))
-    @stage = Setting.unroll(:opportunity_stage)
-    @comment = Comment.new
+  def show_with_alias_fallback
+    if contact_alias = ContactAlias.find_by_destroyed_contact_id(params[:id])
+      @contact = Contact.my(@current_user).find(contact_alias.contact_id)
+      @stage = Setting.unroll(:opportunity_stage)
+      @comment = Comment.new
 
-    @timeline = Timeline.find(@contact)
+      @timeline = Timeline.find(@contact)
 
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @contact }
+      respond_to do |format|
+        format.html # show.html.erb
+        format.xml  { render :xml => @contact }
+      end
+    else
+      # Falls back to original controller method if account is not destroyed
+      show_without_alias_fallback
     end
-
   rescue ActiveRecord::RecordNotFound
     respond_to_not_found(:html, :xml)
   end
+  alias_method_chain :show, :alias_fallback
+  
 
   # PUT /contacts/1
   # PUT /contacts/1.xml                                                    AJAX
