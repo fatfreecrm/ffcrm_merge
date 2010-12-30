@@ -21,12 +21,12 @@ ApplicationHelper.module_eval do
                 :locals  => { :asset => asset })
 
     content_for(:javascript_epilogue) do
-      "document.observe('dom:loaded', function() { #{js} });"
+      raw "document.observe('dom:loaded', function() { #{js} });"
     end
   end
 
   # ---------------- Common Merge Helper Methods ---------------------
-  
+
   # Generates a radio button for selecting which attributes
   # to ignore from the duplicate contact.
   # --------------------------------------------------------
@@ -43,7 +43,7 @@ ApplicationHelper.module_eval do
                   :value => value
                   }.merge(checked))
   end
-  
+
   # Returns a hash with default merge attributes for radio buttons.
   # (master contact is default)
   # --------------------------------------------------------
