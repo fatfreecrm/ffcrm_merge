@@ -32,7 +32,7 @@ AccountsController.class_eval do
     duplicate, master = @reverse_merge ? c.reverse : c
 
     unless duplicate.merge_with(master, ignored_merge_fields)
-      @account.errors.add_to_base(t('contact_merge_error'))
+      @account.errors.add_to_base(t('assets_merge_error', :assets => "accounts"))
     end
 
     respond_to do |format|
