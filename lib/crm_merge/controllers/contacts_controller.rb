@@ -53,7 +53,11 @@ ContactsController.class_eval do
     # Filter out ignored contact(s) if param was given.
     if params[:ignored]
       ignored_ids = params[:ignored].split(",").map{|i| i.to_i }
-      @auto_complete[0] = @auto_complete[0].select{|a| !ignored_ids.include?(a.id) }
+      if @auto_complete[0] # Edge rails 2.3.8 Fat Free CRM
+        @auto_complete[0] = @auto_complete[0].select{|a| !ignored_ids.include?(a.id) }
+      else                 # Release 0.10.1 (@a897de7)
+        @auto_complete = @auto_complete.select{|a| !ignored_ids.include?(a.id) }
+      end
     end
     if @auto_complete.empty?
       @auto_complete = controller_name.classify.constantize.my(:user => @current_user, :limit => 10).search(@query)
