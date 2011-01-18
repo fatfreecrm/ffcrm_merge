@@ -2,11 +2,11 @@ crm.load_merge_form = function(controller, master_id, dup_id, reverse_merge) {
   // Fires a request similar to the 'edit' link,
   // but sets the edit_action to 'merge', and defines
   // which asset to merge with.
-  
+
   // pluralizations for each model.
   var asset_name = {contacts: 'contact',
                     accounts: 'account'}
-  
+
   new Ajax.Request('/' + controller + '/' + dup_id + '/edit', {
     asynchronous  : true,
     evalScripts:true,
@@ -69,3 +69,29 @@ crm.auto_complete = function(controller, related, focus, ignored_ids, action) {
   }
 };
 
+document.observe('dom:loaded', function() {
+  $$("a[data-merge]").each(function(link) {
+    link.readAttribute('data-merge').split('_');
+    popup = asset.class.to_s.downcase.pluralize
+    singular = asset.class.to_s.downcase
+
+    new crm.Popup({
+      trigger     : "merge_#{singular}_#{asset.id}",
+      target      : "jumpbox",
+      under       : "#{singular}_#{asset.id}",
+      appear      : 0.3,
+      fade        : 0.3,
+      before_show : function() {
+        $("jumpbox_menu").hide();
+        $("jumpbox_label").innerHTML = "#{t('merge_asset_popup_label', :asset => singular)}"
+        $("jumpbox_label").show();
+        crm.auto_complete("#{popup}", "#{asset.id}", false, ["#{asset.id}"], "merge");
+      },
+      after_show  : function() {
+        $("auto_complete_query").focus();
+      },
+      after_hide  : function() {
+      }
+    });
+  });
+});

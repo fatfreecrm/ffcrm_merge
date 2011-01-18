@@ -10,21 +10,6 @@ ApplicationHelper.module_eval do
     )
   end
 
-  # Had to define this method to allow select popup to be also
-  # used for merging records. (Could not append optional param
-  # to load_select_popups_for because of *assets)
-  # Also needed to make all popup ids unique for each contact,
-  # so this method must be singularized.
-  #----------------------------------------------------------------------------
-  def load_merge_select_popup_for(asset)
-    js = render(:partial => "common/merge_select_popup",
-                :locals  => { :asset => asset })
-
-    content_for(:javascript_epilogue) do
-      raw "document.observe('dom:loaded', function() { #{js} });"
-    end
-  end
-
   # ---------------- Common Merge Helper Methods ---------------------
 
   # Generates a radio button for selecting which attributes
