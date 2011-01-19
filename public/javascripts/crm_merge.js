@@ -69,29 +69,31 @@ crm.auto_complete = function(controller, related, focus, ignored_ids, action) {
   }
 };
 
-document.observe('dom:loaded', function() {
-  $$("a[data-merge]").each(function(link) {
-    link.readAttribute('data-merge').split('_');
-    popup = asset.class.to_s.downcase.pluralize
-    singular = asset.class.to_s.downcase
+crm.merge_link = function(link) {
+  var row_id = link.readAttribute('data-merge'),
+      klass = row_id.split('_')[0],
+      id = row_id.split('_')[1];
 
-    new crm.Popup({
-      trigger     : "merge_#{singular}_#{asset.id}",
-      target      : "jumpbox",
-      under       : "#{singular}_#{asset.id}",
-      appear      : 0.3,
-      fade        : 0.3,
-      before_show : function() {
-        $("jumpbox_menu").hide();
-        $("jumpbox_label").innerHTML = "#{t('merge_asset_popup_label', :asset => singular)}"
-        $("jumpbox_label").show();
-        crm.auto_complete("#{popup}", "#{asset.id}", false, ["#{asset.id}"], "merge");
-      },
-      after_show  : function() {
-        $("auto_complete_query").focus();
-      },
-      after_hide  : function() {
-      }
-    });
+  new crm.Popup({
+    trigger     : link.id,
+    target      : "jumpbox",
+    under       : row_id,
+    appear      : 0.3,
+    fade        : 0.3,
+    before_show : function() {
+      $("jumpbox_menu").hide();
+      $("jumpbox_label").innerHTML = 'Which '+ klass +' would you like to merge into?'
+      $("jumpbox_label").show();
+      crm.auto_complete(klass +'s', id, false, [id], "merge");
+    },
+    after_show  : function() {
+      $("auto_complete_query").focus();
+    },
+    after_hide  : function() {
+    }
   });
+};
+
+document.observe('dom:loaded', function() {
+  $$("a[data-merge]").each(crm.merge_link);
 });
