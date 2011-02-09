@@ -26,8 +26,10 @@ class ContactAlias < ActiveRecord::Base
 
   def self.ids_with_alias(ids)
     h = {}
-    ids.each { |id| h[id] = id }
-    where(:destroyed_contact_id => ids).each { |a| h[a.destroyed_contact_id] = a.contact_id }
+    ids.each { |id| h[id.to_s] = id.to_s }
+    where(:destroyed_contact_id => ids).each do |a|
+      h[a.destroyed_contact_id.to_s] = a.contact_id.to_s
+    end
     h
   end
 end
