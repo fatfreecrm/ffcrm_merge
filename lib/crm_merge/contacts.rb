@@ -1,16 +1,17 @@
 module Merge
   module Contacts
+    include Merge::SuperTags
     # Call this method on the duplicate contact, to merge it
     # into the master contact.
     # All attributes from 'self' are default, unless defined in options.
-    def merge_with(master_contact, ignored_attr = [])
+    def merge_with(master_contact, ignored_attr = {})
       # Just in case a user tries to merge a contact with itself,
       # even though the interface prevents this from happening.
       return false if master_contact == self
 
       # ------ Remove ignored attributes from this contact
       merge_attr = self.merge_attributes
-      ignored_attr.each do |attr|
+      (ignored_attr[:self] || []).each do |attr|
         merge_attr.delete(attr)
       end
       # ------ Merge class attributes
@@ -39,12 +40,16 @@ module Merge
         end
       end
 
+      if FatFreeCRM::Plugin.list_ids.include?(:crm_super_tags)
+        master_contact = merge_super_tags(self, master_contact, ignored_attr[:super_tags] || {})
+      end
+
       if master_contact.save!
         # Update any existing aliases that were pointing to the duplicate record
         ContactAlias.find_all_by_contact_id(self.id).each do |ca|
           ca.update_attribute(:contact, master_contact)
         end
-        
+
         # Create the contact alias and destroy the merged contact.
         if ContactAlias.create(:contact => master_contact,
                                :destroyed_contact_id => self.id)

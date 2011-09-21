@@ -3,14 +3,14 @@ module Merge
     # Call this method on the duplicate account, to merge it
     # into the master account.
     # All attributes from 'self' are default, unless defined in options.
-    def merge_with(master_account, ignored_attr = [])
+    def merge_with(master_account, ignored_attr = {})
       # Just in case a user tries to merge a account with itself,
       # even though the interface prevents this from happening.
       return false if master_account == self
 
       # ------ Remove ignored attributes from this account
       merge_attr = self.merge_attributes
-      ignored_attr.each do |attr|
+      (ignored_attr[:self] || []).each do |attr|
         merge_attr.delete(attr)
       end
       # ------ Merge class attributes
@@ -34,11 +34,11 @@ module Merge
       self.comments.each do |c|
         c.commentable = master_account; c.save!
       end
-      
+
       self.opportunities.each do |o|
         o.account = master_account; o.save!
       end
-      
+
       # Account validates the uniqueness of name, so we need to alter the duplicate name
       # before we save the master, then destroy the duplicate.
       tmp_name = self.name
@@ -49,7 +49,7 @@ module Merge
         AccountAlias.find_all_by_account_id(self.id).each do |aa|
           aa.update_attribute(:account, master_account)
         end
-        
+
         # Create the account alias and destroy the merged account.
         if AccountAlias.create(:account => master_account,
                                :destroyed_account_id => self.id)

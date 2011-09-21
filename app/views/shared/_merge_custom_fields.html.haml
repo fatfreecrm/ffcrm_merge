@@ -1,0 +1,29 @@
+- debugger
+- master.tags.select{|t| duplicate.tags.include?(t)}.each do |tag|
+  - if tag.customfields.any?
+    .section
+      %h2
+        = tag.name
+        Custom Fields
+      %table{ :cellpadding => "3px", :style => "text-align:left; border-collapse: collapse; border: none;" }
+        %tr
+          %th
+            %small
+              = link_to(t('switch_duplicate_and_master').html_safe, "#", :onclick => "crm.load_merge_form('contacts', '#{@master_contact.id}', '#{@contact.id}', #{!reverse_merge});")
+          %th{ :valign => :top, :style => "font-size: 13px;", :width => "40%" }
+            = "#{t(:duplicate_asset, :asset => t(:contact))}: #{duplicate.name}"
+          %th{ :valign => :top, :style => "font-size: 13px;", :width => "40%" }
+            = "#{t(:master_asset, :asset => t(:contact))}: #{master.name}"
+          - ordered_contact_merge_attributes.each do |attribute|
+            - duplicate_value, master_value = duplicate_attributes[attribute], master_attributes[attribute]
+            - unless duplicate_value.blank? and master_value.blank?
+              %tr{ :style => "border-bottom:1px dotted silver;"}
+                %th{ :width => "20%" }
+                  .label #{attribute.humanize}
+                %td
+                  = ignore_merge_radio_button("no",  attribute, default_merge[attribute]) unless duplicate_value.blank?
+                  .label{:style => "display: inline;"} #{duplicate_value}
+                %td
+                  = ignore_merge_radio_button("yes", attribute, default_merge[attribute]) unless master_value.blank?
+                  .label{:style => "display: inline;"} #{master_value}
+

@@ -31,7 +31,7 @@ ContactsController.class_eval do
     c = [@contact, @master_contact]
     duplicate, master = @reverse_merge ? c.reverse : c
 
-    unless duplicate.merge_with(master, ignored_merge_fields)
+    unless duplicate.merge_with(master, {:self => ignored_merge_fields})
       @contact.errors.add_to_base(t('assets_merge_error', :assets => "contacts"))
     end
 
@@ -108,7 +108,7 @@ ContactsController.class_eval do
     respond_to_not_found(:html, :xml)
   end
   alias_method_chain :show, :alias_fallback
-  
+
 
   # PUT /contacts/1
   # PUT /contacts/1.xml                                                    AJAX

@@ -31,7 +31,7 @@ AccountsController.class_eval do
     c = [@account, @master_account]
     duplicate, master = @reverse_merge ? c.reverse : c
 
-    unless duplicate.merge_with(master, ignored_merge_fields)
+    unless duplicate.merge_with(master, {:self => ignored_merge_fields})
       @account.errors.add_to_base(t('assets_merge_error', :assets => "accounts"))
     end
 
@@ -107,7 +107,7 @@ AccountsController.class_eval do
     respond_to_not_found(:html, :xml)
   end
   alias_method_chain :show, :alias_fallback
-  
+
 
   # PUT /accounts/1
   # PUT /accounts/1.xml                                                    AJAX

@@ -1,6 +1,6 @@
 - # If we are reversing the merge, we still create a form for the
 - # duplicate contact, but pass in the hidden 'reverse_merge' param.
-- reverse_merge        = params[:reverse_merge] == "true" ? true : false
+- reverse_merge        = params[:reverse_merge] == "true"
 
 - c = [@contact, @master_contact]
 - duplicate, master    = reverse_merge ? c.reverse : c
@@ -39,6 +39,9 @@
                   %td
                     = ignore_merge_radio_button("yes", attribute, default_merge[attribute]) unless master_value.blank?
                     .label{:style => "display: inline;"} #{master_value}
+
+    - if FatFreeCRM::Plugin.list_ids.include?(:crm_super_tags)
+      = render :partial => "shared/merge_custom_fields", :locals => {:master => master, :duplicate => duplicate}
 
     .buttonbar
       = f.submit t(:merge_assets, :assets => t(:contacts)), :onclick => "var check=confirm('#{t('confirm_assets_merge', :assets => t(:contacts))}'); if(!check){return false;};"
