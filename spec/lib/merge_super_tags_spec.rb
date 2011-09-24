@@ -28,13 +28,15 @@ describe Contact do
                        "tag#{@tag_one.id}_attributes".to_sym => {"field_one" => "test value one"})
   end
 
-  it "should merge supertags and custom fields" do
+  it "should merge different supertags from both records" do
     @dup_contact = Factory(:contact,
                            :title  => "Duplicate Contact",
-                           :tag_list => "#{@tag_one.name}, #{@tag_two.name}",
+                           :tag_list => @tag_two.name,
                            "tag#{@tag_two.id}_attributes".to_sym => {"field_two" => "test value two"})
 
     @dup_contact.merge_with(@contact)
+
+    @contact.reload
 
     [@tag_one, @tag_two].each do |tag|
       @contact.tags.should include(tag)
@@ -43,17 +45,34 @@ describe Contact do
     @contact.send("tag#{@tag_two.id}").field_two.should == "test value two"
   end
 
-
-  it "should be able to ignore attributes when merging supertags and customfields" do
+  it "should merge shared supertags with customfields" do
     @dup_contact = Factory(:contact,
                            :title  => "Duplicate Contact",
                            :tag_list => "#{@tag_one.name}, #{@tag_two.name}",
                            "tag#{@tag_one.id}_attributes".to_sym => {"field_one" => "duplicate test value one"},
                            "tag#{@tag_two.id}_attributes".to_sym => {"field_two" => "test value two"}
                            )
-    ignored_attr = {:super_tags => {"TagOne" => "field_one"}}
+
+    @dup_contact.merge_with(@contact)
+
+    @contact.reload
+
+    @contact.send("tag#{@tag_one.id}").field_one.should == "duplicate test value one"
+    @contact.send("tag#{@tag_two.id}").field_two.should == "test value two"
+  end
+
+  it "should ignore given attributes when merging shared supertags with customfields" do
+    @dup_contact = Factory(:contact,
+                           :title  => "Duplicate Contact",
+                           :tag_list => "#{@tag_one.name}, #{@tag_two.name}",
+                           "tag#{@tag_one.id}_attributes".to_sym => {"field_one" => "duplicate test value one"},
+                           "tag#{@tag_two.id}_attributes".to_sym => {"field_two" => "test value two"}
+                           )
+    ignored_attr = {:super_tags => {"TagOne" => ["field_one"]}}
 
     @dup_contact.merge_with(@contact, ignored_attr)
+
+    @contact.reload
 
     @contact.send("tag#{@tag_one.id}").field_one.should == "test value one"
     @contact.send("tag#{@tag_two.id}").field_two.should == "test value two"
