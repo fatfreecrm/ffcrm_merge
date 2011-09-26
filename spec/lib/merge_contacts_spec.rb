@@ -14,7 +14,7 @@ describe Contact do
       Factory(:email, :mediator => @contact)
       Factory(:email, :mediator => @dup_contact)
       Factory(:comment, :commentable => @contact)
-      Factory(:comment, :commentable => @dup_contact)      
+      Factory(:comment, :commentable => @dup_contact)
     end
   end
 
@@ -50,7 +50,7 @@ describe Contact do
   end
 
   it "should be able to ignore some attributes when merging" do
-    ignored_attributes = %w(title source background_info)
+    ignored_attributes = {"_self" => %w(title source background_info)}
 
     # Save the attributes we want to match
     dup_contact_attr = @dup_contact.merge_attributes
@@ -58,7 +58,7 @@ describe Contact do
     @dup_contact.merge_with(@contact, ignored_attributes)
 
     # Check that the duplicate contact has ignored some attributes
-    ignored_attributes.each do |attr|
+    ignored_attributes["_self"].each do |attr|
       @contact.send(attr.to_sym).should_not == dup_contact_attr[attr]
     end
     # Check that other fields have been merged
@@ -66,20 +66,19 @@ describe Contact do
       @contact.send(attr.to_sym).should == dup_contact_attr[attr]
     end
   end
-  
+
   it "should update existing aliases pointing to the duplicate record" do
     @ca1 = ContactAlias.create(:contact => @dup_contact,
                                :destroyed_contact_id => 12345)
     @ca2 = ContactAlias.create(:contact => @dup_contact,
                                :destroyed_contact_id => 23456)
     @dup_contact.merge_with(@contact)
-    
+
     @ca1.reload; @ca2.reload
     @ca1.contact_id.should == @contact.id
     @ca2.contact_id.should == @contact.id
-  
   end
-  
+
 #  it "should delete any aliases pointing to a record when that record is deleted" do
 #    @ca1 = ContactAlias.create(:contact => @dup_contact,
 #                               :destroyed_contact_id => 12345)
@@ -87,9 +86,9 @@ describe Contact do
 #                               :destroyed_contact_id => 23456)
 
 #    @dup_contact.destroy
-#    
+#
 #    ContactAlias.find_all_by_contact_id(@dup_contact.id).should be_empty
-#  
+#
 #  end
 end
 

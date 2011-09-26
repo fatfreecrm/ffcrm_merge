@@ -68,7 +68,7 @@ describe Contact do
                            "tag#{@tag_one.id}_attributes".to_sym => {"field_one" => "duplicate test value one"},
                            "tag#{@tag_two.id}_attributes".to_sym => {"field_two" => "test value two"}
                            )
-    ignored_attr = {:super_tags => {"TagOne" => ["field_one"]}}
+    ignored_attr = {"tags" => {"tagone" => ["field_one"]}}
 
     @dup_contact.merge_with(@contact, ignored_attr)
 

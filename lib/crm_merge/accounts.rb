@@ -10,7 +10,7 @@ module Merge
 
       # ------ Remove ignored attributes from this account
       merge_attr = self.merge_attributes
-      (ignored_attr[:self] || []).each do |attr|
+      (ignored_attr || []).each do |attr|
         merge_attr.delete(attr)
       end
       # ------ Merge class attributes

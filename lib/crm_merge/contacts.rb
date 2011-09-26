@@ -44,7 +44,7 @@ module Merge
         end
 
         if FatFreeCRM::Plugin.list_ids.include?(:crm_super_tags)
-          master = merge_super_tags(self, master, ignored_attr[:super_tags] || {})
+          master = merge_super_tags(self, master, ignored_attr["tags"] || {})
         end
 
         if master.save!

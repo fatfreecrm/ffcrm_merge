@@ -27,7 +27,7 @@ module Merge
             custom_fields.include?(k)
           end
           # Remove ignored attributes as directed
-          (ignored_attr[tag.name.to_s.strip] || []).each {|k| merge_attributes.delete(k) }
+          (ignored_attr[tag.name.to_s.downcase] || []).each {|k| merge_attributes.delete(k) }
 
           # Update the master's custom field values with the dup's filtered values
           if master_customfields = master.send("tag#{tag.id}")

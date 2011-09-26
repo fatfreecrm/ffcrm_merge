@@ -15,16 +15,19 @@ ApplicationHelper.module_eval do
   # Generates a radio button for selecting which attributes
   # to ignore from the duplicate contact.
   # --------------------------------------------------------
-  def ignore_merge_radio_button(value, attribute, merge_case)
+  def ignore_merge_radio_button(value, attribute, merge_case, tag = nil)
     case merge_case
     when :master
       checked = value == "yes" ? {:checked => "checked"} : {}
     when :duplicate
       checked = value == "no"  ? {:checked => "checked"} : {}
     end
+    tag_name = tag.blank? ? "ignore[_self][#{attribute}]" : "ignore[tags][#{tag.downcase}][#{attribute}]"
+    tag_id = tag.blank? ? "ignore_self_#{attribute}_#{value}" : "ignore_tags_#{tag.downcase}_#{attribute}_#{value}"
+
     tag("input", {:type  => "radio",
-                  :name  => "ignore[#{attribute}]",
-                  :id    => "ignore_#{attribute}_#{value}",
+                  :name  => tag_name,
+                  :id    => tag_id,
                   :value => value
                   }.merge(checked))
   end
@@ -43,6 +46,20 @@ ApplicationHelper.module_eval do
       end
     end
     merge
+  end
+
+
+  # Merge attributes for custom fields
+  # --------------------------------------------------------
+  # Transforms the list of merge attributes into a display
+  # format (ie, with links / model associations), to be
+  # displayed in the merge selection table.
+  # --------------------------------------------------------
+  def custom_field_merge_attributes(tag, asset, html = true)
+    association = "tag#{tag.id}"
+    object = asset.send(association)
+    customfields = tag.customfields.sort{|a,b| (a.position || 0) <=> (b.position || 0) }
+    customfields.inject({}){|hash,custom| hash[custom.field_name] = custom.display_value(object); hash }
   end
 
 end

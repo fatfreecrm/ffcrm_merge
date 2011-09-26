@@ -20,8 +20,14 @@ ContactsController.class_eval do
   # PUT /contacts/1/merge/2                                                AJAX
   #----------------------------------------------------------------------------
   def merge
-    # Find which fields we want to ignore from the duplicate contact.
-    ignored_merge_fields = params[:ignore].select{|k,v| v == "yes" }.map{|a| a[0] }
+    # Prepare the fields we want to ignore from the duplicate contact.
+    ignored = {"_self" => params[:ignore]["_self"].select{|k,v| v == "yes" }.map{|k,v| k }}
+
+    # Prepare the custom fields we want to ignore from duplicate contact's supertags.
+    ignored["tags"] = {}
+    params[:ignore]["tags"].map do |tag, values|
+      ignored["tags"][tag] = values.select{|k,v| v == "yes" }.map{|k,v| k }
+    end
 
     @contact = Contact.my(@current_user).find(params[:id])
     @master_contact = Contact.my(@current_user).find(params[:master_id])
@@ -31,7 +37,7 @@ ContactsController.class_eval do
     c = [@contact, @master_contact]
     duplicate, master = @reverse_merge ? c.reverse : c
 
-    unless duplicate.merge_with(master, {:self => ignored_merge_fields})
+    unless duplicate.merge_with(master, ignored)
       @contact.errors.add_to_base(t('assets_merge_error', :assets => "contacts"))
     end
 
