@@ -25,8 +25,10 @@ ContactsController.class_eval do
 
     # Prepare the custom fields we want to ignore from duplicate contact's supertags.
     ignored["tags"] = {}
-    params[:ignore]["tags"].map do |tag, values|
-      ignored["tags"][tag] = values.select{|k,v| v == "yes" }.map{|k,v| k }
+    if params[:ignore]["tags"]
+      params[:ignore]["tags"].map do |tag, values|
+        ignored["tags"][tag] = values.select{|k,v| v == "yes" }.map{|k,v| k }
+      end
     end
 
     @contact = Contact.my(@current_user).find(params[:id])
