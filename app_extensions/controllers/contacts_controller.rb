@@ -21,7 +21,7 @@ ContactsController.class_eval do
   #----------------------------------------------------------------------------
   def merge
     # Prepare the fields we want to ignore from the duplicate contact.
-    ignored = {"_self" => params[:ignore]["_self"].select{|k,v| v == "yes" }.map{|k,v| k }}
+    ignored = {"_self" => params["ignore"]["_self"].select{|k,v| v == "yes" }.map{|k,v| k }}
 
     # Prepare the custom fields we want to ignore from duplicate contact's supertags.
     ignored["tags"] = {}

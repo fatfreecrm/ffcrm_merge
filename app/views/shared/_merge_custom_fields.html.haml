@@ -1,30 +1,32 @@
-- master.tags.select{|t| duplicate.tags.include?(t)}.each do |tag|
+- (master.tags + duplicate.tags).uniq.each do |tag|
   - if tag.customfields.any?
     - duplicate_attributes = custom_field_merge_attributes(tag, duplicate)
     - master_attributes    = custom_field_merge_attributes(tag, master)
     - default_merge        = calculate_default_merge(duplicate_attributes, master_attributes)
 
-    .section
-      %h2
-        = tag.name
-        Custom Fields
-      %table{ :cellpadding => "3px", :style => "text-align:left; border-collapse: collapse; border: none;" }
-        %tr
-          %th
-          %th{ :valign => :top, :style => "font-size: 13px;", :width => "40%" }
-            = "#{t(:duplicate_asset, :asset => t(:contact))}: #{duplicate.name}"
-          %th{ :valign => :top, :style => "font-size: 13px;", :width => "40%" }
-            = "#{t(:master_asset, :asset => t(:contact))}: #{master.name}"
-          - duplicate_attributes.keys.each do |attribute|
-            - duplicate_value, master_value = duplicate_attributes[attribute], master_attributes[attribute]
-            - unless duplicate_value.blank? and master_value.blank?
-              %tr{ :style => "border-bottom:1px dotted silver;"}
-                %th{ :width => "20%" }
-                  .label #{attribute.humanize}
-                %td
-                  = ignore_merge_radio_button("no",  attribute, default_merge[attribute], tag.name) unless duplicate_value.blank?
-                  .label{:style => "display: inline;"} #{duplicate_value}
-                %td
-                  = ignore_merge_radio_button("yes", attribute, default_merge[attribute], tag.name) unless master_value.blank?
-                  .label{:style => "display: inline;"} #{master_value}
+    - # Show section if any data is present in either tag
+    - if duplicate_attributes.keys.detect{ |k| duplicate_attributes[k].present? || !master_attributes[k].present? }
+      .section
+        %h2
+          = tag.name
+          Custom Fields
+        %table{ :cellpadding => "3px", :style => "text-align:left; border-collapse: collapse; border: none;" }
+          %tr
+            %th
+            %th{ :valign => :top, :style => "font-size: 13px;", :width => "40%" }
+              = "#{t(:duplicate_asset, :asset => t(:contact))}: #{duplicate.name}"
+            %th{ :valign => :top, :style => "font-size: 13px;", :width => "40%" }
+              = "#{t(:master_asset, :asset => t(:contact))}: #{master.name}"
+            - duplicate_attributes.keys.each do |attribute|
+              - duplicate_value, master_value = duplicate_attributes[attribute], master_attributes[attribute]
+              - unless duplicate_value.blank? and master_value.blank?
+                %tr{ :style => "border-bottom:1px dotted silver;"}
+                  %th{ :width => "20%" }
+                    .label #{attribute.humanize}
+                  %td
+                    = ignore_merge_radio_button("no",  attribute, default_merge[attribute], tag.name) unless duplicate_value.blank?
+                    .label{:style => "display: inline;"} #{duplicate_value}
+                  %td
+                    = ignore_merge_radio_button("yes", attribute, default_merge[attribute], tag.name) unless master_value.blank?
+                    .label{:style => "display: inline;"} #{master_value}
 
