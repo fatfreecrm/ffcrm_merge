@@ -3,8 +3,8 @@ en-US:
   # Merge
   #----------------------------------------------------------------------------
   merge: Merge
-  merge_into_info: Please select which fields you would like to merge
-  switch_duplicate_and_master: Duplicate &lt;==&gt; Master
+  merge_into_info: Please select which data you would like to merge
+  switch_duplicate_and_master: Reverse order (Duplicate &harr; Master)
   
   merge_assets: Merge %{assets}
   merge_asset_popup_label: Which %{asset} would you like to merge into?

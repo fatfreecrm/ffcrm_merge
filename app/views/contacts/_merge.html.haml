@@ -14,15 +14,16 @@
     = link_to_close edit_contact_path(@contact)
     = f.error_messages
     = hidden_field_tag(:reverse_merge, reverse_merge)
+    %h2 Merge "#{duplicate.name}" into "#{master.name}"
+    %h3
+      = link_to(t('switch_duplicate_and_master').html_safe, "#", :onclick => "crm.load_merge_form('contacts', '#{@master_contact.id}', '#{@contact.id}', #{!reverse_merge});")
     .subtitle{ :style => "width:95%; padding:3px;" }
       = t(:merge_into_info)
     .section
       #merge_into
         %table{ :cellpadding => "3px", :style => "text-align:left; border-collapse: collapse; border: none;" }
           %tr
-            %th
-              %small
-                = link_to(t('switch_duplicate_and_master').html_safe, "#", :onclick => "crm.load_merge_form('contacts', '#{@master_contact.id}', '#{@contact.id}', #{!reverse_merge});")
+            %th              
             %th{ :valign => :top, :style => "font-size: 13px;", :width => "40%" }
               = "#{t(:duplicate_asset, :asset => t(:contact))}: #{duplicate.name}"
             %th{ :valign => :top, :style => "font-size: 13px;", :width => "40%" }
@@ -42,6 +43,13 @@
 
     - if FatFreeCRM::Plugin.list_ids.include?(:crm_super_tags)
       = render :partial => "shared/merge_custom_fields", :locals => {:master => master, :duplicate => duplicate}
+
+    .section
+      %h2 Additonal data will also be merged
+      %ul
+        %li(style="list-style: disc inside") (<strong>#{duplicate.tasks.size}</strong>) tasks
+        %li(style="list-style: disc inside") (<strong>#{duplicate.emails.size}</strong>) emails
+        %li(style="list-style: disc inside") (<strong>#{duplicate.comments.size}</strong>) comments
 
     .buttonbar
       = f.submit t(:merge_assets, :assets => t(:contacts)), :onclick => "var check=confirm('#{t('confirm_assets_merge', :assets => t(:contacts))}'); if(!check){return false;};"
