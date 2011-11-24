@@ -69,7 +69,7 @@ ContactsController.class_eval do
       @auto_complete = @auto_complete.select{|a| !ignored_ids.include?(a.id) }
     end
     session[:auto_complete] = controller_name.to_sym
-    render :template => "common/auto_complete", :layout => nil
+    render :template => "shared/auto_complete", :layout => nil
   end
 
 
