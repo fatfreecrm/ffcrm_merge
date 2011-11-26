@@ -9,6 +9,3 @@ FatFreeCRM::Plugin.register(:crm_merge, self) do
 end
 
 require "crm_merge"
-
-Rails.configuration.middleware.insert_before ::Rack::Lock, ::ActionDispatch::Static, "#{root}/public"
-
