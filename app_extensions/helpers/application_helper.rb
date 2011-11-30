@@ -2,11 +2,10 @@ ApplicationHelper.module_eval do
 
   # Adds 'edit_action => merge' to 'link_to_edit' generator.
   def link_to_merge(contact)
-    link_to_remote(t(:merge),
-      :method => :get,
-      :url    => send("edit_contact_path", contact),
-      :with   => %Q"{ previous: crm.find_form('edit_contact'),
-                      edit_action: 'merge' }"
+    link_to(t(:merge),
+      send("edit_contact_path", contact),
+      :remote  => true,
+      :onclick => "this.href += '?edit_action=merge&previous='+ crm.find_form('edit_#{name}');"
     )
   end
 
