@@ -102,7 +102,7 @@ ContactsController.class_eval do
       @stage = Setting.unroll(:opportunity_stage)
       @comment = Comment.new
 
-      @timeline = Timeline.find(@contact)
+      @timeline = timeline(@contact)
 
       respond_to do |format|
         format.html # show.html.erb

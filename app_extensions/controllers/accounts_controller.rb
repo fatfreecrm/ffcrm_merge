@@ -93,7 +93,7 @@ AccountsController.class_eval do
       @stage = Setting.unroll(:opportunity_stage)
       @comment = Comment.new
 
-      @timeline = Timeline.find(@account)
+      @timeline = timeline(@account)
 
       respond_to do |format|
         format.html # show.html.erb
