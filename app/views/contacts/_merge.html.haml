@@ -23,7 +23,7 @@
       #merge_into
         %table{ :cellpadding => "3px", :style => "text-align:left; border-collapse: collapse; border: none;" }
           %tr
-            %th              
+            %th
             %th{ :valign => :top, :style => "font-size: 13px;", :width => "40%" }
               = "#{t(:duplicate_asset, :asset => t(:contact))}: #{duplicate.name}"
             %th{ :valign => :top, :style => "font-size: 13px;", :width => "40%" }
@@ -41,8 +41,7 @@
                     = ignore_merge_radio_button("yes", attribute, default_merge[attribute]) unless master_value.blank?
                     .label{:style => "display: inline;"} #{master_value}
 
-    - if FatFreeCRM::Plugin.list_ids.include?(:crm_super_tags)
-      = render :partial => "shared/merge_custom_fields", :locals => {:master => master, :duplicate => duplicate}
+    = render :partial => "shared/merge_custom_fields", :locals => {:master => master, :duplicate => duplicate}
 
     .section
       %h2 Additional data will also be merged

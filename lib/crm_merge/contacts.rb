@@ -1,6 +1,5 @@
 module Merge
   module Contacts
-    include Merge::SuperTags
     # Call this method on the duplicate contact, to merge it
     # into the master contact.
     # All attributes from 'self' are default, unless defined in options.
@@ -43,9 +42,9 @@ module Merge
           end
         end
 
-        if FatFreeCRM::Plugin.list_ids.include?(:crm_super_tags)
-          master = merge_super_tags(self, master, ignored_attr["tags"] || {})
-        end
+        # Merge tags
+        all_tags = (self.tags + master.tags).uniq
+        master.tag_list = all_tags.map(&:name).join(", ")
 
         if master.save!
           # Update any existing aliases that were pointing to the duplicate record

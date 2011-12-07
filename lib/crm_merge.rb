@@ -1,4 +1,3 @@
-require 'crm_merge/super_tags'
 require 'crm_merge/merge_view_hooks'
 require 'crm_merge/accounts'
 require 'crm_merge/contacts'

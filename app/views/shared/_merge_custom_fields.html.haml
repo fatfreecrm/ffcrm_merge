@@ -1,14 +1,14 @@
-- (master.tags + duplicate.tags).uniq.each do |tag|
-  - if tag.customfields.any?
-    - duplicate_attributes = custom_field_merge_attributes(tag, duplicate)
-    - master_attributes    = custom_field_merge_attributes(tag, master)
+- (master.field_groups + duplicate.field_groups).uniq.each do |field_group|
+  - if field_group.custom_fields.any?
+    - duplicate_attributes = custom_field_merge_attributes(field_group, duplicate)
+    - master_attributes    = custom_field_merge_attributes(field_group, master)
     - default_merge        = calculate_default_merge(duplicate_attributes, master_attributes)
 
     - # Show section if any data is present in either tag
     - if duplicate_attributes.keys.detect{ |k| duplicate_attributes[k].present? || !master_attributes[k].present? }
       .section
         %h2
-          = tag.name
+          = field_group.label
           Custom Fields
         %h3 Only fields that contain data are shown.
         %br

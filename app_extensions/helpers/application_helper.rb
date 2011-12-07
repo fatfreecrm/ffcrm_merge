@@ -54,11 +54,9 @@ ApplicationHelper.module_eval do
   # format (ie, with links / model associations), to be
   # displayed in the merge selection table.
   # --------------------------------------------------------
-  def custom_field_merge_attributes(tag, asset, html = true)
-    association = "tag#{tag.id}"
-    object = asset.send(association)
-    customfields = tag.customfields.sort{|a,b| (a.position || 0) <=> (b.position || 0) }
-    customfields.inject({}){|hash,custom| hash[custom.field_name] = custom.display_value(object); hash }
+  def custom_field_merge_attributes(field_group, object, html = true)
+    custom_fields = field_group.custom_fields.sort_by(&:position)
+    custom_fields.inject({}){ |hash, field| hash[field.name] = display_value(object, field); hash }
   end
 
 end
