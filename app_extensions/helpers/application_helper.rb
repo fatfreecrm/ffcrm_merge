@@ -5,7 +5,7 @@ ApplicationHelper.module_eval do
     link_to(t(:merge),
       send("edit_contact_path", contact),
       :remote  => true,
-      :onclick => "this.href += '?edit_action=merge&previous='+ crm.find_form('edit_#{name}');"
+      :onclick => "this.href += '?edit_action=merge&previous='+ crm.find_form('edit_contact');"
     )
   end
 
@@ -14,21 +14,13 @@ ApplicationHelper.module_eval do
   # Generates a radio button for selecting which attributes
   # to ignore from the duplicate contact.
   # --------------------------------------------------------
-  def ignore_merge_radio_button(value, attribute, merge_case, tag = nil)
+  def ignore_merge_radio_button(value, attribute, merge_case)
     case merge_case
     when :master
       checked = value == "yes" ? {:checked => "checked"} : {}
     when :duplicate
       checked = value == "no"  ? {:checked => "checked"} : {}
     end
-    tag_name = tag.blank? ? "ignore[_self][#{attribute}]" : "ignore[tags][#{tag.downcase}][#{attribute}]"
-    tag_id = tag.blank? ? "ignore_self_#{attribute}_#{value}" : "ignore_tags_#{tag.downcase}_#{attribute}_#{value}"
-
-    tag("input", {:type  => "radio",
-                  :name  => tag_name,
-                  :id    => tag_id,
-                  :value => value
-                  }.merge(checked))
   end
 
   # Returns a hash with default merge attributes for radio buttons.

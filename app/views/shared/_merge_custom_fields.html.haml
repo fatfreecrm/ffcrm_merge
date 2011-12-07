@@ -4,7 +4,6 @@
     - master_attributes    = custom_field_merge_attributes(field_group, master)
     - default_merge        = calculate_default_merge(duplicate_attributes, master_attributes)
 
-    - # Show section if any data is present in either tag
     - if duplicate_attributes.keys.detect{ |k| duplicate_attributes[k].present? || !master_attributes[k].present? }
       .section
         %h2
@@ -26,9 +25,9 @@
                   %th{ :width => "20%" }
                     .label #{attribute.humanize}
                   %td
-                    = ignore_merge_radio_button("no",  attribute, default_merge[attribute], tag.name) unless duplicate_value.blank?
+                    = ignore_merge_radio_button("no",  attribute, default_merge[attribute]) unless duplicate_value.blank?
                     .label{:style => "display: inline;"} #{duplicate_value}
                   %td
-                    = ignore_merge_radio_button("yes", attribute, default_merge[attribute], tag.name) unless master_value.blank?
+                    = ignore_merge_radio_button("yes", attribute, default_merge[attribute]) unless master_value.blank?
                     .label{:style => "display: inline;"} #{master_value}
 
