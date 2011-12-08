@@ -21,6 +21,13 @@ ApplicationHelper.module_eval do
     when :duplicate
       checked = value == "no"  ? {:checked => "checked"} : {}
     end
+
+    tag(:input, {
+      :type  => "radio",
+      :name  => "ignore[_self][#{attribute}]",
+      :id    => "ignore_self_#{attribute}_#{value}",
+      :value => value
+    }.merge(checked))
   end
 
   # Returns a hash with default merge attributes for radio buttons.
