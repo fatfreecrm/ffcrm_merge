@@ -48,7 +48,7 @@ ApplicationHelper.module_eval do
   # --------------------------------------------------------
   def custom_field_merge_attributes(field_group, object, html = true)
     custom_fields = field_group.custom_fields.sort_by(&:position)
-    custom_fields.inject({}){ |hash, field| hash[field.name] = display_value(object, field); hash }
+    custom_fields.inject({}){ |hash, field| hash[field.name] = field.render_value(object); hash }
   end
 
 end
