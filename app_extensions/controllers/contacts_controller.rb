@@ -63,15 +63,19 @@ ContactsController.class_eval do
     else
       @auto_complete = @auto_complete.last
     end
+    
     # Filter out ignored contact(s) if param was given.
     if params[:ignored]
       ignored_ids = params[:ignored].split(",").map{|i| i.to_i }
       @auto_complete = @auto_complete.select{|a| !ignored_ids.include?(a.id) }
     end
+    
     session[:auto_complete] = controller_name.to_sym
-    render :template => "shared/auto_complete", :layout => nil
+    respond_to do |format|
+      format.js   { render "shared/auto_complete", :layout => nil }
+      format.json { render :json => @auto_complete.inject({}){|h,a| h[a.id] = a.name; h } }
+    end
   end
-
 
   # GET /contacts/1/edit                                                   AJAX
   #----------------------------------------------------------------------------
