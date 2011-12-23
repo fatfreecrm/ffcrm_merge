@@ -61,7 +61,10 @@ AccountsController.class_eval do
       @auto_complete = @auto_complete.select{|a| !ignored_ids.include?(a.id) }
     end
     session[:auto_complete] = controller_name.to_sym
-    render :template => "shared/auto_complete", :layout => nil
+    respond_to do |format|
+      format.js   { render "shared/auto_complete", :layout => nil }
+      format.json { render :json => @auto_complete.inject({}){|h,a| h[a.id] = a.name; h } }
+    end
   end
 
 
