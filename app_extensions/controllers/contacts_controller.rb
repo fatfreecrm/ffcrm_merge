@@ -72,7 +72,7 @@ ContactsController.class_eval do
     
     session[:auto_complete] = controller_name.to_sym
     respond_to do |format|
-      format.js   { render "shared/auto_complete", :layout => nil }
+      format.any(:js, :html)   { render "shared/auto_complete", :layout => nil }
       format.json { render :json => @auto_complete.inject({}){|h,a| h[a.id] = a.name; h } }
     end
   end
