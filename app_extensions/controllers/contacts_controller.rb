@@ -59,17 +59,17 @@ ContactsController.class_eval do
     @query = params[:auto_complete_query]
     @auto_complete = hook(:auto_complete, self, :query => @query, :user => @current_user)
     if @auto_complete.empty?
-      @auto_complete = controller_name.classify.constantize.my.search(@query).limit(params[:limit] || 10)
+      @auto_complete = controller_name.classify.constantize.my.text_search(@query).limit(params[:limit] || 10)
     else
       @auto_complete = @auto_complete.last
     end
-    
+
     # Filter out ignored contact(s) if param was given.
     if params[:ignored]
       ignored_ids = params[:ignored].split(",").map{|i| i.to_i }
       @auto_complete = @auto_complete.select{|a| !ignored_ids.include?(a.id) }
     end
-    
+
     session[:auto_complete] = controller_name.to_sym
     respond_to do |format|
       format.any(:js, :html)   { render "shared/auto_complete", :layout => nil }
