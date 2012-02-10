@@ -1,6 +1,6 @@
 module ::FatFreeCrmMerge
   class Engine < Rails::Engine
-    initializer "ffcrm_merge.boot" do
+    config.to_prepare do
       require 'find'
       
       Find.find(File.join(File.dirname(__FILE__), 'extensions')) do |file|
