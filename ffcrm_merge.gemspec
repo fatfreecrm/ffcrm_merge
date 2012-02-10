@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.summary = 'Fat Free CRM - Merge Contacts & Accounts'
   s.description = 'Fat Free CRM - Merge Contacts & Accounts'
   s.files = `git ls-files`.split("\n")
-  s.version = FatFreeCrmMerge::VERSION
+  s.version = FatFreeCRM::Merge::VERSION
 
   s.add_development_dependency 'rspec-rails', '~> 2.6'
   s.add_development_dependency 'capybara'

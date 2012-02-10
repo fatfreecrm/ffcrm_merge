@@ -1,4 +1,4 @@
-module ::FatFreeCrmMerge
+module FatFreeCRM::Merge
   class Engine < Rails::Engine
     config.to_prepare do
       require 'find'
