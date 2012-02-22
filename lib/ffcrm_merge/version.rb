@@ -1,3 +1,5 @@
-module FatFreeCRM::Merge
-  VERSION = '1.2'
+module FatFreeCRM
+  module Merge
+    VERSION = '1.2'
+  end
 end
