@@ -57,7 +57,7 @@ module Merge
                                  :destroyed_contact_id => self.id)
             # Must force a reload of the contact, and shake off all migrated assets.
             self.reload
-            self.destroy!
+            self.destroy
           end
         end
       end

@@ -55,7 +55,7 @@ module Merge
                                :destroyed_account_id => self.id)
           # Must force a reload of the account, and shake off all migrated assets.
           self.reload
-          self.destroy!
+          self.destroy
           return true
         end
       else
