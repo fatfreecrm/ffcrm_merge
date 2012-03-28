@@ -1,3 +1,5 @@
-= link_to(t('merge'), "#", :id => "merge_contact_#{contact.id}", 'data-merge' => "contact_#{contact.id}") + " | "
+- if can?(:update, contact)
 
-= javascript_tag "crm.merge_link($('merge_contact_#{contact.id}'));" if request.xhr?
+  %li= link_to(t('merge'), "#", :id => "merge_contact_#{contact.id}", 'data-merge' => dom_id(contact))
+
+  = javascript_tag "crm.merge_link($('merge_contact_#{contact.id}'));" if request.xhr?

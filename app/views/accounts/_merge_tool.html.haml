@@ -1,3 +1,5 @@
-= link_to(t('merge'), "#", :id => "merge_account_#{account.id}", 'data-merge' => "account_#{account.id}") + " | "
+- if can?(:update, account)
 
-= javascript_tag "crm.merge_link($('merge_account_#{account.id}'));" if request.xhr?
+  %li= link_to(t('merge'), "#", :id => "merge_account_#{account.id}", 'data-merge' => dom_id(account))
+
+  = javascript_tag "crm.merge_link($('merge_account_#{account.id}'));" if request.xhr?
