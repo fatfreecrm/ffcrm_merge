@@ -23,8 +23,8 @@ AccountsController.class_eval do
     # Find which fields we want to ignore from the duplicate account.
     ignored_merge_fields = params[:ignore].select{|k,v| v == "yes" }.map{|a| a[0] }
 
-    @account = Account.my(@current_user).find(params[:id])
-    @master_account = Account.my(@current_user).find(params[:master_id])
+    @account = Account.my.find(params[:id])
+    @master_account = Account.my.find(params[:master_id])
 
     # Reverse the master and duplicate if :reverse_merge is true
     @reverse_merge = params[:reverse_merge] == "true" ? true : false
@@ -71,14 +71,14 @@ AccountsController.class_eval do
   # GET /accounts/1/edit                                                   AJAX
   #----------------------------------------------------------------------------
   def edit
-    @account  = Account.my(@current_user).find(params[:id])
+    @account  = Account.my.find(params[:id])
 
     # 'master_account' lookup for a merge request.
-    @master_account = Account.my(@current_user).find(params[:merge_into]) if params[:merge_into]
+    @master_account = Account.my.find(params[:merge_into]) if params[:merge_into]
 
     @users    = User.except(@current_user).all
     if params[:previous].to_s =~ /(\d+)\z/
-      @previous = Account.my(@current_user).find($1)
+      @previous = Account.my.find($1)
     end
 
   rescue ActiveRecord::RecordNotFound
@@ -92,7 +92,7 @@ AccountsController.class_eval do
   #----------------------------------------------------------------------------
   def show_with_alias_fallback
     if account_alias = AccountAlias.find_by_destroyed_account_id(params[:id])
-      @account = Account.my(@current_user).find(account_alias.account_id)
+      @account = Account.my.find(account_alias.account_id)
       @stage = Setting.unroll(:opportunity_stage)
       @comment = Comment.new
 
@@ -116,7 +116,7 @@ AccountsController.class_eval do
   # PUT /accounts/1.xml                                                    AJAX
   #----------------------------------------------------------------------------
   def update
-    @account = Account.my(@current_user).find(account_alias_or_default(params[:id]))
+    @account = Account.my.find(account_alias_or_default(params[:id]))
 
     respond_to do |format|
       if @account.update_with_permissions(params[:account], params[:users])

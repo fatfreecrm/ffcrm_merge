@@ -31,8 +31,8 @@ ContactsController.class_eval do
       end
     end
 
-    @contact = Contact.my(@current_user).find(params[:id])
-    @master_contact = Contact.my(@current_user).find(params[:master_id])
+    @contact = Contact.my.find(params[:id])
+    @master_contact = Contact.my.find(params[:master_id])
 
     # Reverse the master and duplicate if :reverse_merge is true
     @reverse_merge = params[:reverse_merge] == "true" ? true : false
@@ -80,16 +80,16 @@ ContactsController.class_eval do
   # GET /contacts/1/edit                                                   AJAX
   #----------------------------------------------------------------------------
   def edit
-    @contact  = Contact.my(@current_user).find(params[:id])
+    @contact  = Contact.my.find(params[:id])
 
     # 'master_contact' lookup for a merge request.
-    @master_contact = Contact.my(@current_user).find(params[:merge_into]) if params[:merge_into]
+    @master_contact = Contact.my.find(params[:merge_into]) if params[:merge_into]
 
     @users    = User.except(@current_user).all
     @account  = @contact.account || Account.new(:user => @current_user)
-    @accounts = Account.my(@current_user).all(:order => "name")
+    @accounts = Account.my.all(:order => "name")
     if params[:previous].to_s =~ /(\d+)\z/
-      @previous = Contact.my(@current_user).find($1)
+      @previous = Contact.my.find($1)
     end
 
   rescue ActiveRecord::RecordNotFound
@@ -102,7 +102,7 @@ ContactsController.class_eval do
   #----------------------------------------------------------------------------
   def show_with_alias_fallback
     if contact_alias = ContactAlias.find_by_destroyed_contact_id(params[:id])
-      @contact = Contact.my(@current_user).find(contact_alias.contact_id)
+      @contact = Contact.my.find(contact_alias.contact_id)
       @stage = Setting.unroll(:opportunity_stage)
       @comment = Comment.new
 
@@ -126,7 +126,7 @@ ContactsController.class_eval do
   # PUT /contacts/1.xml                                                    AJAX
   #----------------------------------------------------------------------------
   def update
-    @contact = Contact.my(@current_user).find(contact_alias_or_default(params[:id]))
+    @contact = Contact.my.find(contact_alias_or_default(params[:id]))
 
     respond_to do |format|
       if @contact.update_with_account_and_permissions(params)
@@ -134,7 +134,7 @@ ContactsController.class_eval do
         format.xml  { head :ok }
       else
         @users = User.except(@current_user).all
-        @accounts = Account.my(@current_user).all(:order => "name")
+        @accounts = Account.my.all(:order => "name")
         if @contact.account
           @account = Account.find(@contact.account.id)
         else
