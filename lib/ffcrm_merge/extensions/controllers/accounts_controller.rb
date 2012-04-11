@@ -44,30 +44,6 @@ AccountsController.class_eval do
   end
 
 
-  # Overwrite auto_complete just for AccountsController,
-  # giving the ability to ignore specific account ids.
-  #----------------------------------------------------
-  def auto_complete
-    @query = params[:auto_complete_query]
-    @auto_complete = hook(:auto_complete, self, :query => @query, :user => @current_user)
-    if @auto_complete.empty?
-      @auto_complete = controller_name.classify.constantize.my(:user => @current_user, :limit => 10).text_search(@query)
-    else
-      @auto_complete = @auto_complete.last
-    end
-    # Filter out ignored account(s) if param was given.
-    if params[:ignored]
-      ignored_ids = params[:ignored].split(",").map{|i| i.to_i }
-      @auto_complete = @auto_complete.select{|a| !ignored_ids.include?(a.id) }
-    end
-    session[:auto_complete] = controller_name.to_sym
-    respond_to do |format|
-      format.any(:js, :html)   { render "shared/auto_complete", :layout => nil }
-      format.json { render :json => @auto_complete.inject({}){|h,a| h[a.id] = a.name; h } }
-    end
-  end
-
-
   # GET /accounts/1/edit                                                   AJAX
   #----------------------------------------------------------------------------
   def edit
