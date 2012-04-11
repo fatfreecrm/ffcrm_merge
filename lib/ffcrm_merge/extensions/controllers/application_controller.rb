@@ -17,7 +17,7 @@
 
 ApplicationController.class_eval do
 
-  # Overwrite auto_complete just for ContactsController,
+  # Overwrite auto_complete
   # giving the ability to ignore specific contact ids.
   #----------------------------------------------------
   def auto_complete
