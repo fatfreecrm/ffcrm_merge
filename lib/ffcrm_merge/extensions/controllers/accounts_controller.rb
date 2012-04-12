@@ -23,7 +23,6 @@ AccountsController.class_eval do
     # Find which fields we want to ignore from the duplicate account.
     ignored_merge_fields = params[:ignore].select{|k,v| v == "yes" }.map{|a| a[0] }
 
-    @account = Account.my.find(params[:id])
     @master_account = Account.my.find(params[:master_id])
 
     # Reverse the master and duplicate if :reverse_merge is true
@@ -35,93 +34,34 @@ AccountsController.class_eval do
       @account.errors.add_to_base(t('assets_merge_error', :assets => "accounts"))
     end
 
-    respond_to do |format|
-      format.js
-    end
-
-    rescue ActiveRecord::RecordNotFound
-      respond_to_not_found(:js, :xml)
+    get_data_for_sidebar
+    respond_with(@account)
   end
 
 
   # GET /accounts/1/edit                                                   AJAX
   #----------------------------------------------------------------------------
   def edit
-    @account  = Account.my.find(params[:id])
-
     # 'master_account' lookup for a merge request.
     @master_account = Account.my.find(params[:merge_into]) if params[:merge_into]
 
-    @users    = User.except(@current_user).all
+    @users = User.except(@current_user)
     if params[:previous].to_s =~ /(\d+)\z/
-      @previous = Account.my.find($1)
+      @previous = Account.my.find_by_id($1) || $1.to_i
     end
 
-  rescue ActiveRecord::RecordNotFound
-    @previous ||= $1.to_i
-    respond_to_not_found(:js) unless @account
-  end
-
-
-  # GET /accounts/1
-  # GET /accounts/1.xml                                                    HTML
-  #----------------------------------------------------------------------------
-  def show_with_alias_fallback
-    if account_alias = AccountAlias.find_by_destroyed_account_id(params[:id])
-      @account = Account.my.find(account_alias.account_id)
-      @stage = Setting.unroll(:opportunity_stage)
-      @comment = Comment.new
-
-      @timeline = timeline(@account)
-
-      respond_to do |format|
-        format.html # show.html.erb
-        format.xml  { render :xml => @account }
-      end
-    else
-      # Falls back to original controller method if account is not destroyed
-      show_without_alias_fallback
-    end
-  rescue ActiveRecord::RecordNotFound
-    respond_to_not_found(:html, :xml)
-  end
-  alias_method_chain :show, :alias_fallback
-
-
-  # PUT /accounts/1
-  # PUT /accounts/1.xml                                                    AJAX
-  #----------------------------------------------------------------------------
-  def update
-    @account = Account.my.find(account_alias_or_default(params[:id]))
-
-    respond_to do |format|
-      if @account.update_with_permissions(params[:account], params[:users])
-        get_data_for_sidebar
-        format.js
-        format.xml  { head :ok }
-      else
-        @users = User.except(@current_user).all
-        format.js
-        format.xml  { render :xml => @account.errors, :status => :unprocessable_entity }
-      end
-    end
-
-  rescue ActiveRecord::RecordNotFound
-    respond_to_not_found(:js, :xml)
+    respond_with(@account)
   end
 
   private
 
-  # Looks up the AccountAlias table to see if the requested id
-  # matches a previously merged account.
-  # Returns the new id if it does,
-  def account_alias_or_default(account_id)
-    if account_alias = AccountAlias.find_by_destroyed_account_id(account_id)
-      account_alias.account_id
+  #----------------------------------------------------------------------------
+  def respond_to_not_found_with_merged(*types)
+    if account_alias = AccountAlias.find_by_destroyed_account_id(params[:id])
+      redirect_to :id => account_alias.account_id
     else
-      account_id
+      respond_to_not_found_without_merged
     end
   end
-
+  alias_method_chain :respond_to_not_found, :merged
 end
-

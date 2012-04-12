@@ -21,17 +21,16 @@ ContactsController.class_eval do
   #----------------------------------------------------------------------------
   def merge
     # Prepare the fields we want to ignore from the duplicate contact.
-    ignored = {"_self" => params["ignore"]["_self"].select{|k,v| v == "yes" }.map{|k,v| k }}
+    ignored = {"_self" => params["ignore"]["_self"].map{|k,v| k if v == "yes" }.compact}
 
     # Prepare the custom fields we want to ignore from duplicate contact's supertags.
     ignored["tags"] = {}
     if params[:ignore]["tags"]
       params[:ignore]["tags"].map do |tag, values|
-        ignored["tags"][tag] = values.select{|k,v| v == "yes" }.map{|k,v| k }
+        ignored["tags"][tag] = values.map{|k,v| k if v == "yes" }.compact
       end
     end
 
-    @contact = Contact.my.find(params[:id])
     @master_contact = Contact.my.find(params[:master_id])
 
     # Reverse the master and duplicate if :reverse_merge is true
@@ -42,100 +41,30 @@ ContactsController.class_eval do
     unless duplicate.merge_with(master, ignored)
       @contact.errors.add_to_base(t('assets_merge_error', :assets => "contacts"))
     end
-
-    respond_to do |format|
-      format.js
-    end
-
-    rescue ActiveRecord::RecordNotFound
-      respond_to_not_found(:js, :xml)
   end
 
 
   # GET /contacts/1/edit                                                   AJAX
   #----------------------------------------------------------------------------
   def edit
-    @contact  = Contact.my.find(params[:id])
-
     # 'master_contact' lookup for a merge request.
     @master_contact = Contact.my.find(params[:merge_into]) if params[:merge_into]
 
-    @users    = User.except(@current_user).all
-    @account  = @contact.account || Account.new(:user => @current_user)
-    @accounts = Account.my.all(:order => "name")
+    @account = @contact.account || Account.new(:user => current_user)
     if params[:previous].to_s =~ /(\d+)\z/
-      @previous = Contact.my.find($1)
+      @previous = Contact.my.find_by_id($1) || $1.to_i
     end
 
-  rescue ActiveRecord::RecordNotFound
-    @previous ||= $1.to_i
-    respond_to_not_found(:js) unless @contact
+    respond_with(@contact)
   end
 
-  # GET /contacts/1
-  # GET /contacts/1.xml                                                    HTML
   #----------------------------------------------------------------------------
-  def show_with_alias_fallback
+  def respond_to_not_found_with_merged(*types)
     if contact_alias = ContactAlias.find_by_destroyed_contact_id(params[:id])
-      @contact = Contact.my.find(contact_alias.contact_id)
-      @stage = Setting.unroll(:opportunity_stage)
-      @comment = Comment.new
-
-      @timeline = timeline(@contact)
-
-      respond_to do |format|
-        format.html # show.html.erb
-        format.xml  { render :xml => @contact }
-      end
+      redirect_to :id => contact_alias.contact_id
     else
-      # Falls back to original controller method if account is not destroyed
-      show_without_alias_fallback
-    end
-  rescue ActiveRecord::RecordNotFound
-    respond_to_not_found(:html, :xml)
-  end
-  alias_method_chain :show, :alias_fallback
-
-
-  # PUT /contacts/1
-  # PUT /contacts/1.xml                                                    AJAX
-  #----------------------------------------------------------------------------
-  def update
-    @contact = Contact.my.find(contact_alias_or_default(params[:id]))
-
-    respond_to do |format|
-      if @contact.update_with_account_and_permissions(params)
-        format.js
-        format.xml  { head :ok }
-      else
-        @users = User.except(@current_user).all
-        @accounts = Account.my.all(:order => "name")
-        if @contact.account
-          @account = Account.find(@contact.account.id)
-        else
-          @account = Account.new(:user => @current_user)
-        end
-        format.js
-        format.xml  { render :xml => @contact.errors, :status => :unprocessable_entity }
-      end
-    end
-
-  rescue ActiveRecord::RecordNotFound
-    respond_to_not_found(:js, :xml)
-  end
-
-  private
-
-  # Looks up the ContactAlias table to see if the requested id
-  # matches a previously merged contact.
-  # Returns the new id if it does,
-  def contact_alias_or_default(contact_id)
-    if contact_alias = ContactAlias.find_by_destroyed_contact_id(contact_id)
-      contact_alias.contact_id
-    else
-      contact_id
+      respond_to_not_found_without_merged
     end
   end
-
+  alias_method_chain :respond_to_not_found, :merged
 end
-
