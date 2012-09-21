@@ -1,5 +1,5 @@
 - (master.field_groups + duplicate.field_groups).uniq.each do |field_group|
-  - if field_group.custom_fields.any?
+  - if field_group.fields.any?
     - duplicate_attributes = custom_field_merge_attributes(field_group, duplicate)
     - master_attributes    = custom_field_merge_attributes(field_group, master)
     - default_merge        = calculate_default_merge(duplicate_attributes, master_attributes)
@@ -29,4 +29,3 @@
                   %td
                     = ignore_merge_radio_button("yes", attribute, default_merge[attribute]) unless master_value.blank?
                     .label{:style => "display: inline;"} #{master_value}
-

@@ -54,9 +54,8 @@ ApplicationHelper.module_eval do
   # displayed in the merge selection table.
   # --------------------------------------------------------
   def custom_field_merge_attributes(field_group, object, html = true)
-    custom_fields = field_group.custom_fields.sort_by(&:position)
+    custom_fields = field_group.fields.sort_by(&:position)
     custom_fields.inject({}){ |hash, field| hash[field.name] = field.render_value(object); hash }
   end
 
 end
-
