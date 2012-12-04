@@ -4,17 +4,15 @@ id = called_from_landing_page? ? "edit_contact" : dom_id(@contact)
 master_id = dom_id(@master_contact)
 
 if @contact.errors.empty?
+  # If successful, and a reverse_merge has been done,
+  # reverse which elements to update on the page.
+  c = [@contact, @master_contact]
+  duplicate, master = @reverse_merge ? c.reverse : c
+  dup_id, master_id = dom_id(duplicate), dom_id(master)
+  
   if called_from_landing_page?
-    page.call "crm.flip_form", :edit_contact
-    page.call "crm.set_title", :edit_contact, @contact.full_name
-    page << refresh_sidebar(:show, :summary)
+    page.redirect_to url_for(master)
   else
-    # If successful, and a reverse_merge has been done,
-    # reverse which elements to update on the page.
-    c = [@contact, @master_contact]
-    duplicate, master = @reverse_merge ? c.reverse : c
-    dup_id, master_id = dom_id(duplicate), dom_id(master)
-
     # Remove the duplicate contact if it exists on the page.
     page << "if($('#{dup_id}')){"
       page[dup_id].remove
@@ -35,4 +33,3 @@ else
   page[id].replace_html :partial => "merge"
   page[id].visual_effect :shake, :duration => 0.25, :distance => 6
 end
-

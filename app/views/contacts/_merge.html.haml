@@ -46,6 +46,7 @@
     .section
       %h2 Additional data will also be merged
       %ul
+        %li(style="list-style: disc inside") (<strong>#{AccountContact.where(:contact_id => duplicate.id).count}</strong>) accounts
         %li(style="list-style: disc inside") (<strong>#{duplicate.tasks.size}</strong>) tasks
         %li(style="list-style: disc inside") (<strong>#{duplicate.emails.size}</strong>) emails
         %li(style="list-style: disc inside") (<strong>#{duplicate.comments.size}</strong>) comments
@@ -54,4 +55,3 @@
       = f.submit t(:merge_assets, :assets => t(:contacts)), :onclick => "var check=confirm('#{t('confirm_assets_merge', :assets => t(:contacts))}'); if(!check){return false;};"
       #{t :or}
       = link_to_cancel edit_contact_path(@contact)
-

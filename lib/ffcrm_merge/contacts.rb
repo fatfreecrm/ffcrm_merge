@@ -19,7 +19,7 @@ module Merge
         # ------ Merge class attributes
         master.update_attributes(merge_attr)
         # ------ Merge 'belongs_to' and 'has_one' associations
-        %w(user lead assignee account business_address).each do |attr|
+        %w(user lead assignee business_address).each do |attr|
           unless ignored_attr.include?(attr)
             master.send(attr + "=", self.send(attr))
           end
@@ -34,6 +34,15 @@ module Merge
         self.comments.each do |c|
           c.commentable = master; c.save!
         end
+
+        # Find all AccountContact records with the duplicate contact,
+        # and only add the master contact if it is not already added to the account.
+        AccountContact.find_all_by_contact_id(self.id).each do |ac|
+          unless ac.account.contacts.include?(master)
+            ac.contact_id = master.id; ac.save!
+          end
+        end
+        
         # Find all ContactOpportunity records with the duplicate contact,
         # and only add the master contact if it is not already added to the opportunity.
         ContactOpportunity.find_all_by_contact_id(self.id).each do |co|
@@ -76,4 +85,3 @@ module Merge
 
   end
 end
-

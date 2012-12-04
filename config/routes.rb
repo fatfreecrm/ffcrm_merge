@@ -9,5 +9,10 @@ Rails.application.routes.draw do
           :controller => 'accounts',
           :action => 'merge',
           :as => :merge_account
+          
+  match '/contacts/:id/showmerge/:master_id',
+          :controller => 'merge',
+          :action => 'showmerge',
+          :as => :showmerge_contact
 
 end

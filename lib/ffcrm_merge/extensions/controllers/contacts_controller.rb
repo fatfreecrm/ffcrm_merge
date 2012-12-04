@@ -42,8 +42,7 @@ ContactsController.class_eval do
       @contact.errors.add_to_base(t('assets_merge_error', :assets => "contacts"))
     end
   end
-
-
+  
   # GET /contacts/1/edit                                                   AJAX
   #----------------------------------------------------------------------------
   def edit
