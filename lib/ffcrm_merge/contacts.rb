@@ -19,7 +19,7 @@ module Merge
         # ------ Merge class attributes
         master.update_attributes(merge_attr)
         # ------ Merge 'belongs_to' and 'has_one' associations
-        %w(user lead assignee business_address).each do |attr|
+        %w(user lead assignee).each do |attr|
           unless ignored_attr.include?(attr)
             master.send(attr + "=", self.send(attr))
           end
@@ -34,6 +34,9 @@ module Merge
         self.comments.each do |c|
           c.commentable = master; c.save!
         end
+
+        # Copy addresses over
+        self.addresses.each{|a| a.addressable = master; a.save!}
 
         # Find all AccountContact records with the duplicate contact,
         # and only add the master contact if it is not already added to the account.

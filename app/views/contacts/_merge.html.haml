@@ -50,6 +50,7 @@
         %li(style="list-style: disc inside") (<strong>#{duplicate.tasks.size}</strong>) tasks
         %li(style="list-style: disc inside") (<strong>#{duplicate.emails.size}</strong>) emails
         %li(style="list-style: disc inside") (<strong>#{duplicate.comments.size}</strong>) comments
+        %li(style="list-style: disc inside") (<strong>#{duplicate.addresses.size}</strong>) addresses
 
     .buttonbar
       = f.submit t(:merge_assets, :assets => t(:contacts)), :onclick => "var check=confirm('#{t('confirm_assets_merge', :assets => t(:contacts))}'); if(!check){return false;};"
