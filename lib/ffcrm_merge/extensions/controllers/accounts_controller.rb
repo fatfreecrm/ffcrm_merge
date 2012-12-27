@@ -45,7 +45,6 @@ AccountsController.class_eval do
     # 'master_account' lookup for a merge request.
     @master_account = Account.my.find(params[:merge_into]) if params[:merge_into]
 
-    @users = User.except(@current_user)
     if params[:previous].to_s =~ /(\d+)\z/
       @previous = Account.my.find_by_id($1) || $1.to_i
     end
