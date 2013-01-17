@@ -1,16 +1,16 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 
 describe Contact do
   before :each do
 
-    @tag_one = Factory(:tag, :taggable_type => "Contact", :name => "TagOne")
-    @tag_two = Factory(:tag, :taggable_type => "Contact", :name => "TagTwo")
+    @tag_one = FactoryGirl.create(:tag, :taggable_type => "Contact", :name => "TagOne")
+    @tag_two = FactoryGirl.create(:tag, :taggable_type => "Contact", :name => "TagTwo")
 
     @custom_field_one = Customfield.create!(
       :field_name  => "field_one",
       :field_label => "Field One",
       :field_type  => "VARCHAR(255)",
-      :user        => Factory(:user),
+      :user        => FactoryGirl.create(:user),
       :tag         => @tag_one
     )
 
@@ -18,18 +18,18 @@ describe Contact do
       :field_name  => "field_two",
       :field_label => "Field Two",
       :field_type  => "VARCHAR(255)",
-      :user        => Factory(:user),
+      :user        => FactoryGirl.create(:user),
       :tag         => @tag_two
     )
 
-    @contact = Factory(:contact,
+    @contact = FactoryGirl.create(:contact,
                        :title  => "Master Contact",
                        :tag_list => @tag_one.name,
                        "tag#{@tag_one.id}_attributes".to_sym => {"field_one" => "test value one"})
   end
 
-  it "should merge different supertags from both records" do
-    @dup_contact = Factory(:contact,
+  it "should merge different custom fields from both records" do
+    @dup_contact = FactoryGirl.create(:contact,
                            :title  => "Duplicate Contact",
                            :tag_list => @tag_two.name,
                            "tag#{@tag_two.id}_attributes".to_sym => {"field_two" => "test value two"})
@@ -45,8 +45,8 @@ describe Contact do
     @contact.send("tag#{@tag_two.id}").field_two.should == "test value two"
   end
 
-  it "should merge shared supertags with customfields" do
-    @dup_contact = Factory(:contact,
+  it "should merge shared custom fields with customfields" do
+    @dup_contact = FactoryGirl.create(:contact,
                            :title  => "Duplicate Contact",
                            :tag_list => "#{@tag_one.name}, #{@tag_two.name}",
                            "tag#{@tag_one.id}_attributes".to_sym => {"field_one" => "duplicate test value one"},
@@ -61,8 +61,8 @@ describe Contact do
     @contact.send("tag#{@tag_two.id}").field_two.should == "test value two"
   end
 
-  it "should ignore given attributes when merging shared supertags with customfields" do
-    @dup_contact = Factory(:contact,
+  it "should ignore given attributes when merging shared custom fields with customfields" do
+    @dup_contact = FactoryGirl.create(:contact,
                            :title  => "Duplicate Contact",
                            :tag_list => "#{@tag_one.name}, #{@tag_two.name}",
                            "tag#{@tag_one.id}_attributes".to_sym => {"field_one" => "duplicate test value one"},
@@ -79,4 +79,3 @@ describe Contact do
   end
 
 end
-

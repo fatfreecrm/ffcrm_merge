@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 
 describe Account do
   before :each do
@@ -81,4 +81,3 @@ describe Account do
 
   end
 end
-
