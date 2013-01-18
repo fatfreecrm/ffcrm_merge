@@ -15,22 +15,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #------------------------------------------------------------------------------
 
-ContactsController.class_eval do
+AccountsController.class_eval do
 
-  # PUT /contacts/1/merge/2                                                AJAX
-  #----------------------------------------------------------------------------
-  def merge
-    
-  end
-
+  private
 
   #----------------------------------------------------------------------------
   def respond_to_not_found_with_merged(*types)
-    if contact_alias = ContactAlias.find_by_destroyed_contact_id(params[:id])
-      redirect_to :id => contact_alias.contact_id
+    if account_alias = AccountAlias.find_by_destroyed_account_id(params[:id])
+      redirect_to :id => account_alias.account_id
     else
       respond_to_not_found_without_merged
     end
   end
   #alias_method_chain :respond_to_not_found, :merged
+
 end
