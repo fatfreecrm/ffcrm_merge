@@ -62,5 +62,5 @@ AccountsController.class_eval do
       respond_to_not_found_without_merged
     end
   end
-  alias_method_chain :respond_to_not_found, :merged
+  #alias_method_chain :respond_to_not_found, :merged
 end

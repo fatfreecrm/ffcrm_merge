@@ -1,7 +1,7 @@
-- (master.field_groups + duplicate.field_groups).uniq.each do |field_group|
+- (@master.field_groups + @duplicate.field_groups).uniq.each do |field_group|
   - if field_group.fields.any?
-    - duplicate_attributes = custom_field_merge_attributes(field_group, duplicate)
-    - master_attributes    = custom_field_merge_attributes(field_group, master)
+    - duplicate_attributes = custom_field_merge_attributes(field_group, @duplicate)
+    - master_attributes    = custom_field_merge_attributes(field_group, @master)
     - default_merge        = calculate_default_merge(duplicate_attributes, master_attributes)
 
     - if duplicate_attributes.keys.detect{ |k| duplicate_attributes[k].present? || master_attributes[k].present? }
@@ -14,9 +14,9 @@
           %tr
             %th
             %th{ :valign => :top, :style => "font-size: 13px;", :width => "40%" }
-              = "#{t(:duplicate_asset, :asset => t(:contact))}: #{duplicate.name}"
+              = "#{t(:duplicate_asset, :asset => t(:contact))}: #{@duplicate.name}"
             %th{ :valign => :top, :style => "font-size: 13px;", :width => "40%" }
-              = "#{t(:master_asset, :asset => t(:contact))}: #{master.name}"
+              = "#{t(:master_asset, :asset => t(:contact))}: #{@master.name}"
             - duplicate_attributes.keys.each do |attribute|
               - duplicate_value, master_value = duplicate_attributes[attribute], master_attributes[attribute]
               - unless duplicate_value.blank? and master_value.blank?

@@ -1,0 +1,18 @@
+<% klass_name = klass.to_s.singularize.downcase %>
+
+<% if params[:cancel].true? or flash[:error].present? %>
+
+  <% if flash[:error].present? %>jQuery(window.alert('<%=flash[:error]%>'));<% end %>
+
+  <%# ensure we replace with either @master or @duplicate depending on the id in @previous %>
+  <% @entity = (@master.id.to_s == @previous.gsub("#{klass_name}_", '')) ? @master : @duplicate %>
+  jQuery('#<%=@previous%>').replaceWith('<%= j(render :partial => "#{klass_name.tableize}/#{klass_name}", :collection => [ @entity ]) %>')
+
+<% else %>
+
+  jQuery(crm.highlight_off('<%=@previous%>'));
+  jQuery(crm.hide_form('create_<%=klass_name%>'));
+  jQuery('#<%=@previous%>').html('<%= j(render :partial => "#{klass_name.tableize}/into", :formats => [:html]) %>');
+  jQuery(crm.set_title('edit_<%=klass_name%>', '<%=t(:merge)%> <%=h(@duplicate.name)%>'));
+
+<% end %>

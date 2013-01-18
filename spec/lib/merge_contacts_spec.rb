@@ -2,19 +2,19 @@ require 'spec_helper'
 
 describe Contact do
   before :each do
-    @contact     = Factory(:contact,
+    @contact     = FactoryGirl.create(:contact,
                            :title           => "Master Contact",
                            :source          => "Master Source",
                            :background_info => "Master Background Info")
-    @dup_contact = Factory(:contact,
+    @dup_contact = FactoryGirl.create(:contact,
                            :title           => "Duplicate Contact",
                            :source          => "Duplicate Source",
                            :background_info => "Duplicate Background Info")
     4.times do
-      Factory(:email, :mediator => @contact)
-      Factory(:email, :mediator => @dup_contact)
-      Factory(:comment, :commentable => @contact)
-      Factory(:comment, :commentable => @dup_contact)
+      FactoryGirl.create(:email, :mediator => @contact)
+      FactoryGirl.create(:email, :mediator => @dup_contact)
+      FactoryGirl.create(:comment, :commentable => @contact)
+      FactoryGirl.create(:comment, :commentable => @dup_contact)
     end
   end
 

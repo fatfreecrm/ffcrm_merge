@@ -1,9 +1,9 @@
 module FatFreeCRM
   module Merge
-    class Engine < Rails::Engine
+    class Engine < ::Rails::Engine
     
       config.to_prepare do
-      
+
         require 'ffcrm_merge/accounts'
         require 'ffcrm_merge/contacts'
         require 'ffcrm_merge/merge_view_hooks'
@@ -20,7 +20,7 @@ module FatFreeCRM
         g.assets false
         g.helper false
       end
-      
+
     end
   end
 end

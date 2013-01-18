@@ -15,6 +15,12 @@ There is also a "Duplicate <==> Master" link in the top left corner, if you need
 A merge will move all attributes from the duplicate to the master,
 including all notes/emails/opportunities/contacts/etc. 
 
+New in version 1.3 (steveyken)
+==================
 
-Copyright (c) 2010 Nathan Broadbent, Crossroads Foundation, released under the MIT license
+* Refactored merge overrides into separate merge_controller
+ * This prevents the need to override core edit action in CRM
+* Moved to jQuery and Coffeescript
+* Overhauled spec tests - using dummy engine application rather than depending on fat_free_crm
 
+Copyright (c) 2013 Nathan Broadbent, Crossroads Foundation, released under the MIT license

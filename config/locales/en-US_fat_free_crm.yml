@@ -11,5 +11,5 @@ en-US:
   duplicate_asset: Duplicate %{asset}
   master_asset: Master %{asset}
   confirm_assets_merge: Are you sure you want to merge these %{assets}? This action is final and cannot be reversed.
-  assets_merge_error: Sorry, an error occurred while trying to merge %{assets}.
-
+  assets_merge_error: Sorry, an error occurred while trying to merge %{assets}. The %{assets} have not been merged.
+  assets_merge_invalid: %{name} is invalid. Please edit and correct the errors before merging.
