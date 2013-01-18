@@ -15,6 +15,10 @@ There is also a "Duplicate <==> Master" link in the top left corner, if you need
 A merge will move all attributes from the duplicate to the master,
 including all notes/emails/opportunities/contacts/etc. 
 
+It is also possible to navigate directly to the merge page using:
+
+  http://www.example.com/merge/contacts/1/into/2
+
 New in version 1.3 (steveyken)
 ==================
 

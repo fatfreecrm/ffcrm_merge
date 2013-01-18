@@ -1,3 +1,0 @@
-- if can?(:update, contact)
-  %li= link_to(t('merge'), "#", :id => "merge_contact_#{contact.id}", 'data-merge' => dom_id(contact))
-  =# javascript_tag "crm.merge_link($('merge_contact_#{contact.id}'));" if request.xhr?

@@ -1,5 +1,0 @@
-- if can?(:update, account)
-
-  %li= link_to(t('merge'), "#", :id => "merge_account_#{account.id}", 'data-merge' => dom_id(account))
-
-  = javascript_tag "crm.merge_link($('merge_account_#{account.id}'));" if request.xhr?

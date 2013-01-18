@@ -1,0 +1,2 @@
+- if can?(:update, entity)
+  %li= link_to(t('merge'), "#", :id => "merge_contact_#{entity.id}", 'data-merge' => dom_id(entity))

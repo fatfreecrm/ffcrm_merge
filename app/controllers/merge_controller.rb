@@ -8,6 +8,8 @@ class MergeController < EntitiesController
 
   respond_to :html, :js
   
+  helper_method :klass
+  
   # GET  /merge/contact/1/into/2                                           HTML
   # GET  /merge/contact/1/into/2                                             JS
   # PUT  /merge/account/1/into/2                                           HTML
