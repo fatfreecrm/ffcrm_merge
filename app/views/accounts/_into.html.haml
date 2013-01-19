@@ -50,7 +50,7 @@
                   - @master.tags.each do |tag|
                     = link_to tag.name, '#'
 
-      = render :partial => "shared/merge_custom_fields", :locals => {:master => @master, :duplicate => @duplicate}
+      = render :partial => "merge/custom_fields", :locals => {:master => @master, :duplicate => @duplicate}
       
       .section
         %h2= "Additional data from #{@duplicate.name} will also be merged"

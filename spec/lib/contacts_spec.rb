@@ -42,9 +42,6 @@ describe Contact do
       end
     end
 
-    # Duplicate contacts activities should have been destroyed.
-    @dup_contact.activities.should be_empty
-
     # Check that the contact alias has been created correctly.
     ContactAlias.find_by_destroyed_contact_id(@dup_contact.id).contact.should == @contact
   end
