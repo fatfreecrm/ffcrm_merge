@@ -1,5 +1,8 @@
 module Merge
   module Contacts
+  
+    IGNORED_ATTRIBUTES = %w(updated_at created_at deleted_at id)
+
     # Call this method on the duplicate contact, to merge it
     # into the master contact.
     # All attributes from 'self' are default, unless defined in options.
@@ -77,13 +80,13 @@ module Merge
 
     # Defines the list of Contact class attributes we want to merge.
     def merge_attributes
-      %w(updated_at
-         created_at
-         deleted_at
-         id).inject(self.attributes) do |r, n|
-          r.delete(n)
-          r
-      end
+      self.attributes.dup.reject{ |k,v| ignored_merge_attributes.include?(k) }
+    end
+
+    # returns a list of attributes that should be ignored in the merge
+    # a function so it can be easily overriden
+    def ignored_merge_attributes
+      IGNORED_ATTRIBUTES
     end
 
   end

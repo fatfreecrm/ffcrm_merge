@@ -1,7 +1,7 @@
 FactoryGirl.define do
 
   factory :contact do
-    assigned_to         nil
+    assignee            { FactoryGirl.create(:user) }
     reports_to          nil
     first_name          { Faker::Name.first_name }
     last_name           { Faker::Name.last_name }
@@ -19,7 +19,7 @@ FactoryGirl.define do
     linkedin            { FactoryGirl.generate(:website) }
     twitter             { FactoryGirl.generate(:website) }
     do_not_call         false
-    born_on             "1992-10-10"
+    born_on             { FactoryGirl.generate(:date) }
     background_info     { Faker::Lorem.paragraph[0,255] }
     deleted_at          nil
     updated_at          { FactoryGirl.generate(:time) }
