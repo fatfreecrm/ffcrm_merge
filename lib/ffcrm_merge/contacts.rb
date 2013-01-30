@@ -75,7 +75,7 @@ module Merge
             self.destroy
           end
         end
-      end
+      end # transaction
     end
 
     # Defines the list of Contact class attributes we want to merge.
@@ -96,3 +96,9 @@ end
 Contact.class_eval do
   include Merge::Contacts
 end
+
+# TODO lazy loading would be better here
+# something like (note we haven't defined on_load for contact class yet)
+# ActiveSupport.on_load :contact do
+#  include Merge::Contacts
+# end

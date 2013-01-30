@@ -118,4 +118,35 @@ describe "when merging contacts" do
     
   end
 
+  describe "merge failure" do
+
+    it "validation error should return false" do
+      @master.should_receive('save!').and_return(false)
+      expect(@duplicate.merge_with(@master)).to be_false
+    end
+
+    it "should rollback the transaction" do
+      duplicate_attributes = @duplicate.merge_attributes.dup
+      master_attributes = @master.merge_attributes.dup
+
+      #~ @master.should_receive(:tag_list=).and_return(lambda { raise "tag_list error" })
+      ContactAlias.should_receive(:create).and_return(lambda { raise "active_record error" })
+      expect(@duplicate.merge_with(@master)).to raise_error
+
+      @master.reload
+      # check master attributes are rolled back
+      expect(@master.first_name).to eql(master_attributes['first_name'])
+      expect(@master.email).to eql(master_attributes['email'])
+      expect(@master.source).to eql(master_attributes['source'])
+      expect(@master.phone).to eql(master_attributes['phone'])
+
+      # check association assigments are rolled back
+      expect(@master.user).to eq(master_attributes['user'])
+      expect(@master.lead).to eq(master_attributes['lead'])
+      expect(@master.account).to eq(master_attributes['account'])
+
+    end
+  
+  end
+
 end
