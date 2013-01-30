@@ -39,7 +39,7 @@ class MergeController < EntitiesController
     respond_with(@duplicate)
   end
 
-  #~ rescue_from CanCan::AccessDenied do |exception|
+  #~ TODO rescue_from CanCan::AccessDenied do |exception|
     #~ redirect_to root_url, :alert => exception.message
   #~ end
 
@@ -53,7 +53,7 @@ protected
 
   def do_merge(master, duplicate)
     # Prepare the fields we want to ignore from the duplicate contact.
-    ignored = {"_self" => params["ignore"]["_self"].map{|k,v| k if v == "yes" }.compact}
+    ignored = params["ignore"]["_self"].map{|k,v| k if v == "yes" }.compact
     duplicate.merge_with(master, ignored)
   end
 

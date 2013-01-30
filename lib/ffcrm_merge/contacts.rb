@@ -6,7 +6,7 @@ module Merge
     # Call this method on the duplicate contact, to merge it
     # into the master contact.
     # All attributes from 'self' are default, unless defined in options.
-    def merge_with(master, ignored_attr = {})
+    def merge_with(master, ignored_attr = [])
       # Just in case a user tries to merge a contact with itself,
       # even though the interface prevents this from happening.
       return false if master == self
@@ -16,9 +16,8 @@ module Merge
       Contact.transaction do
         # ------ Remove ignored attributes from this contact
         merge_attr = self.merge_attributes
-        (ignored_attr["_self"] || []).each do |attr|
-          merge_attr.delete(attr)
-        end
+        ignored_attr.each { |attr| merge_attr.delete(attr) }
+
         # ------ Merge class attributes
         master.update_attributes(merge_attr)
         # ------ Merge 'belongs_to' and 'has_one' associations
@@ -60,6 +59,8 @@ module Merge
         # Merge tags
         all_tags = (self.tags + master.tags).uniq
         master.tag_list = all_tags.map(&:name).join(", ")
+        
+        master.merge_hook(self)
 
         if master.save!
           # Update any existing aliases that were pointing to the duplicate record
@@ -87,6 +88,17 @@ module Merge
     # a function so it can be easily overriden
     def ignored_merge_attributes
       IGNORED_ATTRIBUTES
+    end
+    
+    #
+    # Override this if you want to add additional behavior to merge
+    # It is called after merge is performed but before it is saved.
+    #
+    def merge_hook(duplicate)
+      # Example code:
+      # duplicate.custom_association.each do |ca|
+        # ca.contact = self; ca.save!
+      # end
     end
 
   end

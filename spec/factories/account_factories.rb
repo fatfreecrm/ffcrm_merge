@@ -1,4 +1,5 @@
 FactoryGirl.define do
+
   factory :account do
     user
     assigned_to         nil
@@ -15,7 +16,6 @@ FactoryGirl.define do
     created_at          { FactoryGirl.generate(:time) }
   end
 
-
   factory :account_contact do
     account
     contact
@@ -23,7 +23,6 @@ FactoryGirl.define do
     updated_at          { FactoryGirl.generate(:time) }
     created_at          { FactoryGirl.generate(:time) }
   end
-
 
   factory :account_opportunity do
     account

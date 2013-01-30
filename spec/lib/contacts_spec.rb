@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "when merging contacts" do
   before :each do
     @master = FactoryGirl.create(:contact, :title => "Master Contact",
-      :source => "Master Source", :background_info => "Master Background Info", :tag_list => 'tag1, tag2')
+      :source => "Master Source", :background_info => "Master Background Info", :tag_list => 'tag1, tag2, tag3')
     @duplicate = FactoryGirl.create(:contact, :title => "Duplicate Contact",
       :source => "Duplicate Source", :background_info => "Duplicate Background Info", :tag_list => 'tag3, tag4')
     FactoryGirl.create(:email, :mediator => @master)
@@ -35,6 +35,11 @@ describe "when merging contacts" do
     @duplicate.merge_with(@master)
     expect(Contact.where(:id => @duplicate.id).first).to be_nil
   end
+  
+  it "should call merge hook" do
+    @master.should_receive(:merge_hook).with(@duplicate)
+    @duplicate.merge_with(@master)
+  end
 
   it "should include associations" do
     @duplicate.merge_with(@master)
@@ -65,13 +70,13 @@ describe "when merging contacts" do
     expect(@master.tags).to include(*tags)
   end
   
-  it "should copy duplicate attributes" do
+  it "should copy all duplicate attributes" do
     @duplicate.merge_with(@master)
     expect(@master.merge_attributes).to eq(@duplicate.merge_attributes)
   end
 
   it "should be able to ignore some of the duplicate attributes when merging" do
-    ignored_attributes = {"_self" => %w(title source background_info phone fax linkedin first_name alt_email)}
+    ignored_attributes = %w(title source background_info phone fax linkedin first_name alt_email)
     duplicate_attributes = @duplicate.merge_attributes.dup
     master_attributes = @master.merge_attributes.dup
     @duplicate.merge_with(@master, ignored_attributes)
@@ -99,6 +104,8 @@ describe "when merging contacts" do
     expect(@master.do_not_call).to eql(duplicate_attributes['do_not_call'])
     expect(@master.born_on).to eql(duplicate_attributes['born_on'])
   end
+  
+  pending "should merge custom fields"
 
   describe "contact alias" do
   
@@ -125,7 +132,7 @@ describe "when merging contacts" do
       expect(@duplicate.merge_with(@master)).to be_false
     end
 
-    it "should rollback the transaction" do
+    pending "should rollback the transaction" do
       duplicate_attributes = @duplicate.merge_attributes.dup
       master_attributes = @master.merge_attributes.dup
 

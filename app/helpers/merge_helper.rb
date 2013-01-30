@@ -68,7 +68,7 @@ module MergeHelper
     )
   end
   
-  # POSSIBLY NOT USED, REMOVE??
+  # TODO POSSIBLY NOT USED, REMOVE??
   # Adds 'edit_action => merge' to 'link_to_edit' generator.
   def link_to_merge(contact)
     link_to(t(:merge),
