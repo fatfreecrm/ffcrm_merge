@@ -5,11 +5,15 @@ describe MergeController do
   let(:master) { FactoryGirl.create(:contact) }
   let(:duplicate) { FactoryGirl.create(:contact) }
   
+  before(:each) do
+    login
+  end
+  
   describe "GET merge contact 1 into 2" do
   
     it do
       get :into, :klass_name => 'contact', :duplicate_id => duplicate.id, :master_id => master.id
-      response.should render_template('contacts/_into')
+      response.should render_template('merge/into')
       expect(assigns(:master)).to eq(master)
       expect(assigns(:duplicate)).to eq(duplicate)
     end
@@ -26,7 +30,7 @@ describe MergeController do
 
     it do
       get :into, :klass_name => 'contact', :duplicate_id => duplicate.id, :master_id => master.id
-      response.should render_template('contacts/_into')
+      response.should render_template('merge/into')
       expect(assigns(:master)).to eq(master)
       expect(assigns(:duplicate)).to eq(duplicate)
     end

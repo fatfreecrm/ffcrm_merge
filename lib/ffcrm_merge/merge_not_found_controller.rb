@@ -15,18 +15,26 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #------------------------------------------------------------------------------
 
-AccountsController.class_eval do
+%w(AccountsController ContactsController).each do |controller|
+  controller.classify.constantize.class_eval do
 
-  private
+    private
 
-  #----------------------------------------------------------------------------
-  def respond_to_not_found_with_merged(*types)
-    if account_alias = AccountAlias.find_by_destroyed_account_id(params[:id])
-      redirect_to :id => account_alias.account_id
-    else
-      respond_to_not_found_without_merged
+    #
+    #----------------------------------------------------------------------------
+    # If contacts/1 is merged into contacts/2 then GET contacts/1 redirects to GET contacts/2
+    def respond_to_not_found_with_merged(*types)
+      alias_klass = "#{klass}Alias".constantize   # AccountAlias
+      entity_method = "#{klass.to_s.downcase}_id" # account_id
+      finder = :"destroyed_#{entity_method}"      # destroyed_account_id
+      if record = alias_klass.where(finder => params[:id]).limit(1).first
+        redirect_to :id => record.send(entity_method)
+      else
+        respond_to_not_found_without_merged
+      end
     end
+    alias_method_chain :respond_to_not_found, :merged
+
   end
-  #alias_method_chain :respond_to_not_found, :merged
 
 end

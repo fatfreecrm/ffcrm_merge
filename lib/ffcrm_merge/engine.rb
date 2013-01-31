@@ -6,8 +6,7 @@ module FatFreeCRM
         require 'ffcrm_merge/accounts'
         require 'ffcrm_merge/contacts'
         require 'ffcrm_merge/merge_view_hooks'
-        require 'ffcrm_merge/accounts_controller'
-        require 'ffcrm_merge/contacts_controller'
+        require 'ffcrm_merge/merge_not_found_controller'
       end
       
       config.generators do |g|

@@ -1,4 +1,4 @@
-# See vendor/plugins/authlogic/lib/authlogic/test_case.rb
+# See authlogic/lib/authlogic/test_case.rb
 #----------------------------------------------------------------------------
 def activate_authlogic
   require 'authlogic/test_case/rails_request_adapter'
@@ -11,10 +11,10 @@ end
 # Note: Authentication is NOT ActiveRecord model, so we mock and stub it using RSpec.
 #----------------------------------------------------------------------------
 def login(user_stubs = {}, session_stubs = {})
+  activate_authlogic
   User.current_user = @current_user = FactoryGirl.create(:user, user_stubs)
-  @current_user_session = Authentication.new( {:record => current_user}.merge(session_stubs) )
+  @current_user_session = mock(Authentication, {:record => current_user}.merge(session_stubs))
   Authentication.stub!(:find).and_return(@current_user_session)
-  #set_timezone
 end
 alias :require_user :login
 
