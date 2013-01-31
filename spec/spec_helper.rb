@@ -4,7 +4,9 @@ require File.expand_path("../dummy/config/environment.rb",  __FILE__)
 require 'rspec/rails'
 require 'rspec/autorun'
 require 'factory_girl_rails'
+require 'database_cleaner'
 
+DatabaseCleaner.strategy = :transaction
 Rails.backtrace_cleaner.remove_silencers!
 
 # Load support files
@@ -15,4 +17,12 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.infer_base_class_for_anonymous_controllers = false
   config.order = "random"
+  
+  config.around(:each, :testing_transactions => true) do |ex|
+    config.use_transactional_fixtures = false
+    DatabaseCleaner.strategy = :truncation
+    ex.run
+    DatabaseCleaner.strategy = :transaction
+  end
+  
 end

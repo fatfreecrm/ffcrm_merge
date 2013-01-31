@@ -121,21 +121,31 @@ describe 'when merging accounts' do
   end
   
   describe "merge failure" do
-
+  
     it "validation error should return false" do
       @master.should_receive('save!').and_return(false)
       expect(@duplicate.merge_with(@master)).to be_false
     end
 
-    pending "should rollback the transaction" do
+    #
+    # TODO: this is hard to test... rspec wraps each test in a transaction
+    #       and that interferes with testing rollback
+    #
+    pending "should rollback the transaction", :testing_transactions => true do
       duplicate_attributes = @duplicate.merge_attributes.dup
       master_attributes = @master.merge_attributes.dup
 
-      #~ @master.should_receive(:tag_list=).and_return(lambda { raise "tag_list error" })
-      AccountAlias.should_receive(:create).and_return(lambda { raise "active_record error" })
-      expect(@duplicate.merge_with(@master)).to raise_error
+      @duplicate.should_receive(:destroy).and_raise(StandardError, "merge error")
+      expect(lambda { @duplicate.merge_with(@master) }).to raise_error(StandardError, "merge error")
 
+      #
+      # From the docs: Exceptions will force a ROLLBACK that returns the database to the state before the transaction began.
+      # Be aware, though, that the objects will not have their instance data returned to their pre-transactional state.
+      # This is why we have to reload the instance here.
+      #
       @master.reload
+      @duplicate.reload
+      
       # check master attributes are rolled back
       expect(@master.name).to eql(master_attributes['name'])
       expect(@master.website).to eql(master_attributes['website'])

@@ -6,10 +6,10 @@ module Merge
     # Call this method on the duplicate account, to merge it
     # into the master account.
     # All attributes from 'self' are default, unless defined in options.
-    def merge_with(master_account, ignored_attr = [])
+    def merge_with(master, ignored_attr = [])
       # Just in case a user tries to merge a account with itself,
       # even though the interface prevents this from happening.
-      return false if master_account == self
+      return false if master == self
 
       # Perform all actions in an atomic transaction, so that if one part of the process fails, the
       # whole merge can be rolled back.
@@ -20,50 +20,50 @@ module Merge
         ignored_attr.each { |attr| merge_attr.delete(attr) }
 
         # ------ Merge class attributes
-        master_account.update_attributes(merge_attr)
+        master.update_attributes(merge_attr)
         # ------ Merge 'belongs_to' and 'has_one' associations
         %w(user assignee billing_address shipping_address).each do |attr|
           unless ignored_attr.include?(attr)
-            master_account.send(attr + "=", self.send(attr))
+            master.send(attr + "=", self.send(attr))
           end
         end
         # ------ Merge 'has_many' associations (each requires a special case)
         self.contacts.each do |t|
-          t.account = master_account; t.save!
+          t.account = master; t.save!
         end
         self.tasks.each do |t|
-          t.asset = master_account; t.save!
+          t.asset = master; t.save!
         end
         self.emails.each do |e|
-          e.mediator = master_account; e.save!
+          e.mediator = master; e.save!
         end
         self.comments.each do |c|
-          c.commentable = master_account; c.save!
+          c.commentable = master; c.save!
         end
 
         self.opportunities.each do |o|
-          o.account = master_account; o.save!
+          o.account = master; o.save!
         end
         
         # Merge tags
-        all_tags = (self.tags + master_account.tags).uniq
-        master_account.tag_list = all_tags.map(&:name).join(", ")
+        all_tags = (self.tags + master.tags).uniq
+        master.tag_list = all_tags.map(&:name).join(", ")
 
         # Account validates the uniqueness of name, so we need to alter the duplicate name
         # before we save the master, then destroy the duplicate.
         tmp_name = self.name
         self.update_attribute :name, "#{tmp_name} is being merged - #{self.created_at.to_s}"
         
-        master_account.merge_hook(self)
+        master.merge_hook(self)
 
-        if master_account.save!
+        if master.save!
           # Update any existing aliases that were pointing to the duplicate record
           AccountAlias.find_all_by_account_id(self.id).each do |aa|
-            aa.update_attribute(:account, master_account)
+            aa.update_attribute(:account, master)
           end
 
           # Create the account alias and destroy the merged account.
-          if AccountAlias.create(:account => master_account,
+          if AccountAlias.create(:account => master,
                                  :destroyed_account_id => self.id)
             # Must force a reload of the account, and shake off all migrated assets.
             self.reload

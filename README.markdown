@@ -27,6 +27,7 @@ New in version 1.3 (steveyken)
 * Moved to jQuery and Coffeescript
 * Overhauled spec tests - using dummy engine application rather than depending on fat_free_crm
 * Added merge_hook so you can add your own customisations (see below)
+* Fixed bug where account duplicate tags were always ignored
 
 MERGE HOOKS
 ===========
@@ -54,5 +55,6 @@ TODO
 
 * Create a version history note to record the merge
 ** perhaps put paperclip on AccountAlias and ContactAlias
+* Add email and phone to merge autocomplete to help identify entities
 
 Copyright (c) 2013 Nathan Broadbent, Stephen Kenworthy. Crossroads Foundation, released under the MIT license
