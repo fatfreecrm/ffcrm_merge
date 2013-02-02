@@ -31,7 +31,7 @@ class MergeController < EntitiesController
         if do_merge(@master, @duplicate)
           redirect_to(@master) and return
         else
-          flash[:error] = I18n.t('assets_merge_error', :assets => klass.to_s.tableize)
+          flash[:error] = I18n.t('assets_merge_error', :assets => klass.to_s.humanize)
         end
       end
     end
@@ -39,11 +39,17 @@ class MergeController < EntitiesController
     respond_with(@duplicate)
   end
 
-  #~ TODO rescue_from CanCan::AccessDenied do |exception|
-    #~ redirect_to root_url, :alert => exception.message
-  #~ end
-
 protected
+
+  def respond_to_access_denied
+    flash[:warning] = t(:msg_asset_not_authorized, klass.to_s.humanize.downcase)
+    redirect_to :controller => klass.to_s.underscore.pluralize, :action => :index
+  end
+  
+  def respond_to_not_found
+    flash[:warning] = t(:msg_asset_not_available, klass.to_s.humanize.downcase)
+    redirect_to :controller => klass.to_s.underscore.pluralize, :action => :index
+  end
 
   # Override entity controller
   def klass

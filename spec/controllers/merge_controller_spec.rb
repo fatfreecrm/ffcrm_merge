@@ -18,11 +18,27 @@ describe MergeController do
       expect(assigns(:duplicate)).to eq(duplicate)
     end
     
-    pending "when master is not authorized"    
-    pending "when master does not exist"
+    it "should raise error when master is not authorized" do
+      master = FactoryGirl.create(:contact, :access => 'Private')
+      get :into, :klass_name => 'contact', :duplicate_id => duplicate.id, :master_id => master.id
+      expect(flash[:warning]).to eql("You are not authorized to view this contact.")
+    end
+
+    it "when master does not exist" do
+      get :into, :klass_name => 'contact', :duplicate_id => duplicate.id, :master_id => '123123'
+      expect(flash[:warning]).to eql("This contact is no longer available.")
+    end
     
-    pending "when duplicate is not authorized"    
-    pending "when duplicate does not exist"
+    it "should raise error when duplicate is not authorized" do
+      duplicate = FactoryGirl.create(:contact, :access => 'Private')
+      get :into, :klass_name => 'contact', :duplicate_id => duplicate.id, :master_id => master.id
+      expect(flash[:warning]).to eql("You are not authorized to view this contact.")
+    end
+    
+    it "when duplicate does not exist" do
+      get :into, :klass_name => 'contact', :duplicate_id => '123321', :master_id => master.id
+      expect(flash[:warning]).to eql("This contact is no longer available.")
+    end
     
   end
 
@@ -35,13 +51,13 @@ describe MergeController do
       expect(assigns(:duplicate)).to eq(duplicate)
     end
 
-    pending "fails"
-    
-    pending "when master is not authorized"    
-    pending "when master does not exist"
-    
-    pending "when duplicate is not authorized"    
-    pending "when duplicate does not exist"
+    it "should handle failure" do
+      pending "Need to fix this."
+      controller.should_receive(:do_merge).and_return(false)
+      get :into, :klass_name => 'contact', :duplicate_id => duplicate.id, :master_id => master.id
+      expect(flash[:error]).to eql("Sorry, an error occurred while trying to merge contacts. The contacts have not been merged.")
+      response.should render_template('merge/into')
+    end
 
   end
 

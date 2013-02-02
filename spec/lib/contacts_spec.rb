@@ -105,8 +105,6 @@ describe "when merging contacts" do
     expect(@master.born_on).to eql(duplicate_attributes['born_on'])
   end
   
-  pending "should merge custom fields"
-
   describe "contact alias" do
   
     it "should be created" do
@@ -125,18 +123,17 @@ describe "when merging contacts" do
     
   end
 
-  describe "merge failure" do
+  describe "a merge failure" do
 
     it "validation error should return false" do
       @master.should_receive('save!').and_return(false)
       expect(@duplicate.merge_with(@master)).to be_false
     end
 
-    #
-    # TODO: this is hard to test... rspec wraps each test in a transaction
-    #       and that interferes with testing rollback
-    #
-    pending "should rollback the transaction", :testing_transactions => true do
+    it "should rollback the transaction", :testing_transactions => true do
+    
+      pending "Rspec wraps each test in a transaction and that interferes with testing transaction rollback"
+    
       duplicate_attributes = @duplicate.merge_attributes.dup
       master_attributes = @master.merge_attributes.dup
 
