@@ -25,9 +25,10 @@ class ContactAlias < ActiveRecord::Base
   validates_presence_of :contact_id, :destroyed_contact_id
 
   # Takes a list of ids, returns a list of ids with deleted / merged contact ids
-  # replaced with current ids.
+  # replaced with current ids. E.g. {"9876"=>"1490", "1491"=>"1491"}
   def self.ids_with_alias(ids)
     h = {}
+    return {} if ids.nil?
     ids.each { |id| h[id.to_s] = id.to_s }
     where(:destroyed_contact_id => ids).each do |a|
       # :destroyed_id => :current_id
@@ -36,4 +37,3 @@ class ContactAlias < ActiveRecord::Base
     h
   end
 end
-
