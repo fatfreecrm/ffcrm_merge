@@ -21,7 +21,7 @@ module Merge
         # ------ Merge class attributes
         master.update_attributes(merge_attr)
         # ------ Merge 'belongs_to' and 'has_one' associations
-        %w(user lead assignee).each do |attr|
+        %w(user lead).each do |attr|
           unless ignored_attr.include?(attr)
             master.send(attr + "=", self.send(attr))
           end

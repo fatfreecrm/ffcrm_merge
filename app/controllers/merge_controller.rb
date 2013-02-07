@@ -4,7 +4,7 @@
 #
 class MergeController < EntitiesController
 
-  skip_load_and_authorize_resource :only => [:into]
+  skip_load_and_authorize_resource :only => [:into, :aliases]
 
   respond_to :html, :js
   
@@ -38,6 +38,19 @@ class MergeController < EntitiesController
 
     respond_with(@duplicate)
   end
+  
+  #
+  # List out the aliases for a given set of contact ids
+  #
+  # GET  /merge/contact/aliases?ids=1,2,3,4                                   JS
+  def aliases
+    ids = params.has_key?('ids') ? params[:ids].split(',') : []
+    model_name = "#{klass}Alias".constantize    # klass is carefully sanitized
+    @aliases = model_name.ids_with_alias(ids)
+    respond_to do |format|
+      format.js # aliases.js.erb
+    end
+  end
 
 protected
 
@@ -51,7 +64,7 @@ protected
     redirect_to :controller => klass.to_s.underscore.pluralize, :action => :index
   end
 
-  # Override entity controller
+  # Override entity controller, this must be carefully sanitized so arbitary klasses aren't allowed
   def klass
     name = params[:klass_name].classify
     klass = (ENTITIES.include?(name) ? name.constantize : nil)

@@ -61,4 +61,17 @@ describe MergeController do
 
   end
 
+  describe "aliases" do
+
+    # /merge/contact/aliases?ids=1,2,3,4
+    it "should call ids_with_alias and return alias map" do
+      FactoryGirl.create(:contact_alias, :destroyed_contact_id => 1, :contact_id => 5)
+      FactoryGirl.create(:contact_alias, :destroyed_contact_id => 3, :contact_id => 5)
+
+      get :aliases, :klass_name => 'contact', :ids => '1,2,3,4', :format => :js
+      expect(assigns(:aliases)).to eql({'1' => '5', '2' => '2', '3' => '5', '4' => '4'})
+    end
+    
+  end
+
 end

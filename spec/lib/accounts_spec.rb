@@ -83,7 +83,7 @@ describe 'when merging accounts' do
   end
   
   it "should be able to ignore some of the duplicate attributes when merging" do
-    ignored_attributes = %w(name background_info phone fax)
+    ignored_attributes = %w(name background_info phone fax assigned_to)
     duplicate_attributes = @duplicate.merge_attributes.dup
     master_attributes = @master.merge_attributes.dup
     @duplicate.merge_with(@master, ignored_attributes)
@@ -93,12 +93,35 @@ describe 'when merging accounts' do
     expect(@master.background_info).to eql(master_attributes['background_info'])
     expect(@master.phone).to eql(master_attributes['phone'])
     expect(@master.fax).to eql(master_attributes['fax'])
-
+    expect(@master.fax).to eql(master_attributes['assigned_to'])
+    
     # Check that the merge has included some duplicate attributes
     expect(@master.category).to eql(duplicate_attributes['category'])
     expect(@master.toll_free_phone).to eql(duplicate_attributes['toll_free_phone'])
     expect(@master.access).to eql(duplicate_attributes['access'])
     expect(@master.rating).to eql(duplicate_attributes['rating'])
+
+  end
+  
+  # this is the exact opposite of the previous test 
+  it "should be able to ignore some of the duplicate attributes when merging 2" do
+    ignored_attributes = %w(category toll_free_phone access rating)
+    duplicate_attributes = @duplicate.merge_attributes.dup
+    master_attributes = @master.merge_attributes.dup
+    @duplicate.merge_with(@master, ignored_attributes)
+
+    # Check that the merge has ignored some duplicate attributes
+    expect(@master.category).to eql(master_attributes['category'])
+    expect(@master.toll_free_phone).to eql(master_attributes['toll_free_phone'])
+    expect(@master.access).to eql(master_attributes['access'])
+    expect(@master.rating).to eql(master_attributes['rating'])
+
+    # Check that the merge has included some duplicate attributes
+    expect(@master.name).to eql(duplicate_attributes['name'])
+    expect(@master.background_info).to eql(duplicate_attributes['background_info'])
+    expect(@master.phone).to eql(duplicate_attributes['phone'])
+    expect(@master.fax).to eql(duplicate_attributes['fax'])
+    expect(@master.assigned_to).to eql(duplicate_attributes['assigned_to'])
 
   end
 
