@@ -103,9 +103,10 @@ describe "when merging contacts" do
   
   end
   
-  it "should copy all duplicate attributes" do
+  it "should copy all duplicate attributes but exclude addresses" do
+    duplicate_merge_attributes = @duplicate.merge_attributes
     @duplicate.merge_with(@master)
-    expect(@master.merge_attributes).to eq(@duplicate.merge_attributes)
+    expect(@master.merge_attributes).to eq(duplicate_merge_attributes)
   end
   
   it "should be able to ignore some of the duplicate attributes when merging" do
