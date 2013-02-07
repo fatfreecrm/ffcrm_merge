@@ -6,7 +6,7 @@
   - master_attributes    = contact_merge_attributes(@master)
   - default_merge        = calculate_default_merge(duplicate_attributes, master_attributes)
 
-  .remote
+  .remote.merge_form
     = form_for(@duplicate, :url => into_merge_path(:klass_name => 'contacts', :duplicate_id => @duplicate.id, :master_id => @master.id), :html => one_submit_only(:contact), :remote => true) do |f|
       = link_to_close into_merge_path(:klass_name => 'contacts', :duplicate_id => @duplicate.id, :master_id => @master.id, :previous => @previous)
       
@@ -14,31 +14,31 @@
       %h3= link_to(t('switch_duplicate_and_master').html_safe, "#", :onclick => "crm.load_merge_form('contacts', '#{@duplicate.id}', '#{@master.id}', '#{@previous}');")
       = hidden_field_tag :previous, @previous
       = flash[:error] if flash[:error]
-      .subtitle{ :style => "width:95%; padding:3px;" }
+      .subtitle
         = t(:merge_into_info)
 
       .section
         #merge_into
-          %table{ :cellpadding => "3px", :style => "text-align:left; border-collapse: collapse; border: none;" }
+          %table
             %tr
               %th
-              %th{ :valign => :top, :style => "font-size: 13px;", :width => "40%" }
+              %th{ :class => 'merge_title', :width => "40%" }
                 = "#{t(:duplicate_asset, :asset => t(:contact))}: #{@duplicate.name}"
-              %th{ :valign => :top, :style => "font-size: 13px;", :width => "40%" }
+              %th{ :class => 'merge_title', :width => "40%" }
                 = "#{t(:master_asset, :asset => t(:contact))}: #{@master.name}"
-              - ordered_contact_merge_attributes.each do |attribute|
+              - master_attributes.keys.each do |attribute|
                 - duplicate_value, master_value = duplicate_attributes[attribute], master_attributes[attribute]
                 - unless duplicate_value.blank? and master_value.blank?
-                  %tr{ :style => "border-bottom:1px dotted silver;", :valign => 'bottom'}
+                  %tr
                     %th{ :width => "20%" }
                       .label #{attribute.humanize}
                     %td
                       = ignore_merge_radio_button("no",  attribute, default_merge[attribute]) unless duplicate_value.blank?
-                      .label{:style => "display: inline;"} #{duplicate_value}
+                      .label #{duplicate_value}
                     %td
                       = ignore_merge_radio_button("yes", attribute, default_merge[attribute]) unless master_value.blank?
-                      .label{:style => "display: inline;"} #{master_value}
-              %tr{ :style => "border-bottom:1px dotted silver;", :valign => 'bottom'}
+                      .label #{master_value}
+              %tr
                 %th{ :width => "20%" }
                   .label Tags:
                 %td
@@ -53,14 +53,13 @@
       = render :partial => "merge/custom_fields", :locals => {:master => @master, :duplicate => @duplicate}
 
       .section
-        %h2= "Additional data from #{@duplicate.name} will also be merged"
+        %h3= "Additional data from #{@duplicate.name} will also be merged"
         %ul
-          %li(style="list-style: disc inside") (<strong>#{AccountContact.where(:contact_id => @duplicate.id).count}</strong>) accounts
-          %li(style="list-style: disc inside") (<strong>#{@duplicate.opportunities.size}</strong>) opportunties
-          %li(style="list-style: disc inside") (<strong>#{@duplicate.tasks.size}</strong>) tasks
-          %li(style="list-style: disc inside") (<strong>#{@duplicate.emails.size}</strong>) emails
-          %li(style="list-style: disc inside") (<strong>#{@duplicate.comments.size}</strong>) comments
-          %li(style="list-style: disc inside") (<strong>#{@duplicate.addresses.size}</strong>) addresses
+          %li (<strong>#{AccountContact.where(:contact_id => @duplicate.id).count}</strong>) accounts
+          %li (<strong>#{@duplicate.opportunities.size}</strong>) opportunties
+          %li (<strong>#{@duplicate.tasks.size}</strong>) tasks
+          %li (<strong>#{@duplicate.emails.size}</strong>) emails
+          %li (<strong>#{@duplicate.comments.size}</strong>) comments
 
       .buttonbar
         = f.submit t(:merge_assets, :assets => t(:contacts)), :onclick => "var check=confirm('#{t('confirm_assets_merge', :assets => t(:contacts))}'); if(!check){return false;};"

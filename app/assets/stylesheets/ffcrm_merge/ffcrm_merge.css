@@ -1,0 +1,29 @@
+.merge_form .subtitle {
+  padding: 3px 0px;
+}
+
+.merge_form table {
+  cellpadding: 3px;
+  text-align:left;
+  border-collapse: collapse;
+  border: none;
+}
+
+.merge_form table tr {
+  border-bottom:1px dotted silver;
+  margin-bottom: 8px;
+}
+
+.merge_form table th, .merge_form table td {
+  vertical-align: text-top;
+  padding: 3px 0px;
+}
+
+.merge_form table th.merge_title {
+  font-size: 13px;
+}
+
+.merge_form .label {
+  display: inline;
+  margin: 0px;  
+}

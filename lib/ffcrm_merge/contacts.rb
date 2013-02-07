@@ -2,6 +2,11 @@ module Merge
   module Contacts
   
     IGNORED_ATTRIBUTES = %w(updated_at created_at deleted_at id)
+    ORDERED_ATTRIBUTES = %w(first_name last_name email alt_email
+      phone mobile fax do_not_call born_on
+      title background_info source department
+      facebook twitter blog linkedin user_id
+      assigned_to reports_to lead_id access business_address)
 
     # Call this method on the duplicate contact, to merge it
     # into the master contact.
@@ -11,16 +16,17 @@ module Merge
       # even though the interface prevents this from happening.
       return false if master == self
 
-      # ------ Remove ignored attributes from this contact
       merge_attr = self.merge_attributes
+      # ------ Remove ignored attributes from this contact
       ignored_attr.each { |attr| merge_attr.delete(attr) }
 
       # Perform all actions in an atomic transaction, so that if one part of the process fails,
       # the whole merge can be rolled back.
       Contact.transaction do
 
-        # ------ Merge attributes
-        master.update_attributes(merge_attr)
+        # ------ Merge attributes: ensure only model attributes are updated.
+        model_attributes = merge_attr.dup.reject{ |k,v| !master.attributes.keys.include?(k) }
+        master.update_attributes(model_attributes)
 
         # ------ Merge 'belongs_to' and 'has_one' associations
         {'user_id' => 'user', 'lead_id' => 'lead', 'assigned_to' => 'assignee'}.each do |attr, method|
@@ -29,11 +35,17 @@ module Merge
           end
         end
         
+        # ------ Merge address associations
+        master.address_attributes.keys.each do |attr|
+          unless ignored_attr.include?(attr)
+            master.send(attr + "=", self.send(attr))
+          end
+        end
+
         # ------ Merge 'has_many' associations
         self.tasks.each { |t| t.asset = master; t.save! }
         self.emails.each { |e| e.mediator = master; e.save! }
         self.comments.each { |c| c.commentable = master; c.save! }
-        self.addresses.each{|a| a.addressable = master; a.save!}
 
         # Find all AccountContact records with the duplicate contact,
         # and only add the master contact if it is not already added to the account.
@@ -76,11 +88,28 @@ module Merge
     end
 
     # Defines the list of Contact class attributes we want to merge.
+    # in the order we want to specify them
     def merge_attributes
-      self.attributes.dup.reject{ |k,v| ignored_merge_attributes.include?(k) }
+      attrs = self.attributes.dup.reject{ |k,v| ignored_merge_attributes.include?(k) }
+      attrs.merge!(address_attributes) # we want addresses to be shown in the UI
+      attrs.sort do |a,b|
+        (ordered_merge_attributes.index(a.first) || 1000) <=> (ordered_merge_attributes.index(b.first) || 1000)
+      end
+      attrs
+    end
+    
+    # These attributes need to be included on the merge form but ignore in update_attributes
+    # and merged later on in the merge script
+    def address_attributes
+      {'business_address' => self.business_address.try(:id) }
+    end
+    
+    # Returns a list of attributes in the order they should appear on the merge form
+    def ordered_merge_attributes
+      ORDERED_ATTRIBUTES
     end
 
-    # returns a list of attributes that should be ignored in the merge
+    # Returns a list of attributes that should be ignored in the merge
     # a function so it can be easily overriden
     def ignored_merge_attributes
       IGNORED_ATTRIBUTES

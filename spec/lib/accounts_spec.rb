@@ -87,7 +87,6 @@ describe 'when merging accounts' do
       opportunities = @duplicate.opportunities.dup
       contacts = @duplicate.contacts.dup
       tasks = @duplicate.tasks.dup
-      addresses = @duplicate.addresses.dup
       tags = @duplicate.tags.dup
       
       @duplicate.merge_with(@master)
@@ -103,8 +102,6 @@ describe 'when merging accounts' do
       expect(@master.contacts).to include(*contacts)
       expect(@master.tasks.size).to eq(2)
       expect(@master.tasks).to include(*tasks)
-      expect(@master.addresses.size).to eq(2)
-      expect(@master.addresses).to include(*addresses)
       expect(@master.tags.size).to eq(4)
       expect(@master.tags).to include(*tags)
     end

@@ -29,6 +29,9 @@ New in version 1.3 (steveyken)
 * Abstracted out merge logic so it is easy to write merge code for other entities. Currently we only provide support for contacts and accounts **patches welcome**
 * Added merge_hook so you can add your own customisations (see below)
 * Fixed bug where account duplicate tags were always ignored
+* Fixed bug where assigned_to, user_id and reports_to were not always set correctly
+* Added ability to merge addresses visually
+* Moved styles out of template and into css
 
 MERGE HOOKS
 ===========
@@ -56,7 +59,6 @@ Be sure your code loads *after* ffcrm_merge has been initialised otherwise it wi
 TODO
 ====
 
-* Add ability to choose addresses to merge in UI
 * Create a version history note to record the merge
  * perhaps put paperclip on AccountAlias and ContactAlias. Something like `has_paper_trail :meta => { :related => :account }, :ignore => [ :id, :created_at, :updated_at ]`
 * Add email and phone to merge autocomplete to help identify entities

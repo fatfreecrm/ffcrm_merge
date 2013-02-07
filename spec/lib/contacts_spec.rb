@@ -47,25 +47,29 @@ describe "when merging contacts" do
       user_id = @duplicate.user_id
       lead_id = @duplicate.lead_id
       assigned_to = @duplicate.assigned_to
+      business_address = @duplicate.business_address
       
       @duplicate.merge_with(@master)
       
       expect(@master.user_id).to eq(user_id)
       expect(@master.lead_id).to eq(lead_id)
       expect(@master.assigned_to).to eq(assigned_to)
+      expect(@master.business_address).to eq(business_address)
     end
     
     it "should ignore some duplicate attributes" do
       user_id = @master.user_id
       lead_id = @master.lead_id
       assigned_to = @master.assigned_to
+      business_address = @master.business_address
       
-      @duplicate.merge_with(@master, %w(user_id lead_id assigned_to))
+      @duplicate.merge_with(@master, %w(user_id lead_id assigned_to business_address))
       @master.reload
       
       expect(@master.user_id).to eq(user_id)
       expect(@master.lead_id).to eq(lead_id)
       expect(@master.assigned_to).to eq(assigned_to)
+      expect(@master.business_address).to eq(business_address)
     end
 
   end
@@ -77,7 +81,6 @@ describe "when merging contacts" do
       comments = @duplicate.comments.dup
       opportunities = @duplicate.opportunities.dup
       tasks = @duplicate.tasks.dup
-      addresses = @duplicate.addresses.dup
       tags = @duplicate.tags.dup
       account_contact_ids = @duplicate.account_contact.id
       
@@ -92,8 +95,6 @@ describe "when merging contacts" do
       expect(@master.opportunities).to include(*opportunities)
       expect(@master.tasks.size).to eq(2)
       expect(@master.tasks).to include(*tasks)
-      expect(@master.addresses.size).to eq(2)
-      expect(@master.addresses).to include(*addresses)
       expect(@master.tags.size).to eq(4)
       expect(@master.tags).to include(*tags)
       expect(AccountContact.where(:contact_id => @master).size).to eq(2)

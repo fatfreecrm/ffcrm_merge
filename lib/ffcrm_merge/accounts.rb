@@ -2,6 +2,8 @@ module Merge
   module Accounts
 
     IGNORED_ATTRIBUTES = %w(updated_at created_at deleted_at id)
+    ORDERED_ATTRIBUTES = %w(name email website phone toll_free_phone
+      fax background_info user_id assigned_to access)
   
     # Call this method on the duplicate account, to merge it
     # into the master account.
@@ -11,21 +13,29 @@ module Merge
       # even though the interface prevents this from happening.
       return false if master == self
 
-      # ------ Remove ignored attributes from this account
       merge_attr = self.merge_attributes
+      # ------ Remove ignored attributes from this account
       ignored_attr.each { |attr| merge_attr.delete(attr) }
 
       # Perform all actions in an atomic transaction, so that if one part of the process fails,
       # the whole merge can be rolled back.
       Account.transaction do
 
-        # ------ Merge attributes
-        master.update_attributes(merge_attr)
+        # ------ Merge attributes: ensure only model attributes are updated.
+        model_attributes = merge_attr.dup.reject{ |k,v| !master.attributes.keys.include?(k) }
+        master.update_attributes(model_attributes)
 
         # ------ Merge 'belongs_to' and 'has_one' associations
-        {'user_id' => 'user', 'assigned_to' => 'assignee', 'billing_address' => 'billing_address', 'shipping_address' => 'shipping_address' }.each do |attr, method|
+        {'user_id' => 'user', 'assigned_to' => 'assignee' }.each do |attr, method|
           unless ignored_attr.include?(attr)
             master.send(method + "=", self.send(method))
+          end
+        end
+        
+        # ------ Merge address associations
+        master.address_attributes.keys.each do |attr|
+          unless ignored_attr.include?(attr)
+            master.send(attr + "=", self.send(attr))
           end
         end
         
@@ -70,9 +80,26 @@ module Merge
       end # transaction
     end
 
-    # Defines the list of Contact class attributes we want to merge.
+    # Defines the list of Account class attributes we want to merge.
     def merge_attributes
-      self.attributes.dup.reject{ |k,v| ignored_merge_attributes.include?(k) }
+      attrs = self.attributes.dup.reject{ |k,v| ignored_merge_attributes.include?(k) }
+      attrs.merge!(address_attributes) # we want addresses to be shown in the UI
+      attrs.sort do |a,b|
+        (ordered_merge_attributes.index(a.first) || 1000) <=> (ordered_merge_attributes.index(b.first) || 1000)
+      end
+      attrs
+    end
+    
+    # These attributes need to be included on the merge form but ignore in update_attributes
+    # and merged later on in the merge script
+    def address_attributes
+      {'billing_address'  => self.billing_address.try(:id),
+       'shipping_address' => self.shipping_address.try(:id) }
+    end
+    
+    # Returns a list of attributes in the order they should appear on the merge form
+    def ordered_merge_attributes
+      ORDERED_ATTRIBUTES
     end
 
     # returns a list of attributes that should be ignored in the merge

@@ -38,34 +38,16 @@ module MergeHelper
       lead = Lead.find(attr_hash['lead_id'])
       attr_hash['lead_id'] = html ? link_to_new_window(lead.full_name, lead_path(lead)) : lead.full_name
     end
-    attr_hash
-  end
 
-  def ordered_contact_merge_attributes
-    %w(
-      first_name
-      last_name
-      email
-      alt_email
-      phone
-      mobile
-      fax
-      do_not_call
-      born_on
-      title
-      background_info
-      source
-      department
-      facebook
-      twitter
-      blog
-      linkedin
-      user_id
-      assigned_to
-      reports_to
-      lead_id
-      access
-    )
+    # ------ Addresses should display in full
+    contact.address_attributes.keys.each do |attribute|
+      if attr_hash[attribute]
+        address_type = attribute.gsub('_address', '')
+        attr_hash[attribute] = render("shared/address_show", :asset => contact, :type => address_type)
+      end
+    end
+
+    attr_hash
   end
   
   # Account merge helper methods
@@ -106,22 +88,16 @@ module MergeHelper
       lead = Lead.find(attr_hash['lead_id'])
       attr_hash['lead_id'] = html ? link_to_new_window(lead.full_name, lead_path(lead)) : lead.full_name
     end
-    attr_hash
-  end
+    
+    # ------ Addresses should display in full
+    account.address_attributes.keys.each do |attribute|
+      if attr_hash[attribute]
+        address_type = attribute.gsub('_address', '')
+        attr_hash[attribute] = render("shared/address_show", :asset => account, :type => address_type)
+      end
+    end
 
-  def ordered_account_merge_attributes
-    %w(
-      name
-      email
-      website
-      phone
-      toll_free_phone
-      fax
-      background_info
-      user_id
-      assigned_to
-      access
-    )
+    attr_hash
   end
 
   # ---------------- Common Merge Helper Methods ---------------------
