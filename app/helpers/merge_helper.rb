@@ -68,16 +68,6 @@ module MergeHelper
     )
   end
   
-  # TODO POSSIBLY NOT USED, REMOVE??
-  # Adds 'edit_action => merge' to 'link_to_edit' generator.
-  def link_to_merge(contact)
-    link_to(t(:merge),
-      send("edit_contact_path", contact),
-      :remote  => true,
-      :onclick => "this.href += '?edit_action=merge&previous='+ crm.find_form('edit_contact');"
-    )
-  end
-  
   # Account merge helper methods
   # --------------------------------------------------------
 
