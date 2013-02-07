@@ -2,7 +2,7 @@ FactoryGirl.define do
 
   factory :account do
     user
-    assigned_to         nil
+    assignee            { FactoryGirl.create(:user) }
     name                { Faker::Company.name + rand(100).to_s }
     access              "Public"
     website             { FactoryGirl.generate(:website) }

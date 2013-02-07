@@ -2,6 +2,9 @@ FactoryGirl.define do
 
   factory :contact do
     assignee            { FactoryGirl.create(:user) }
+    user                { FactoryGirl.create(:user) }
+    lead                { FactoryGirl.create(:lead) }
+    account             { FactoryGirl.create(:account) }
     reports_to          nil
     first_name          { Faker::Name.first_name }
     last_name           { Faker::Name.last_name }

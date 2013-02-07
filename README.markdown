@@ -56,6 +56,7 @@ Be sure your code loads *after* ffcrm_merge has been initialised otherwise it wi
 TODO
 ====
 
+* Add ability to choose addresses to merge in UI
 * Create a version history note to record the merge
  * perhaps put paperclip on AccountAlias and ContactAlias. Something like `has_paper_trail :meta => { :related => :account }, :ignore => [ :id, :created_at, :updated_at ]`
 * Add email and phone to merge autocomplete to help identify entities

@@ -46,36 +46,71 @@ describe 'when merging accounts' do
     @duplicate.merge_with(@master)
   end
 
-  it "should include associations" do
-    @duplicate.merge_with(@master)
-    @master.reload
+  describe "one to one associations" do
+  
+    it "should take duplicate item" do
+      user_id = @duplicate.user_id
+      assigned_to = @duplicate.assigned_to
+      billing_address = @duplicate.billing_address
+      shipping_address = @duplicate.shipping_address
+      
+      @duplicate.merge_with(@master)
+      
+      expect(@master.user_id).to eq(user_id)
+      expect(@master.assigned_to).to eq(assigned_to)
+      expect(@master.billing_address).to eq(billing_address)
+      expect(@master.shipping_address).to eq(shipping_address)
+    end
     
-    emails = @duplicate.emails.dup
-    comments = @duplicate.comments.dup
-    opportunities = @duplicate.opportunities.dup
-    contacts = @duplicate.contacts.dup
-    tasks = @duplicate.tasks.dup
-    addresses = @duplicate.addresses.dup
-    tags = @duplicate.tags.dup
-    
-    expect(@master.user).to eq(@duplicate.user)
+    it "should ignore some duplicate attributes" do
+      user_id = @master.user_id
+      assigned_to = @master.assigned_to
+      billing_address = @master.billing_address
+      shipping_address = @master.shipping_address
 
-    expect(@master.emails.size).to eq(2)
-    expect(@master.emails).to include(*emails)
-    expect(@master.comments.size).to eq(2)
-    expect(@master.comments).to include(*comments)
-    expect(@master.opportunities.size).to eq(2)
-    expect(@master.opportunities).to include(*opportunities)
-    expect(@master.contacts.size).to eq(2) # master + duplicate
-    expect(@master.contacts).to include(*contacts)
-    expect(@master.tasks.size).to eq(2)
-    expect(@master.tasks).to include(*tasks)
-    expect(@master.addresses.size).to eq(2)
-    expect(@master.addresses).to include(*addresses)
-    expect(@master.tags.size).to eq(4)
-    expect(@master.tags).to include(*tags)
+      @duplicate.merge_with(@master, %w(user_id assigned_to billing_address shipping_address))
+      @master.reload
+
+      expect(@master.user_id).to eq(user_id)
+      expect(@master.assigned_to).to eq(assigned_to)
+      expect(@master.billing_address).to eq(billing_address)
+      expect(@master.shipping_address).to eq(shipping_address)
+    end
+
   end
   
+  describe "many to many associations" do
+
+    it "should be combined" do
+      emails = @duplicate.emails.dup
+      comments = @duplicate.comments.dup
+      opportunities = @duplicate.opportunities.dup
+      contacts = @duplicate.contacts.dup
+      tasks = @duplicate.tasks.dup
+      addresses = @duplicate.addresses.dup
+      tags = @duplicate.tags.dup
+      
+      @duplicate.merge_with(@master)
+      @master.reload
+      
+      expect(@master.emails.size).to eq(2)
+      expect(@master.emails).to include(*emails)
+      expect(@master.comments.size).to eq(2)
+      expect(@master.comments).to include(*comments)
+      expect(@master.opportunities.size).to eq(2)
+      expect(@master.opportunities).to include(*opportunities)
+      expect(@master.contacts.size).to eq(2) # master + duplicate
+      expect(@master.contacts).to include(*contacts)
+      expect(@master.tasks.size).to eq(2)
+      expect(@master.tasks).to include(*tasks)
+      expect(@master.addresses.size).to eq(2)
+      expect(@master.addresses).to include(*addresses)
+      expect(@master.tags.size).to eq(4)
+      expect(@master.tags).to include(*tags)
+    end
+  
+  end
+
   it "should copy all duplicate attributes" do
     duplicate_merge_attributes = @duplicate.merge_attributes
     @duplicate.merge_with(@master)
@@ -93,7 +128,7 @@ describe 'when merging accounts' do
     expect(@master.background_info).to eql(master_attributes['background_info'])
     expect(@master.phone).to eql(master_attributes['phone'])
     expect(@master.fax).to eql(master_attributes['fax'])
-    expect(@master.fax).to eql(master_attributes['assigned_to'])
+    expect(@master.assigned_to).to eql(master_attributes['assigned_to'])
     
     # Check that the merge has included some duplicate attributes
     expect(@master.category).to eql(duplicate_attributes['category'])

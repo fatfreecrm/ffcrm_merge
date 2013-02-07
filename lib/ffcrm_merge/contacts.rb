@@ -11,33 +11,28 @@ module Merge
       # even though the interface prevents this from happening.
       return false if master == self
 
-      # Perform all actions in an atomic transaction, so that if one part of the process fails, the
-      # whole merge can be rolled back.
-      Contact.transaction do
-        # ------ Remove ignored attributes from this contact
-        merge_attr = self.merge_attributes
-        ignored_attr.each { |attr| merge_attr.delete(attr) }
+      # ------ Remove ignored attributes from this contact
+      merge_attr = self.merge_attributes
+      ignored_attr.each { |attr| merge_attr.delete(attr) }
 
-        # ------ Merge class attributes
+      # Perform all actions in an atomic transaction, so that if one part of the process fails,
+      # the whole merge can be rolled back.
+      Contact.transaction do
+
+        # ------ Merge attributes
         master.update_attributes(merge_attr)
+
         # ------ Merge 'belongs_to' and 'has_one' associations
-        %w(user lead).each do |attr|
+        {'user_id' => 'user', 'lead_id' => 'lead', 'assigned_to' => 'assignee'}.each do |attr, method|
           unless ignored_attr.include?(attr)
-            master.send(attr + "=", self.send(attr))
+            master.send(method + "=", self.send(method))
           end
         end
-        # ------ Merge 'has_many' associations (each requires a special case)
-        self.tasks.each do |t|
-          t.asset = master; t.save!
-        end
-        self.emails.each do |e|
-          e.mediator = master; e.save!
-        end
-        self.comments.each do |c|
-          c.commentable = master; c.save!
-        end
-
-        # Copy addresses over
+        
+        # ------ Merge 'has_many' associations
+        self.tasks.each { |t| t.asset = master; t.save! }
+        self.emails.each { |e| e.mediator = master; e.save! }
+        self.comments.each { |c| c.commentable = master; c.save! }
         self.addresses.each{|a| a.addressable = master; a.save!}
 
         # Find all AccountContact records with the duplicate contact,
@@ -60,6 +55,7 @@ module Merge
         all_tags = (self.tags + master.tags).uniq
         master.tag_list = all_tags.map(&:name).join(", ")
         
+        # Call the merge_hook - useful if you have custom actions that need to happen during a merge
         master.merge_hook(self)
 
         if master.save!

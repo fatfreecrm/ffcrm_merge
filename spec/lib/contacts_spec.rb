@@ -41,34 +41,65 @@ describe "when merging contacts" do
     @duplicate.merge_with(@master)
   end
 
-  it "should include associations" do
-    @duplicate.merge_with(@master)
-    @master.reload
+  describe "one to one associations" do
+  
+    it "should take duplicate item" do
+      user_id = @duplicate.user_id
+      lead_id = @duplicate.lead_id
+      assigned_to = @duplicate.assigned_to
+      
+      @duplicate.merge_with(@master)
+      
+      expect(@master.user_id).to eq(user_id)
+      expect(@master.lead_id).to eq(lead_id)
+      expect(@master.assigned_to).to eq(assigned_to)
+    end
     
-    emails = @duplicate.emails.dup
-    comments = @duplicate.comments.dup
-    opportunities = @duplicate.opportunities.dup
-    tasks = @duplicate.tasks.dup
-    addresses = @duplicate.addresses.dup
-    tags = @duplicate.tags.dup
-    
-    expect(@master.user).to eq(@duplicate.user)
-    expect(@master.lead).to eq(@duplicate.lead)
-    expect(@master.assignee).to eq(@duplicate.assignee)
-    expect(@master.account).to eq(@duplicate.account)
+    it "should ignore some duplicate attributes" do
+      user_id = @master.user_id
+      lead_id = @master.lead_id
+      assigned_to = @master.assigned_to
+      
+      @duplicate.merge_with(@master, %w(user_id lead_id assigned_to))
+      @master.reload
+      
+      expect(@master.user_id).to eq(user_id)
+      expect(@master.lead_id).to eq(lead_id)
+      expect(@master.assigned_to).to eq(assigned_to)
+    end
 
-    expect(@master.emails.size).to eq(2)
-    expect(@master.emails).to include(*emails)
-    expect(@master.comments.size).to eq(2)
-    expect(@master.comments).to include(*comments)
-    expect(@master.opportunities.size).to eq(2)
-    expect(@master.opportunities).to include(*opportunities)
-    expect(@master.tasks.size).to eq(2)
-    expect(@master.tasks).to include(*tasks)
-    expect(@master.addresses.size).to eq(2)
-    expect(@master.addresses).to include(*addresses)
-    expect(@master.tags.size).to eq(4)
-    expect(@master.tags).to include(*tags)
+  end
+  
+  describe "many to many associations" do
+
+    it "should be combined" do
+      emails = @duplicate.emails.dup
+      comments = @duplicate.comments.dup
+      opportunities = @duplicate.opportunities.dup
+      tasks = @duplicate.tasks.dup
+      addresses = @duplicate.addresses.dup
+      tags = @duplicate.tags.dup
+      account_contact_ids = @duplicate.account_contact.id
+      
+      @duplicate.merge_with(@master)
+      @master.reload
+      
+      expect(@master.emails.size).to eq(2)
+      expect(@master.emails).to include(*emails)
+      expect(@master.comments.size).to eq(2)
+      expect(@master.comments).to include(*comments)
+      expect(@master.opportunities.size).to eq(2)
+      expect(@master.opportunities).to include(*opportunities)
+      expect(@master.tasks.size).to eq(2)
+      expect(@master.tasks).to include(*tasks)
+      expect(@master.addresses.size).to eq(2)
+      expect(@master.addresses).to include(*addresses)
+      expect(@master.tags.size).to eq(4)
+      expect(@master.tags).to include(*tags)
+      expect(AccountContact.where(:contact_id => @master).size).to eq(2)
+      expect(AccountContact.where(:contact_id => @master).map(&:id)).to include(*account_contact_ids)
+    end
+  
   end
   
   it "should copy all duplicate attributes" do
@@ -80,6 +111,7 @@ describe "when merging contacts" do
     ignored_attributes = %w(title source background_info phone fax linkedin first_name alt_email)
     duplicate_attributes = @duplicate.merge_attributes.dup
     master_attributes = @master.merge_attributes.dup
+
     @duplicate.merge_with(@master, ignored_attributes)
 
     # Check that the merge has ignored some duplicate attributes
@@ -187,9 +219,9 @@ describe "when merging contacts" do
       expect(@master.phone).to eql(master_attributes['phone'])
 
       # check association assigments are rolled back
-      expect(@master.user).to eq(master_attributes['user'])
-      expect(@master.lead).to eq(master_attributes['lead'])
-      expect(@master.account).to eq(master_attributes['account'])
+      expect(@master.user_id).to eq(master_attributes['user_id'])
+      expect(@master.lead_id).to eq(master_attributes['lead_id'])
+      expect(@master.account_id).to eq(master_attributes['account_id'])
 
     end
   

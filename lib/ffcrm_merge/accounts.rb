@@ -11,39 +11,30 @@ module Merge
       # even though the interface prevents this from happening.
       return false if master == self
 
-      # Perform all actions in an atomic transaction, so that if one part of the process fails, the
-      # whole merge can be rolled back.
+      # ------ Remove ignored attributes from this account
+      merge_attr = self.merge_attributes
+      ignored_attr.each { |attr| merge_attr.delete(attr) }
+
+      # Perform all actions in an atomic transaction, so that if one part of the process fails,
+      # the whole merge can be rolled back.
       Account.transaction do
 
-        # ------ Remove ignored attributes from this account
-        merge_attr = self.merge_attributes
-        ignored_attr.each { |attr| merge_attr.delete(attr) }
-
-        # ------ Merge class attributes
+        # ------ Merge attributes
         master.update_attributes(merge_attr)
+
         # ------ Merge 'belongs_to' and 'has_one' associations
-        %w(user assignee billing_address shipping_address).each do |attr|
+        {'user_id' => 'user', 'assigned_to' => 'assignee', 'billing_address' => 'billing_address', 'shipping_address' => 'shipping_address' }.each do |attr, method|
           unless ignored_attr.include?(attr)
-            master.send(attr + "=", self.send(attr))
+            master.send(method + "=", self.send(method))
           end
         end
-        # ------ Merge 'has_many' associations (each requires a special case)
-        self.contacts.each do |t|
-          t.account = master; t.save!
-        end
-        self.tasks.each do |t|
-          t.asset = master; t.save!
-        end
-        self.emails.each do |e|
-          e.mediator = master; e.save!
-        end
-        self.comments.each do |c|
-          c.commentable = master; c.save!
-        end
-
-        self.opportunities.each do |o|
-          o.account = master; o.save!
-        end
+        
+        # ------ Merge 'has_many' associations
+        self.contacts.each { |t| t.account = master; t.save! }
+        self.tasks.each { |t| t.asset = master; t.save! }
+        self.emails.each { |e| e.mediator = master; e.save! }
+        self.comments.each { |c| c.commentable = master; c.save! }
+        self.opportunities.each { |o| o.account = master; o.save! }
         
         # Merge tags
         all_tags = (self.tags + master.tags).uniq
@@ -54,6 +45,7 @@ module Merge
         tmp_name = self.name
         self.update_attribute :name, "#{tmp_name} is being merged - #{self.created_at.to_s}"
         
+        # Call the merge_hook - useful if you have custom actions that need to happen during a merge
         master.merge_hook(self)
 
         if master.save!
