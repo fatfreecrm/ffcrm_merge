@@ -10,22 +10,22 @@
           = field_group.label
         %p
           Only fields that contain data are shown.
-        %table{ :cellpadding => "3px", :style => "text-align:left; border-collapse: collapse; border: none;" }
+        %table
           %tr
             %th
-            %th{ :valign => :top, :style => "font-size: 13px;", :width => "40%" }
+            %th{ :class => 'merge_title', :width => "40%" }
               = "#{t(:duplicate_asset, :asset => t(:contact))}: #{@duplicate.name}"
-            %th{ :valign => :top, :style => "font-size: 13px;", :width => "40%" }
+            %th{ :class => 'merge_title', :width => "40%" }
               = "#{t(:master_asset, :asset => t(:contact))}: #{@master.name}"
             - duplicate_attributes.keys.each do |attribute|
               - duplicate_value, master_value = duplicate_attributes[attribute], master_attributes[attribute]
               - unless duplicate_value.blank? and master_value.blank?
-                %tr{ :style => "border-bottom:1px dotted silver;" }
+                %tr
                   %th{ :width => "20%" }
-                    .label #{attribute.humanize}
+                    .label #{t(attribute, :default => attribute.humanize,  :scope => [:activerecord, :attributes, @master.class.to_s.underscore])}
                   %td
                     = ignore_merge_radio_button("no",  attribute, default_merge[attribute]) unless duplicate_value.blank?
-                    .label{:style => "display: inline;"} #{duplicate_value}
+                    .label #{duplicate_value}
                   %td
                     = ignore_merge_radio_button("yes", attribute, default_merge[attribute]) unless master_value.blank?
-                    .label{:style => "display: inline;"} #{master_value}
+                    .label #{master_value}

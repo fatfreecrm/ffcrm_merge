@@ -2,8 +2,8 @@
 
 %div{:id => "account_#{@duplicate.id}"}
 
-  - duplicate_attributes = contact_merge_attributes(@duplicate)
-  - master_attributes    = contact_merge_attributes(@master)
+  - duplicate_attributes = account_merge_attributes(@duplicate)
+  - master_attributes    = account_merge_attributes(@master)
   - default_merge        = calculate_default_merge(duplicate_attributes, master_attributes)
 
   .remote.merge_form
@@ -26,7 +26,8 @@
                 = "#{t(:duplicate_asset, :asset => t(:account))}: #{@duplicate.name}"
               %th{ :class => 'merge_title', :width => "40%" }
                 = "#{t(:master_asset, :asset => t(:account))}: #{@master.name}"
-              - master_attributes.keys.each do |attribute|
+              - attributes_without_custom_fields = master_attributes.keys.reject{|k| k =~ /^cf_/}
+              - attributes_without_custom_fields.each do |attribute|
                 - duplicate_value, master_value = duplicate_attributes[attribute], master_attributes[attribute]
                 - unless duplicate_value.blank? and master_value.blank?
                   %tr

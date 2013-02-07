@@ -6,7 +6,13 @@ module ContactsMergeHelper
   # --------------------------------------------------------
   def contact_merge_attributes(contact, html = true)
     attr_hash = contact.merge_attributes
+
     # ------ Humanize attributes
+
+    merge_boolean_attributes!(attr_hash)
+    merge_subscribed_users_attributes!(attr_hash)
+    merge_address_attributes!(attr_hash, contact)
+    
     attr_hash['source'] = attr_hash['source'].humanize if attr_hash['source']
     # ------ Make websites into links and emails into mailto links
     if html
@@ -21,8 +27,7 @@ module ContactsMergeHelper
         end
       end
     end
-    # ------ Boolean values should be yes/no
-    attr_hash['do_not_call'] = attr_hash['do_not_call'] == true ? "Yes" : "No"
+
     # ------ User relationships should display user's full name
     %w(assigned_to reports_to user_id).each do |attribute|
       if attr_hash[attribute]
@@ -30,18 +35,11 @@ module ContactsMergeHelper
         attr_hash[attribute] = html ? link_to_new_window(user.full_name, user_path(user)) : user.full_name
       end
     end
+
     # ------ Lead relationship should display lead's full name
     if attr_hash['lead_id']
       lead = Lead.find(attr_hash['lead_id'])
       attr_hash['lead_id'] = html ? link_to_new_window(lead.full_name, lead_path(lead)) : lead.full_name
-    end
-
-    # ------ Addresses should display in full
-    contact.address_attributes.keys.each do |attribute|
-      if attr_hash[attribute]
-        address_type = attribute.gsub('_address', '')
-        attr_hash[attribute] = render("shared/address_show", :asset => contact, :type => address_type)
-      end
     end
 
     attr_hash

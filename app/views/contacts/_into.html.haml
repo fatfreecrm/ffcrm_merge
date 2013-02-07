@@ -26,7 +26,8 @@
                 = "#{t(:duplicate_asset, :asset => t(:contact))}: #{@duplicate.name}"
               %th{ :class => 'merge_title', :width => "40%" }
                 = "#{t(:master_asset, :asset => t(:contact))}: #{@master.name}"
-              - master_attributes.keys.each do |attribute|
+              - attributes_without_custom_fields = master_attributes.keys.reject{|k| k =~ /^cf_/}
+              - attributes_without_custom_fields.each do |attribute|
                 - duplicate_value, master_value = duplicate_attributes[attribute], master_attributes[attribute]
                 - unless duplicate_value.blank? and master_value.blank?
                   %tr

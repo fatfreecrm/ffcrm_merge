@@ -32,6 +32,9 @@ New in version 1.3 (steveyken)
 * Fixed bug where assigned_to, user_id and reports_to were not always set correctly
 * Added ability to merge addresses visually
 * Moved styles out of template and into css
+* Custom field labels are translated on merge form
+** Expects the translation lookup path to be 'active_record.attributes.contact.cf_your_custom_field_name'
+* Improved subscribed_users formatting
 
 MERGE HOOKS
 ===========
