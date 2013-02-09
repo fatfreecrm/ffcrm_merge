@@ -59,9 +59,10 @@ end
 
 Be sure your code loads *after* ffcrm_merge has been initialised otherwise it will be replaced with a blank stub method.
 
-TODO
+TODO / KNOWN ISSUES
 ====
 
+* Permissions are NOT merged. The merged record retains permissions of master record.
 * Create a version history note to record the merge
  * perhaps put paperclip on AccountAlias and ContactAlias. Something like `has_paper_trail :meta => { :related => :account }, :ignore => [ :id, :created_at, :updated_at ]`
 * Add email and phone to merge autocomplete to help identify entities
