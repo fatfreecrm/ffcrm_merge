@@ -35,6 +35,7 @@ New in version 1.3 (steveyken)
 * Custom field labels are translated on merge form
 ** Expects the translation lookup path to be 'active_record.attributes.contact.cf_your_custom_field_name'
 * Improved subscribed_users formatting
+* Fixed javascript bug where not all merge links were yielding popups. (Have to listen for both jQuery and prototype events.)
 
 MERGE HOOKS
 ===========
