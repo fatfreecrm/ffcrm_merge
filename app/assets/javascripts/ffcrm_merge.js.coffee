@@ -37,13 +37,18 @@
       after_hide  : ->
     })
 
-  # Apply pop up to merge links
+  # Apply pop up to merge links when document is loaded
   $j(document).ready ->
     $j("a[data-merge]").each(crm.merge_link)
 
+  # Apply pop up to merge links when jquery event (e.g. search) occurs
+  $j(document).ajaxComplete ->
+    $j("a[data-merge]").each(crm.merge_link)
+
+  # Apply pop up to merge links when protoype event (e.g. cancel edit) occurs
   Ajax.Responders.register({
     onComplete: ->
       $j("a[data-merge]").each(crm.merge_link)
   })
-        
+
 ) jQuery
