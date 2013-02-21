@@ -1,5 +1,3 @@
-module FatFreeCRM
-  module Merge
-    VERSION = '1.3'
-  end
+module FfcrmMerge
+  VERSION = '1.3.1'
 end

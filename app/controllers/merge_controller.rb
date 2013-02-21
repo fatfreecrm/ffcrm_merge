@@ -26,14 +26,10 @@ class MergeController < EntitiesController
       flash[:error] = I18n.t('assets_merge_invalid', :name => @master.name)
     elsif !@duplicate.valid?
       flash[:error] = I18n.t('assets_merge_invalid', :name => @duplicate.name)
-    else
-      if request.put?
-        if do_merge(@master, @duplicate)
-          redirect_to(@master) and return
-        else
-          flash[:error] = I18n.t('assets_merge_error', :assets => klass.to_s.humanize)
-        end
-      end
+    elsif request.put?
+      do_merge(@master, @duplicate)
+      @success = true # do_merge will throw error if problem
+      flash[:error] = I18n.t('assets_merge_error', :assets => klass.to_s.humanize) unless @success
     end
 
     respond_with(@duplicate)

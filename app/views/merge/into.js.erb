@@ -6,7 +6,20 @@
 
   <%# ensure we replace with either @master or @duplicate depending on the id in @previous %>
   <% @entity = (@master.id.to_s == @previous.gsub("#{klass_name}_", '')) ? @master : @duplicate %>
-  jQuery('#<%=@previous%>').replaceWith('<%= j(render :partial => "#{klass_name.tableize}/#{klass_name}", :collection => [ @entity ]) %>')
+  jQuery('#<%=@previous%>').replaceWith('<%= j(render :partial => "#{klass_name.tableize}/#{klass_name}", :collection => [ @entity ]) %>');
+
+<% elsif @success %>
+
+  <% if @previous.blank? %>
+    <%# we are not on the index page so redirect to the merged entity %>
+    jQuery(window.location.href = "<%= polymorphic_url(@master) %>");
+  <% else %>
+    <% remove_id = (@master.id.to_s == @previous.gsub("#{klass_name}_", '')) ? @duplicate.id : @master.id %>
+    jQuery('#<%=klass_name%>_<%=remove_id%>').remove();
+    jQuery('#<%=@previous%>').replaceWith('<%= j(render :partial => "#{klass_name.tableize}/#{klass_name}", :collection => [ @master ]) %>');
+    jQuery('#<%=@previous%>').effect('highlight', 1000);
+    jQuery('#recently').replaceWith('<%= j(render :partial => "shared/recently") %>');
+  <% end %>
 
 <% else %>
 

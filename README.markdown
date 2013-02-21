@@ -33,9 +33,11 @@ New in version 1.3 (steveyken)
 * Added ability to merge addresses visually
 * Moved styles out of template and into css
 * Custom field labels are translated on merge form
-** Expects the translation lookup path to be 'active_record.attributes.contact.cf_your_custom_field_name'
+ * Expects the translation lookup path to be 'active_record.attributes.contact.cf_your_custom_field_name'
 * Improved subscribed_users formatting
 * Fixed javascript bug where not all merge links were yielding popups. (Have to listen for both jQuery and prototype events.)
+* Fixed final redirect to merged entity when using direct url to merge (v1.3.1)
+* Corrected module namespacing (v1.3.1)
 
 MERGE HOOKS
 ===========

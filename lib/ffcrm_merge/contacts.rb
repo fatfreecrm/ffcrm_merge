@@ -1,4 +1,4 @@
-module Merge
+module FfcrmMerge
   module Contacts
   
     IGNORED_ATTRIBUTES = %w(updated_at created_at deleted_at id)
@@ -92,10 +92,10 @@ module Merge
     def merge_attributes
       attrs = self.attributes.dup.reject{ |k,v| ignored_merge_attributes.include?(k) }
       attrs.merge!(address_attributes) # we want addresses to be shown in the UI
-      attrs.sort do |a,b|
+      sorted = attrs.sort do |a,b|
         (ordered_merge_attributes.index(a.first) || 1000) <=> (ordered_merge_attributes.index(b.first) || 1000)
       end
-      attrs
+      Hash[*sorted.flatten]
     end
     
     # These attributes need to be included on the merge form but ignore in update_attributes
@@ -128,14 +128,3 @@ module Merge
 
   end
 end
-
-# Include Merge::Contacts methods on Contact model
-Contact.class_eval do
-  include Merge::Contacts
-end
-
-# TODO lazy loading would be better here
-# something like (note we haven't defined on_load for contact class yet)
-# ActiveSupport.on_load :contact do
-#  include Merge::Contacts
-# end
