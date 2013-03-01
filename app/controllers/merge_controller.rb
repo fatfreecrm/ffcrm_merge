@@ -5,6 +5,8 @@
 class MergeController < EntitiesController
 
   skip_load_and_authorize_resource :only => [:into, :aliases]
+  skip_before_filter :require_user, :only => :aliases
+  before_filter :require_application, :only => :aliases
 
   respond_to :html, :js
   
@@ -38,11 +40,11 @@ class MergeController < EntitiesController
   #
   # List out the aliases for a given set of contact ids
   #
-  # GET  /merge/contact/aliases?ids=1,2,3,4                                   JS
+  # GET   /merge/contact/aliases?ids=1,2,3,4&format=js                          JS
+  # POST  /merge/contact/aliases?ids=1,2,3,4&format=js                          JS
   def aliases
-    ids = params.has_key?('ids') ? params[:ids].split(',') : []
-    model_name = "#{klass}Alias".constantize    # klass is carefully sanitized
-    @aliases = model_name.ids_with_alias(ids)
+    model_name = "#{klass}Alias".constantize        # klass is carefully sanitized
+    @aliases = model_name.ids_with_alias( santize_ids )
     respond_to do |format|
       format.js # aliases.js.erb
     end
@@ -65,11 +67,31 @@ protected
     name = params[:klass_name].classify
     klass = (ENTITIES.include?(name) ? name.constantize : nil)
   end
+  
+  # Carefully sanitize params[:ids] by converting to integers and remove 0's since 'test'.to_i == 0
+  def santize_ids
+    (params[:ids] || []).split(',').flatten.map(&:to_i).reject{|x| x == 0}.compact
+  end
 
   def do_merge(master, duplicate)
     # Prepare the fields we want to ignore from the duplicate contact.
     ignored = params["ignore"]["_self"].map{|k,v| k if v == "yes" }.compact
     duplicate.merge_with(master, ignored)
+  end
+  
+  # rudimentary API KEY authentication for the aliases action
+  def require_application
+    error = ""
+    if !Setting.ffcrm_merge.present?
+      error = 'No api key defined in Setting.ffcrm_merge. Rejecting all requests.'
+    elsif params[:api_key] == Setting.ffcrm_merge[:api_key]
+      return true # skip the error rendering
+    else
+      error = 'Please specify a valid api_key in the url.'
+    end
+    
+    render :js => {:errors => error}.to_json
+    false
   end
 
 end

@@ -19,6 +19,29 @@ It is also possible to navigate directly to the merge page using:
 
   http://www.example.com/merge/contacts/1/into/2
   
+Aliases
+=======
+  
+Merges are recorded in the ContactAliases and AccountAliases tables respectively. This is particularly
+useful for url redirection e.g. if a person goes to the url of a contact who has been merged, the CRM will
+redirect to the newly merged object.
+
+The list of aliases is also exposed over an API. This can be used by other systems to update their entries.
+Say, for example, you have another system that accesses CRM and stores contact ids. When a merge occurs, you
+need to be able to update the other system. The following url call can help with this. (Responds to json)
+
+  http://www.example.com/merge/contact/aliases.js?ids=1,2,3,4,5&api_key=XYZ
+  
+It will return a json hash of any ids that have been merged. So for example, if contacts 1 and 2 have been merged
+into 11 and 12 respectively then the output will be:
+
+  {'1' => '11', '2' => '12'}
+ 
+(Note that references to 3 and 4 are dropped as they have not been merged.)
+
+The API KEY should be added to your settings.yml file in CRM. See config/settings.yml.example for more details.
+
+  
 Installation to FatFreeCRM
 =====
 
@@ -47,6 +70,7 @@ New in version 1.3 (steveyken)
 * Fixed javascript bug where not all merge links were yielding popups. (Have to listen for both jQuery and prototype events.)
 * Fixed final redirect to merged entity when using direct url to merge (v1.3.1)
 * Corrected module namespacing (v1.3.1)
+* Made aliases more production ready. Added api_key authentication (see docs)
 
 MERGE HOOKS
 ===========

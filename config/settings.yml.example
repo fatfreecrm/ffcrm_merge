@@ -1,0 +1,10 @@
+#
+# Api key for access to merge/contacts/aliases path
+#
+# Add the following to your fat_free_crm settings.yml file.
+# You should change the api key below to something different.
+#
+
+--- !map:HashWithIndifferentAccess
+ffcrm_merge:
+  api_key: ABA16585FC3CED6CB2D3C8D682BF37B3

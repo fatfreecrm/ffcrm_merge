@@ -14,6 +14,7 @@ module FfcrmMerge
 
       require 'ffcrm_merge/merge_view_hooks'
       require 'ffcrm_merge/merge_not_found_controller'
+
     end
     
     config.generators do |g|

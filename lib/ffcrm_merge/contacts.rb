@@ -95,7 +95,10 @@ module FfcrmMerge
       sorted = attrs.sort do |a,b|
         (ordered_merge_attributes.index(a.first) || 1000) <=> (ordered_merge_attributes.index(b.first) || 1000)
       end
-      Hash[*sorted.flatten]
+      sorted.inject({}) do |h, item|
+        h[item.first] = item.second
+        h
+      end
     end
     
     # These attributes need to be included on the merge form but ignore in update_attributes

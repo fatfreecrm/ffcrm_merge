@@ -26,15 +26,13 @@ class AccountAlias < ActiveRecord::Base
 
   validates_presence_of :account_id, :destroyed_account_id
   
-  # Takes a list of ids, returns a list of ids with deleted / merged account ids
-  # replaced with current ids. E.g. {"9876"=>"1490", "1491"=>"1491"}
+  # Takes a list of ids, returns a list of ids that have been merged 
+  # E.g. If ids = [9876, 1111] returns {"9876"=>"1490"}
   def self.ids_with_alias(ids)
     h = {}
     return {} if ids.nil?
-    ids.each { |id| h[id.to_s] = id.to_s }
-    where(:destroyed_account_id => ids).each do |a|
-      # :destroyed_id => :current_id
-      h[a.destroyed_account_id.to_s] = a.account_id.to_s
+    where(:destroyed_account_id => ids).each do |aa|
+      h[aa.destroyed_account_id.to_s] = aa.account_id.to_s
     end
     h
   end
