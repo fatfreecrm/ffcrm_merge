@@ -43,7 +43,9 @@ module FfcrmMerge
         self.contacts.each do |contact|
           # Check if contact belongs to master already? Can happen in CRM's where contacts can belong to multiple accounts
           if AccountContact.where(:contact_id => contact.id).where(:account_id => master.id).size == 0
-            AccountContact.create(:contact_id => contact.id, :account_id => master.id)
+            ac = AccountContact.where(:contact_id => contact.id).where(:account_id => self.id).first
+            ac.account_id = master.id
+            ac.save!
           end
         end
 
