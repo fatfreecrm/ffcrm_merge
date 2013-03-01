@@ -156,6 +156,15 @@ describe 'when merging accounts' do
     expect(@master.assigned_to).to eql(duplicate_attributes['assigned_to'])
 
   end
+  
+  it "should successful merge a contact that belong to both accounts without failing" do
+    original_master_contacts = @master.contacts.map(&:id)
+    original_duplicate_contacts = @duplicate.contacts.map(&:id)
+    expected_contacts = Set.new(original_master_contacts) + Set.new(original_duplicate_contacts)
+    @master.contacts << @duplicate.contacts
+    @duplicate.merge_with(@master)
+    expect(@master.contacts.map(&:id)).to eql(expected_contacts.to_a)
+  end
 
   describe "account alias" do
   

@@ -38,9 +38,16 @@ module FfcrmMerge
             master.send(attr + "=", self.send(attr))
           end
         end
-        
+
+        # ------ Merge contacts
+        self.contacts.each do |contact|
+          # Check if contact belongs to master already? Can happen in CRM's where contacts can belong to multiple accounts
+          if AccountContact.where(:contact_id => contact.id).where(:account_id => master.id).size == 0
+            AccountContact.create(:contact_id => contact.id, :account_id => master.id)
+          end
+        end
+
         # ------ Merge 'has_many' associations
-        self.contacts.each { |t| t.account = master; t.save! }
         self.tasks.each { |t| t.asset = master; t.save! }
         self.emails.each { |e| e.mediator = master; e.save! }
         self.comments.each { |c| c.commentable = master; c.save! }
