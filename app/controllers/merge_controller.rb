@@ -9,9 +9,9 @@ class MergeController < EntitiesController
   before_filter :require_application, :only => :aliases
 
   respond_to :html, :js
-  
+
   helper_method :klass
-  
+
   # GET  /merge/contact/1/into/2                                           HTML
   # GET  /merge/contact/1/into/2                                             JS
   # PUT  /merge/account/1/into/2                                           HTML
@@ -24,9 +24,9 @@ class MergeController < EntitiesController
     authorize! :manage, @duplicate
 
     # don't merge if either is invalid to start with
-    if !@master.valid?
+    if !valid_object?(@master)
       flash[:error] = I18n.t('assets_merge_invalid', :name => @master.name)
-    elsif !@duplicate.valid?
+    elsif !valid_object?(@duplicate)
       flash[:error] = I18n.t('assets_merge_invalid', :name => @duplicate.name)
     elsif request.put?
       do_merge(@master, @duplicate)
@@ -36,7 +36,7 @@ class MergeController < EntitiesController
 
     respond_with(@duplicate)
   end
-  
+
   #
   # List out the aliases for a given set of contact ids
   #
@@ -56,7 +56,7 @@ protected
     flash[:warning] = t(:msg_asset_not_authorized, klass.to_s.humanize.downcase)
     redirect_to :controller => klass.to_s.underscore.pluralize, :action => :index
   end
-  
+
   def respond_to_not_found
     flash[:warning] = t(:msg_asset_not_available, klass.to_s.humanize.downcase)
     redirect_to :controller => klass.to_s.underscore.pluralize, :action => :index
@@ -67,7 +67,7 @@ protected
     name = params[:klass_name].classify
     klass = (ENTITIES.include?(name) ? name.constantize : nil)
   end
-  
+
   # Carefully sanitize params[:ids] by converting to integers and remove 0's since 'test'.to_i == 0
   def santize_ids
     (params[:ids] || []).split(',').flatten.map(&:to_i).reject{|x| x == 0}.compact
@@ -78,7 +78,7 @@ protected
     ignored = params["ignore"]["_self"].map{|k,v| k if v == "yes" }.compact
     duplicate.merge_with(master, ignored)
   end
-  
+
   # rudimentary API KEY authentication for the aliases action
   def require_application
     error = ""
@@ -89,9 +89,22 @@ protected
     else
       error = 'Please specify a valid api_key in the url.'
     end
-    
+
     render :js => {:errors => error}.to_json
     false
+  end
+
+  # Return true if object is valid, except in case where object is account
+  # AND just account name is duplicate. That case is dealt with during the merge
+  def valid_object?(obj)
+
+    if obj.class.to_s == 'Account'
+      v = obj.valid?
+      obj.errors.keys.compact == [:name] || v
+    else
+      obj.valid?
+    end
+
   end
 
 end
