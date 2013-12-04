@@ -95,12 +95,16 @@ end
 
 Be sure your code loads *after* ffcrm_merge has been initialised otherwise it will be replaced with a blank stub method.
 
-TODO / KNOWN ISSUES
+KNOWN ISSUES
 ====
-
 * Permissions are NOT merged. The merged record retains permissions of master record.
+
+TODO
+====
+* When viewing a contact or account, a helper could fire an ajax call that looks for possible merges and returns them on screen. The icon for this could be a discrete (!) exclamation point, which, when clicked on, opens a box of possible merge candidates.
+* When clicking the merge button in the contact or account index view, likely candidates for a merge should appear at the top of the box, above the search. Matching should be done on email and phone number.
 * Create a version history note to record the merge
- * perhaps put paperclip on AccountAlias and ContactAlias. Something like `has_paper_trail :meta => { :related => :account }, :ignore => [ :id, :created_at, :updated_at ]`
+ * perhaps put papertail on AccountAlias and ContactAlias. Something like `has_paper_trail :meta => { :related => :account }, :ignore => [ :id, :created_at, :updated_at ]`
 * Add email and phone to merge autocomplete to help identify entities
 
 Copyright (c) 2013 Nathan Broadbent, Stephen Kenworthy. Crossroads Foundation, released under the MIT license
