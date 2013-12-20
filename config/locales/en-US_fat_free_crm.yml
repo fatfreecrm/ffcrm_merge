@@ -1,15 +1,15 @@
+---
 en-US:
-
-  # Merge
-  #----------------------------------------------------------------------------
   merge: Merge
   merge_into_info: Please select which data you would like to merge
   switch_duplicate_and_master: Reverse order (Duplicate &harr; Master)
-  
   merge_assets: Merge %{assets}
   merge_asset_popup_label: Which %{asset} would you like to merge into?
   duplicate_asset: Duplicate %{asset}
   master_asset: Master %{asset}
-  confirm_assets_merge: Are you sure you want to merge these %{assets}? This action is final and cannot be reversed.
-  assets_merge_error: Sorry, an error occurred while trying to merge %{assets}. The %{assets} have not been merged.
-  assets_merge_invalid: %{name} is invalid. Please edit and correct the errors before merging.
+  confirm_assets_merge: Are you sure you want to merge these %{assets}? This action
+    is final and cannot be reversed.
+  assets_merge_error: Sorry, an error occurred while trying to merge %{assets}. The
+    %{assets} have not been merged.
+  assets_merge_invalid: ! '%{name} is invalid. Please edit and correct the errors
+    before merging.'
