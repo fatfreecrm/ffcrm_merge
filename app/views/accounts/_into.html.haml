@@ -9,9 +9,9 @@
   .remote.merge_form
     = form_for(@duplicate, :url => into_merge_path(:klass_name => 'accounts', :duplicate_id => @duplicate.id, :master_id => @master.id), :html => one_submit_only(:account), :remote => true) do |f|
       = link_to_close into_merge_path(:klass_name => 'accounts', :duplicate_id => @duplicate.id, :master_id => @master.id, :previous => @previous)
-      
+
       %h2 Merge "#{@duplicate.name}" into "#{@master.name}"
-      %h3= link_to(t('switch_duplicate_and_master').html_safe, "#", :onclick => "crm.load_merge_form('accounts', '#{@duplicate.id}', '#{@master.id}', '#{@previous}');")
+      %h3= link_to(t('switch_duplicate_and_master').html_safe, "#", :onclick => "ffcrm_merge.load_form('accounts', '#{@duplicate.id}', '#{@master.id}', '#{@previous}');")
       = hidden_field_tag :previous, @previous
       = flash[:error] if flash[:error]
       .subtitle
@@ -52,7 +52,7 @@
                     = link_to tag.name, '#'
 
       = render :partial => "merge/custom_fields", :locals => {:master => @master, :duplicate => @duplicate}
-      
+
       .section
         %h3= "Additional data from #{@duplicate.name} will also be merged"
         %ul
