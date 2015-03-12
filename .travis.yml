@@ -1,0 +1,8 @@
+language: ruby
+rvm:
+  - 2.2.1
+
+bundler_args: --path=vendor/bundle --without heroku
+
+# Run specs
+script: "bundle exec rake"

@@ -19,7 +19,6 @@ FactoryGirl.define do
     persistence_token   "d7cdeffd3625f7cb265b21126b85da7c930d47c4a708365c20eb857560055a6b57c9775becb8a957dfdb46df8aee17eb120a011b380e9cc0882f9dfaa2b7ba26"
     perishable_token    "TarXlrOPfaokNOzls2U8"
     single_access_token nil
-    last_request_at     { FactoryGirl.generate(:time) }
     current_login_at    { FactoryGirl.generate(:time) }
     last_login_at       { FactoryGirl.generate(:time) }
     last_login_ip       "127.0.0.1"
