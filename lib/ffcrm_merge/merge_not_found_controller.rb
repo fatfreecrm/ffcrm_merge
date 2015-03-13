@@ -15,26 +15,34 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #------------------------------------------------------------------------------
 
-%w(AccountsController ContactsController).each do |controller|
-  controller.classify.constantize.class_eval do
+ActiveSupport.on_load(:action_controller) do
+  [AccountsController, ContactsController].each do |controller|
+    controller.class_eval do
 
-    private
+      rescue_from ActiveRecord::RecordNotFound, with: :respond_to_not_found_with_merged
 
-    #
-    #----------------------------------------------------------------------------
-    # If contacts/1 is merged into contacts/2 then GET contacts/1 redirects to GET contacts/2
-    def respond_to_not_found_with_merged(*types)
-      alias_klass = "#{klass}Alias".constantize   # AccountAlias
-      entity_method = "#{klass.to_s.downcase}_id" # account_id
-      finder = :"destroyed_#{entity_method}"      # destroyed_account_id
-      if record = alias_klass.where(finder => params[:id]).limit(1).first
-        redirect_to :id => record.send(entity_method)
-      else
-        respond_to_not_found_without_merged
+      private
+      #
+      #----------------------------------------------------------------------------
+      # If contacts/1 is merged into contacts/2 then GET contacts/1 redirects to GET contacts/2
+      def respond_to_not_found_with_merged
+        klass_name = controller_name.classify
+        alias_klass = "#{klass_name}Alias".constantize   # AccountAlias
+        entity_method = "#{klass_name.downcase}_id" # account_id
+        finder = :"destroyed_#{entity_method}"      # destroyed_account_id
+        if record = alias_klass.where(finder => params[:id]).limit(1).first
+          redirect_to id: record.send(entity_method)
+        else
+          # copied from ApplicationController#respond_to_not_found
+          flash[:warning] = t(:msg_asset_not_available, klass_name)
+          respond_to do |format|
+            format.html { redirect_to(action: :index) }
+            format.js   { render text: 'window.location.reload();' }
+            format.json { render text: flash[:warning],  status: :not_found }
+            format.xml  { render xml: [flash[:warning]], status: :not_found }
+          end
+        end
       end
     end
-    alias_method_chain :respond_to_not_found, :merged
-
   end
-
 end

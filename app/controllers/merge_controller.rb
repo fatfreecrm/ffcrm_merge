@@ -4,9 +4,9 @@
 #
 class MergeController < EntitiesController
 
-  skip_load_and_authorize_resource :only => [:into, :aliases]
-  skip_before_filter :require_user, :only => :aliases
-  before_filter :require_application, :only => :aliases
+  skip_load_and_authorize_resource only: [:into, :aliases]
+  skip_before_filter :require_user, only: :aliases
+  before_filter :require_application, only: :aliases
 
   respond_to :html, :js
 
@@ -25,13 +25,12 @@ class MergeController < EntitiesController
 
     # don't merge if either is invalid to start with
     if !valid_object?(@master)
-      flash[:error] = I18n.t('assets_merge_invalid', :name => @master.name)
+      flash[:error] = I18n.t('assets_merge_invalid', name: @master.name)
     elsif !valid_object?(@duplicate)
-      flash[:error] = I18n.t('assets_merge_invalid', :name => @duplicate.name)
-    elsif request.put?
-      do_merge(@master, @duplicate)
-      @success = true # do_merge will throw error if problem
-      flash[:error] = I18n.t('assets_merge_error', :assets => klass.to_s.humanize) unless @success
+      flash[:error] = I18n.t('assets_merge_invalid', name: @duplicate.name)
+    elsif request.patch?
+      @success = do_merge(@master, @duplicate)
+      flash[:error] = I18n.t('assets_merge_error', assets: klass.name.downcase.pluralize) if !@success
     end
 
     respond_with(@duplicate)
@@ -54,12 +53,12 @@ protected
 
   def respond_to_access_denied
     flash[:warning] = t(:msg_asset_not_authorized, klass.to_s.humanize.downcase)
-    redirect_to :controller => klass.to_s.underscore.pluralize, :action => :index
+    redirect_to controller: klass.to_s.underscore.pluralize, action: :index
   end
 
   def respond_to_not_found
     flash[:warning] = t(:msg_asset_not_available, klass.to_s.humanize.downcase)
-    redirect_to :controller => klass.to_s.underscore.pluralize, :action => :index
+    redirect_to controller: klass.to_s.underscore.pluralize, action: :index
   end
 
   # Override entity controller, this must be carefully sanitized so arbitary klasses aren't allowed
@@ -81,30 +80,21 @@ protected
 
   # rudimentary API KEY authentication for the aliases action
   def require_application
-    error = ""
-    if !Setting.ffcrm_merge.present?
-      error = 'No api key defined in Setting.ffcrm_merge. Rejecting all requests.'
-    elsif params[:api_key] == Setting.ffcrm_merge[:api_key]
-      return true # skip the error rendering
-    else
-      error = 'Please specify a valid api_key in the url.'
+    unless Setting.ffcrm_merge.present? and params[:api_key] == Setting.ffcrm_merge[:api_key]
+      render js: '', status: 401
+      return
     end
-
-    render :js => {:errors => error}.to_json
-    false
   end
 
   # Return true if object is valid, except in case where object is account
   # AND just account name is duplicate. That case is dealt with during the merge
   def valid_object?(obj)
-
     if obj.class.to_s == 'Account'
       v = obj.valid?
       obj.errors.keys.compact == [:name] || v
     else
       obj.valid?
     end
-
   end
 
 end

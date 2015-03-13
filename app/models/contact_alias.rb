@@ -24,7 +24,7 @@ class ContactAlias < ActiveRecord::Base
 
   validates_presence_of :contact_id, :destroyed_contact_id
 
-  # Takes a list of ids, returns a list of ids that have been merged 
+  # Takes a list of ids, returns a list of ids that have been merged
   # E.g. If ids = [9876, 1111] returns {"9876"=>"1490"}
   def self.ids_with_alias(ids)
     h = {}

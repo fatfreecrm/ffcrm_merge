@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/fatfreecrm/fat_free_crm.git
-  revision: c84108461bd162a81ae0f086d49a55cd089b4167
+  revision: 29970bd747d3181eac45d2add2497b7e986f7991
   branch: master
   specs:
     fat_free_crm (0.14.0)
@@ -42,8 +42,8 @@ GIT
 PATH
   remote: .
   specs:
-    ffcrm_merge (1.3.1)
-      fat_free_crm
+    ffcrm_merge (2.0.0)
+      fat_free_crm (>= 0.14.0)
 
 GEM
   remote: https://rubygems.org/
@@ -227,7 +227,7 @@ GEM
     responders (2.1.0)
       railties (>= 4.2.0, < 5)
     responds_to_parent (1.1.0)
-    rspec-core (3.2.1)
+    rspec-core (3.2.2)
       rspec-support (~> 3.2.0)
     rspec-expectations (3.2.0)
       diff-lcs (>= 1.2.0, < 2.0)
@@ -284,4 +284,4 @@ DEPENDENCIES
   ffaker
   ffcrm_merge!
   pg
-  rspec-rails (>= 2.12.2)
+  rspec-rails

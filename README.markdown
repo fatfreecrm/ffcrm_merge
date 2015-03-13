@@ -7,21 +7,21 @@ This plugin provides functionality to merge duplicate contacts and accounts for 
 Usage
 =====
 
-When you hover over a contact or account, you will see a 'merge' link next to edit and delete. 
+When you hover over a contact or account, you will see a 'merge' link next to edit and delete.
 Type in a part of the name of the account or contact, and click the one that matches.
 You will see a form with radio buttons, where you can choose the attributes that you want to keep or overwrite.
 There is also a "Duplicate <==> Master" link in the top left corner, if you need to reverse which one is merged into the other.
 
 A merge will move all attributes from the duplicate to the master,
-including all notes/emails/opportunities/contacts/etc. 
+including all notes/emails/opportunities/contacts/etc.
 
 It is also possible to navigate directly to the merge page using:
 
   http://www.example.com/merge/contacts/1/into/2
-  
+
 Aliases
 =======
-  
+
 Merges are recorded in the ContactAliases and AccountAliases tables respectively. This is particularly
 useful for url redirection e.g. if a person goes to the url of a contact who has been merged, the CRM will
 redirect to the newly merged object.
@@ -31,17 +31,17 @@ Say, for example, you have another system that accesses CRM and stores contact i
 need to be able to update the other system. The following url call can help with this. (Responds to json)
 
   http://www.example.com/merge/contact/aliases.js?ids=1,2,3,4,5&api_key=XYZ
-  
+
 It will return a json hash of any ids that have been merged. So for example, if contacts 1 and 2 have been merged
 into 11 and 12 respectively then the output will be:
 
   {'1' => '11', '2' => '12'}
- 
+
 (Note that references to 3 and 4 are dropped as they have not been merged.)
 
 The API KEY should be added to your settings.yml file in CRM. See config/settings.yml.example for more details.
 
-  
+
 Installation to FatFreeCRM
 =====
 
@@ -50,6 +50,11 @@ Simply add to your Gemfile:
 ```
 gem 'ffcrm_merge', :github => 'fatfreecrm/ffcrm_merge'
 ```
+
+Version 2.0.0 (steveyken)
+==================
+
+This is the first rails4 compatible version of the gem and supports ```fat_free_crm``` v0.14.0 and higher
 
 New in version 1.3 (steveyken)
 ==================
@@ -77,7 +82,7 @@ MERGE HOOKS
 
 If your model has extra behaviour that needs to be taken into consideration when performing a merge then you can use the basic `merge_hook` function defined as a class method on the entity.
 
-This hook is called after the entity is merged but before it is saved. 
+This hook is called after the entity is merged but before it is saved.
 Make any changes to 'self' if you want things to persist.
 
 Override as follows:

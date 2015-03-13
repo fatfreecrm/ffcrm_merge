@@ -1,6 +1,6 @@
 module FfcrmMerge
   module Contacts
-  
+
     IGNORED_ATTRIBUTES = %w(updated_at created_at deleted_at id)
     ORDERED_ATTRIBUTES = %w(first_name last_name email alt_email
       phone mobile fax do_not_call born_on
@@ -34,7 +34,7 @@ module FfcrmMerge
             master.send(method + "=", self.send(method))
           end
         end
-        
+
         # ------ Merge address associations
         master.address_attributes.keys.each do |attr|
           unless ignored_attr.include?(attr)
@@ -49,15 +49,15 @@ module FfcrmMerge
 
         # Find all AccountContact records with the duplicate contact,
         # and only add the master contact if it is not already added to the account.
-        AccountContact.find_all_by_contact_id(self.id).each do |ac|
+        AccountContact.where(contact_id: self.id).each do |ac|
           unless ac.account.contacts.include?(master)
             ac.contact_id = master.id; ac.save!
           end
         end
-        
+
         # Find all ContactOpportunity records with the duplicate contact,
         # and only add the master contact if it is not already added to the opportunity.
-        ContactOpportunity.find_all_by_contact_id(self.id).each do |co|
+        ContactOpportunity.where(contact_id: self.id).each do |co|
           unless co.opportunity.contacts.include?(master)
             co.contact_id = master.id; co.save!
           end
@@ -66,13 +66,13 @@ module FfcrmMerge
         # Merge tags
         all_tags = (self.tags + master.tags).uniq
         master.tag_list = all_tags.map(&:name).join(", ")
-        
+
         # Call the merge_hook - useful if you have custom actions that need to happen during a merge
         master.merge_hook(self)
 
         if master.save!
           # Update any existing aliases that were pointing to the duplicate record
-          ContactAlias.find_all_by_contact_id(self.id).each do |ca|
+          ContactAlias.where(contact_id: self.id).each do |ca|
             ca.update_attribute(:contact, master)
           end
 
@@ -83,6 +83,9 @@ module FfcrmMerge
             self.reload
             self.destroy
           end
+          true
+        else
+          false
         end
       end # transaction
     end
@@ -100,13 +103,13 @@ module FfcrmMerge
         h
       end
     end
-    
+
     # These attributes need to be included on the merge form but ignore in update_attributes
     # and merged later on in the merge script
     def address_attributes
       {'business_address' => self.business_address.try(:id) }
     end
-    
+
     # Returns a list of attributes in the order they should appear on the merge form
     def ordered_merge_attributes
       ORDERED_ATTRIBUTES
@@ -117,7 +120,7 @@ module FfcrmMerge
     def ignored_merge_attributes
       IGNORED_ATTRIBUTES
     end
-    
+
     #
     # Override this if you want to add additional behavior to merge
     # It is called after merge is performed but before it is saved.

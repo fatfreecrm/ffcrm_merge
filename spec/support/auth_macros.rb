@@ -1,4 +1,9 @@
-# See authlogic/lib/authlogic/test_case.rb
+# Copyright (c) 2008-2013 Michael Dvorkin and contributors.
+#
+# Fat Free CRM is freely distributable under the terms of MIT license.
+# See MIT-LICENSE file or http://www.opensource.org/licenses/mit-license.php
+#------------------------------------------------------------------------------
+# See vendor/plugins/authlogic/lib/authlogic/test_case.rb
 #----------------------------------------------------------------------------
 def activate_authlogic
   require 'authlogic/test_case/rails_request_adapter'
@@ -13,8 +18,8 @@ end
 def login(user_stubs = {}, session_stubs = {})
   activate_authlogic
   User.current_user = @current_user = FactoryGirl.create(:user, user_stubs)
-  @current_user_session = double(Authentication, {:record => current_user}.merge(session_stubs))
-  Authentication.stub(:find).and_return(@current_user_session)
+  @current_user_session = Authentication.create({record: current_user}.merge(session_stubs))
+  #set_timezone
 end
 alias :require_user :login
 
@@ -28,7 +33,7 @@ end
 def logout
   @current_user = nil
   @current_user_session = nil
-  Authentication.stub(:find).and_return(nil)
+  allow(Authentication).to receive(:find).and_return(nil)
 end
 alias :require_no_user :logout
 

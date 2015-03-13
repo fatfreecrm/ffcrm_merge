@@ -11,11 +11,9 @@ Gem::Specification.new do |s|
   s.test_files = Dir["spec/**/*"]
   s.version = FfcrmMerge::VERSION
 
-  s.add_development_dependency 'rspec-rails', '>= 2.12.2'
+  s.add_development_dependency 'rspec-rails'
   s.add_development_dependency 'capybara'
-  s.add_development_dependency 'factory_girl_rails'
   s.add_development_dependency 'ffaker'
   s.add_development_dependency 'database_cleaner'
-  s.add_dependency 'fat_free_crm'
-  
+  s.add_dependency 'fat_free_crm', '>= 0.14.0'
 end
