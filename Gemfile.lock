@@ -70,6 +70,7 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (>= 2.0, < 4.0)
+    chronic (0.10.2)
     climate_control (0.2.0)
     coffee-script-source (1.12.2)
     concurrent-ruby (1.1.10)
@@ -245,6 +246,11 @@ GEM
       activerecord (>= 5.2.4)
       activesupport (>= 5.2.4)
       i18n
+    ransack_chronic (1.1.0)
+      chronic (>= 0.6.7)
+    ransack_ui (1.4.0)
+      ransack (~> 2.0)
+      ransack_chronic (>= 1.1.0)
     rb-fsevent (0.11.2)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
@@ -318,6 +324,7 @@ DEPENDENCIES
   ffaker
   ffcrm_merge!
   pg
+  ransack_ui
   rspec-rails (>= 2.12.2)
 
 BUNDLED WITH
