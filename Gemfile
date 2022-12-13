@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'fat_free_crm', git: 'fatfreecrm/fat_free_crm', branch: 'master'
+gem 'fat_free_crm'
 
 group :test do
   gem 'pg'  # Default database for testing
