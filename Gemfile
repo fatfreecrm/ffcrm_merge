@@ -6,5 +6,4 @@ gem 'fat_free_crm'
 
 group :test do
   gem 'pg'  # Default database for testing
-  gem 'debugger' unless ENV["CI"]
 end
