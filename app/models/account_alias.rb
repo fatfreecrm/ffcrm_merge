@@ -20,9 +20,7 @@
 # merged into another account.
 
 class AccountAlias < ActiveRecord::Base
-  belongs_to :account, :dependent => :destroy
-
-  # has_paper_trail :meta => { :related => :account }, :ignore => [ :id, :created_at, :updated_at ]
+  belongs_to :account, dependent: :destroy
 
   validates_presence_of :account_id, :destroyed_account_id
   
@@ -31,7 +29,7 @@ class AccountAlias < ActiveRecord::Base
   def self.ids_with_alias(ids)
     h = {}
     return {} if ids.nil?
-    where(:destroyed_account_id => ids).each do |aa|
+    where(destroyed_account_id: ids).each do |aa|
       h[aa.destroyed_account_id.to_s] = aa.account_id.to_s
     end
     h

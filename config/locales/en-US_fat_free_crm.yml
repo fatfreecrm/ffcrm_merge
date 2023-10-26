@@ -13,3 +13,4 @@ en-US:
     %{assets} have not been merged.
   assets_merge_invalid: ! '%{name} is invalid. Please edit and correct the errors
     before merging.'
+  msg_asset_not_authorized: You are not authorized to view this contact.

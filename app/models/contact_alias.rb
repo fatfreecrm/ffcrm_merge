@@ -20,7 +20,7 @@
 # merged into another contact.
 
 class ContactAlias < ActiveRecord::Base
-  belongs_to :contact, :dependent => :destroy
+  belongs_to :contact, dependent: :destroy
 
   validates_presence_of :contact_id, :destroyed_contact_id
 
@@ -29,7 +29,7 @@ class ContactAlias < ActiveRecord::Base
   def self.ids_with_alias(ids)
     h = {}
     return {} if ids.nil?
-    where(:destroyed_contact_id => ids).each do |ca|
+    where(destroyed_contact_id: ids).each do |ca|
       h[ca.destroyed_contact_id.to_s] = ca.contact_id.to_s
     end
     h

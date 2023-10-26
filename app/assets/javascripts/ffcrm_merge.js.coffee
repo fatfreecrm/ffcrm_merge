@@ -1,17 +1,25 @@
-(($) ->
+# it is possible this script will execute before jQuery so we wrap it in a setTimeout
+
+defer = (method) ->
+    if (window.jQuery)
+        method()
+    else
+        window.setTimeout (-> defer(method)), 50
+
+defer(() ->
 
   window.ffcrm_merge = {}
 
   ffcrm_merge.load_form = (klass, master_id, dup_id, previous) ->
-    $.ajax
+    jQuery.ajax
       url: '/merge/' + klass + '/' + dup_id + '/into/' + master_id
       dataType: "script"
       data:
         previous : previous
 
-  $(document).on 'click', 'a[data-merge]', (event) ->
+  jQuery(document).on 'click', 'a[data-merge]', (event) ->
 
-    link = $(this)
+    link = jQuery(this)
     return if link.hasClass('merge-link-applied')
     link.addClass('merge-link-applied')
     row_id = link.attr('data-merge')
@@ -25,18 +33,18 @@
       appear      : 0.3
       fade        : 0.3
       before_show : ->
-        $("#jumpbox_menu").hide()
-        $("#jumpbox_label").html('Which ' + klass + ' would you like to merge ' + link.closest('.contact').find('.name a').html() + ' into?')
-        $("#jumpbox_label").show()
-        $("#auto_complete_query").val('')
+        jQuery("#jumpbox_menu").hide()
+        jQuery("#jumpbox_label").html('Which ' + klass + ' would you like to merge ' + link.closest('ul').next().find('a').html() + ' into?')
+        jQuery("#jumpbox_label").show()
+        jQuery("#auto_complete_query").val('')
 
-        $("#auto_complete_query").autocomplete(
+        jQuery("#auto_complete_query").autocomplete(
           source: (request, response) =>
-            request = {auto_complete_query: request['term'], related: id}
-            $.get crm.base_url + "/" + klass + 's' + "/auto_complete.json", request, (data) ->
-              response $.map(data, (value, key) ->
-                label: value
-                value: key
+            request = {term: request['term'], related: id}
+            jQuery.get crm.base_url + "/" + klass + 's' + "/auto_complete.json", request, (data) ->
+              response jQuery.map(data['results'], (item) ->
+                label: item['text']
+                value: item['id']
               )
           # Open merge form
           select: (event, ui) => # Binding for this.base_url.
@@ -45,9 +53,8 @@
         )
 
       after_show  : ->
-        $("#auto_complete_query").focus()
+        jQuery("#auto_complete_query").focus()
       after_hide  : ->
     }).toggle_popup(event) # fire the pop up
 
-
-) jQuery
+)

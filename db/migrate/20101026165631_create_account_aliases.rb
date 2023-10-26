@@ -1,4 +1,4 @@
-class CreateAccountAliases < ActiveRecord::Migration
+class CreateAccountAliases < ActiveRecord::Migration[4.2]
   def self.up
     create_table :account_aliases do |t|
       t.integer :account_id

@@ -1,38 +1,37 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe 'when merging accounts' do
   before :each do
-    @master = FactoryGirl.create(:account, :name => "Master account",
-      :email => "master@example.com", :background_info => "Master Background Info", :tag_list => 'tag1, tag2, tag3')
-    @duplicate = FactoryGirl.create(:account, :name => "Duplicate account",
-      :email => "duplicate@example.com", :background_info => "Duplicate Background Info", :tag_list => 'tag3, tag4')
-    FactoryGirl.create(:email, :mediator => @master)
-    FactoryGirl.create(:comment, :commentable => @master)
-    FactoryGirl.create(:email, :mediator => @duplicate)
-    FactoryGirl.create(:comment, :commentable => @duplicate)
-    FactoryGirl.create(:address, :addressable => @master, :address_type => 'Billing')
-    FactoryGirl.create(:address, :addressable => @duplicate, :address_type => 'Billing')
-    FactoryGirl.create(:address, :addressable => @master, :address_type => 'Shipping')
-    FactoryGirl.create(:address, :addressable => @duplicate, :address_type => 'Shipping')
-    @master.tasks << FactoryGirl.create(:task)
-    @duplicate.tasks << FactoryGirl.create(:task)
-    @master.opportunities << FactoryGirl.create(:opportunity)
-    @duplicate.opportunities << FactoryGirl.create(:opportunity)
-    @master.contacts << FactoryGirl.create(:contact)
-    @duplicate.contacts << FactoryGirl.create(:contact)
+    @master = FactoryBot.create(:account, name: "Master account",
+      email: "master@example.com", background_info: "Master Background Info", tag_list: 'tag1, tag2, tag3')
+    @duplicate = FactoryBot.create(:account, name: "Duplicate account",
+      email: "duplicate@example.com", background_info: "Duplicate Background Info", tag_list: 'tag3, tag4')
+    FactoryBot.create(:email, mediator: @master)
+    FactoryBot.create(:comment, commentable: @master)
+    FactoryBot.create(:email, mediator: @duplicate)
+    FactoryBot.create(:comment, commentable: @duplicate)
+    FactoryBot.create(:address, addressable: @master, address_type: 'Billing')
+    FactoryBot.create(:address, addressable: @duplicate, address_type: 'Billing')
+    FactoryBot.create(:address, addressable: @master, address_type: 'Shipping')
+    FactoryBot.create(:address, addressable: @duplicate, address_type: 'Shipping')
+    @master.tasks << FactoryBot.create(:task)
+    @duplicate.tasks << FactoryBot.create(:task)
+    @master.opportunities << FactoryBot.create(:opportunity)
+    @duplicate.opportunities << FactoryBot.create(:opportunity)
+    @master.contacts << FactoryBot.create(:contact)
+    @duplicate.contacts << FactoryBot.create(:contact)
   end
-  
     
   it "should always ignore certain attributes" do
     expect(@master.merge_attributes.keys).to_not include(@master.ignored_merge_attributes)
   end
   
   it "should not merge into itself" do
-    expect(@master.merge_with(@master)).to be_false
+    expect(@master.merge_with(@master)).to eql(false)
   end
   
   it "should return true" do
-    expect(@duplicate.merge_with(@master)).to be_true
+    expect(@duplicate.merge_with(@master)).to eql(true)
   end
   
   it "should delete the duplicate" do
@@ -42,7 +41,7 @@ describe 'when merging accounts' do
   end
   
   it "should call merge hook" do
-    @master.should_receive(:merge_hook).with(@duplicate)
+    expect(@master).to receive(:merge_hook).with(@duplicate)
     @duplicate.merge_with(@master)
   end
 
@@ -187,51 +186,10 @@ describe 'when merging accounts' do
   describe "a merge failure" do
   
     it "validation error should return false" do
-      @master.should_receive('save!').and_return(false)
-      expect(@duplicate.merge_with(@master)).to be_false
+      expect(@master).to receive('save!').and_return(false)
+      expect(@duplicate.merge_with(@master)).to eql(false)
     end
 
-    it "should rollback the transaction", :testing_transactions => true do
-    
-      pending "Rspec wraps each test in a transaction and that interferes with testing transaction rollback"
-    
-      duplicate_attributes = @duplicate.merge_attributes.dup
-      master_attributes = @master.merge_attributes.dup
-
-      @duplicate.should_receive(:destroy).and_raise(StandardError, "merge error")
-      expect(lambda { @duplicate.merge_with(@master) }).to raise_error(StandardError, "merge error")
-
-      #
-      # From the docs: Exceptions will force a ROLLBACK that returns the database to the state before the transaction began.
-      # Be aware, though, that the objects will not have their instance data returned to their pre-transactional state.
-      # This is why we have to reload the instance here.
-      #
-      @master.reload
-      @duplicate.reload
-      
-      # check master attributes are rolled back
-      expect(@master.name).to eql(master_attributes['name'])
-      expect(@master.website).to eql(master_attributes['website'])
-      expect(@master.rating).to eql(master_attributes['rating'])
-      expect(@master.phone).to eql(master_attributes['phone'])
-      
-      # check duplicate name is rolled back
-      expect(@duplicate.name).to eq(duplicate_attributes['name'])
-
-      # check master association assigments are rolled back
-      expect(@master.user).to eq(master_attributes['user'])
-      expect(@master.contacts).to eq(master_attributes['contacts'])
-      expect(@master.tasks).to eq(master_attributes['tasks'])
-      expect(@master.opportunities).to eq(master_attributes['opportunities'])
-      
-      # check duplicate association assigments are rolled back
-      expect(@duplicate.user).to eq(master_attributes['user'])
-      expect(@duplicate.contacts).to eq(master_attributes['contacts'])
-      expect(@duplicate.tasks).to eq(master_attributes['tasks'])
-      expect(@duplicate.opportunities).to eq(master_attributes['opportunities'])
-      
-    end
-  
   end
 
 end

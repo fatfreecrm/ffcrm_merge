@@ -15,26 +15,30 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #------------------------------------------------------------------------------
 
-%w(AccountsController ContactsController).each do |controller|
-  controller.classify.constantize.class_eval do
+module FfcrmMerge
+  module RedirectToMergedRecord
+
+    extend ActiveSupport::Concern
+ 
+    included do
+      rescue_from ActiveRecord::RecordNotFound, with: :respond_to_not_found
+    end
 
     private
-
     #
     #----------------------------------------------------------------------------
-    # If contacts/1 is merged into contacts/2 then GET contacts/1 redirects to GET contacts/2
-    def respond_to_not_found_with_merged(*types)
-      alias_klass = "#{klass}Alias".constantize   # AccountAlias
-      entity_method = "#{klass.to_s.downcase}_id" # account_id
-      finder = :"destroyed_#{entity_method}"      # destroyed_account_id
+    # If accounts/1 is merged into accounts/2 then GET accounts/1 redirects to GET accounts/2
+    def respond_to_not_found(*types)
+      klass = controller_name.classify.constantize
+      alias_klass = "#{klass}Alias".constantize   # e.g. AccountAlias
+      entity_method = "#{klass.to_s.downcase}_id" # e.g. account_id
+      finder = "destroyed_#{entity_method}"       # e.g. destroyed_account_id
       if record = alias_klass.where(finder => params[:id]).limit(1).first
-        redirect_to :id => record.send(entity_method)
+        redirect_to id: record.send(entity_method)
       else
-        respond_to_not_found_without_merged
+        raise *types
       end
     end
-    alias_method_chain :respond_to_not_found, :merged
 
   end
-
 end
