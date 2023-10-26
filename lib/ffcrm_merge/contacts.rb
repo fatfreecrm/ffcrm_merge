@@ -1,7 +1,7 @@
 module FfcrmMerge
   module Contacts
   
-    IGNORED_ATTRIBUTES = %w(updated_at created_at deleted_at id)
+    IGNORED_ATTRIBUTES = %w(updated_at created_at deleted_at id tag_list)
     ORDERED_ATTRIBUTES = %w(first_name last_name email alt_email
       phone mobile fax do_not_call born_on
       title background_info source department
@@ -26,7 +26,7 @@ module FfcrmMerge
 
         # ------ Merge attributes: ensure only model attributes are updated.
         model_attributes = merge_attr.dup.reject{ |k,v| !master.attributes.keys.include?(k) }
-        master.update_attributes(model_attributes)
+        master.update(model_attributes)
 
         # ------ Merge 'belongs_to' and 'has_one' associations
         {'user_id' => 'user', 'lead_id' => 'lead', 'assigned_to' => 'assignee'}.each do |attr, method|
@@ -49,7 +49,7 @@ module FfcrmMerge
 
         # Find all AccountContact records with the duplicate contact,
         # and only add the master contact if it is not already added to the account.
-        AccountContact.find_all_by_contact_id(self.id).each do |ac|
+        AccountContact.where(contact_id: self.id).each do |ac|
           unless ac.account.contacts.include?(master)
             ac.contact_id = master.id; ac.save!
           end
@@ -57,32 +57,31 @@ module FfcrmMerge
         
         # Find all ContactOpportunity records with the duplicate contact,
         # and only add the master contact if it is not already added to the opportunity.
-        ContactOpportunity.find_all_by_contact_id(self.id).each do |co|
+        ContactOpportunity.where(contact_id: self.id).each do |co|
           unless co.opportunity.contacts.include?(master)
             co.contact_id = master.id; co.save!
           end
         end
-
+       
         # Merge tags
-        all_tags = (self.tags + master.tags).uniq
-        master.tag_list = all_tags.map(&:name).join(", ")
-        
+        self.tag_list.each{|tag| master.tag_list.add(tag)}
+
         # Call the merge_hook - useful if you have custom actions that need to happen during a merge
         master.merge_hook(self)
 
         if master.save!
           # Update any existing aliases that were pointing to the duplicate record
-          ContactAlias.find_all_by_contact_id(self.id).each do |ca|
-            ca.update_attribute(:contact, master)
-          end
+          ContactAlias.where(contact_id: self.id).update(contact: master)
 
           # Create the contact alias and destroy the merged contact.
-          if ContactAlias.create(:contact => master,
-                                 :destroyed_contact_id => self.id)
+          if ContactAlias.create(contact_id: master.id, destroyed_contact_id: self.id)
             # Must force a reload of the contact, and shake off all migrated assets.
             self.reload
             self.destroy
           end
+          true
+        else
+          false
         end
       end # transaction
     end
@@ -101,7 +100,7 @@ module FfcrmMerge
       end
     end
     
-    # These attributes need to be included on the merge form but ignore in update_attributes
+    # These attributes need to be included on the merge form but ignore in attributes update
     # and merged later on in the merge script
     def address_attributes
       {'business_address' => self.business_address.try(:id) }

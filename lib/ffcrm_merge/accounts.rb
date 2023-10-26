@@ -1,7 +1,7 @@
 module FfcrmMerge
   module Accounts
 
-    IGNORED_ATTRIBUTES = %w(updated_at created_at deleted_at id)
+    IGNORED_ATTRIBUTES = %w(updated_at created_at deleted_at id tag_list opportunities_count)
     ORDERED_ATTRIBUTES = %w(name email website phone toll_free_phone
       fax background_info user_id assigned_to access)
   
@@ -23,7 +23,7 @@ module FfcrmMerge
 
         # ------ Merge attributes: ensure only model attributes are updated.
         model_attributes = merge_attr.dup.reject{ |k,v| !master.attributes.keys.include?(k) }
-        master.update_attributes(model_attributes)
+        master.update(model_attributes)
 
         # ------ Merge 'belongs_to' and 'has_one' associations
         {'user_id' => 'user', 'assigned_to' => 'assignee' }.each do |attr, method|
@@ -56,35 +56,32 @@ module FfcrmMerge
         self.opportunities.each { |o| o.account = master; o.save! }
         
         # Merge tags
-        all_tags = (self.tags + master.tags).uniq
-        master.tag_list = all_tags.map(&:name).join(", ")
+        self.tag_list.each{|tag| master.tag_list.add(tag)}
 
         # Account validates the uniqueness of name, so we need to alter the duplicate name
         # before we save the master, then destroy the duplicate.
         tmp_name = self.name
-        self.update_attribute :name, "#{tmp_name} is being merged - #{self.created_at.to_s}"
+        self.update(name: "#{tmp_name} is being merged - #{self.created_at.to_s}")
         
         # Call the merge_hook - useful if you have custom actions that need to happen during a merge
         master.merge_hook(self)
 
         if master.save!
           # Update any existing aliases that were pointing to the duplicate record
-          AccountAlias.find_all_by_account_id(self.id).each do |aa|
-            aa.update_attribute(:account, master)
-          end
+          AccountAlias.where(account_id: self.id).update(account: master)
 
           # Create the account alias and destroy the merged account.
-          if AccountAlias.create(:account => master,
-                                 :destroyed_account_id => self.id)
+          if AccountAlias.create(account_id: master.id, destroyed_account_id: self.id)
             # Must force a reload of the account, and shake off all migrated assets.
             self.reload
             self.destroy
           end
+          true
         else
           # Restore the duplicate name if something goes wrong.
           # TODO should be covered in transaction
-          # self.update_attribute :name, tmp_name
-          # false
+          # self.update(:name, tmp_name)
+          false
         end
       end # transaction
     end
@@ -102,7 +99,7 @@ module FfcrmMerge
       end
     end
     
-    # These attributes need to be included on the merge form but ignore in update_attributes
+    # These attributes need to be included on the merge form but ignore in attributes update
     # and merged later on in the merge script
     def address_attributes
       {'billing_address'  => self.billing_address.try(:id),
