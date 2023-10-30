@@ -16,7 +16,7 @@ GIT
 
 GIT
   remote: https://github.com/fatfreecrm/fat_free_crm.git
-  revision: e6883b0444abbc28908bb2a9da6fce7b62d951ee
+  revision: 1305f0ab24690b2fc349a5df2c3ed5858fc50a6a
   specs:
     fat_free_crm (0.21.0)
       activemodel-serializers-xml
@@ -224,7 +224,7 @@ GEM
     method_source (1.0.0)
     mini_mime (1.1.5)
     minitest (5.20.0)
-    net-imap (0.4.2)
+    net-imap (0.4.3)
       date
       net-protocol
     net-pop (0.1.2)
@@ -290,7 +290,7 @@ GEM
       method_source
       rake (>= 12.2)
       thor (~> 1.0)
-    rake (13.0.6)
+    rake (13.1.0)
     ransack (2.6.0)
       activerecord (>= 6.0.4)
       activesupport (>= 6.0.4)
