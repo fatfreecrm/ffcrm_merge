@@ -44,10 +44,9 @@ class MergeController < EntitiesController
   # GET   /merge/contact/aliases?ids=1,2,3,4&format=js                          JS
   def aliases
     model_name = "#{klass}Alias".constantize        # klass is carefully sanitized
-    @aliases = model_name.ids_with_alias( santize_ids )
-    respond_to do |format|
-      format.js # aliases.js.erb
-    end
+    # Carefully sanitize params["ids"] by converting to integers and remove 0's since 'test'.to_i == 0
+    sanitized_ids = (params["ids"] || []).split(',').flatten.map(&:to_i).reject{|x| x == 0}.compact
+    render json: model_name.ids_with_alias( sanitized_ids )
   end
 
 protected
@@ -66,11 +65,6 @@ protected
   def klass
     name = params["klass_name"].classify
     klass = (ENTITIES.include?(name) ? name.constantize : nil)
-  end
-
-  # Carefully sanitize params["ids"] by converting to integers and remove 0's since 'test'.to_i == 0
-  def santize_ids
-    (params["ids"] || []).split(',').flatten.map(&:to_i).reject{|x| x == 0}.compact
   end
 
   def do_merge(master, duplicate)
