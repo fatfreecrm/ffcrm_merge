@@ -1,6 +1,6 @@
 # Fat Free CRM - Merge Contacts and Accounts
 
-This plugin provides functionality to merge duplicate contacts and accounts for FatFreeCRM. It is also possible to extend it to merge other entities.
+This plugin provides functionality to merge duplicate contacts and accounts for FatFreeCrm. It is also possible to extend it to merge other entities.
 
 ## Usage
 
@@ -39,7 +39,7 @@ into 11 and 12 respectively then the output will be:
 The API KEY should be added to your settings.yml file in CRM. See config/settings.yml.example for more details.
 
   
-## Installation to FatFreeCRM
+## Installation to FatFreeCrm
 
 Simply add to your Gemfile:
 
