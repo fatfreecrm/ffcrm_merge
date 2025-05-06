@@ -238,7 +238,7 @@ GEM
     paper_trail (15.0.0)
       activerecord (>= 6.1)
       request_store (~> 1.4)
-    pg (1.5.8)
+    pg (1.5.9)
     popper_js (2.11.8)
     premailer (1.22.0)
       addressable
