@@ -92,7 +92,7 @@ protected
   def valid_object?(obj)
     if obj.class.to_s == 'Account'
       v = obj.valid?
-      obj.errors.keys.compact == [:name] || v
+      obj.errors.attribute_names == [:name] || v
     else
       obj.valid?
     end
