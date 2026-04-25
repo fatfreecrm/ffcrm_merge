@@ -18,6 +18,7 @@ group :development, :test do
   gem 'bootstrap', '5.3.5' # for request specs
   gem 'coffee-rails', '5.0.0' # for request specs
   gem "sassc-rails" # for request specs
+  gem 'jsbundling-rails'
   gem "mini_racer"
   gem "puma"
 end

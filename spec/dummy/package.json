@@ -13,5 +13,8 @@
   "version": "0.1.0",
   "devDependencies": {
     "webpack-dev-server": "^5"
+  },
+  "scripts": {
+    "build": "webpack --config webpack.config.js"
   }
 }
