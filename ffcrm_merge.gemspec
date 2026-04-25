@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.test_files = Dir["spec/**/*"]
   s.version = FfcrmMerge::VERSION
 
-  s.add_dependency "rails"
+  s.add_dependency "rails", ">= 7"
   s.add_dependency "fat_free_crm"
 
   s.add_development_dependency "capybara"

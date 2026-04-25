@@ -55,7 +55,7 @@ PATH
   specs:
     ffcrm_merge (2.0.0)
       fat_free_crm
-      rails
+      rails (>= 7)
 
 GEM
   remote: https://rubygems.org/
