@@ -280,6 +280,8 @@ GEM
       date
       stringio
     public_suffix (7.0.5)
+    puma (8.0.0)
+      nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.2.6)
     rack-attack (6.8.0)
@@ -436,6 +438,7 @@ PLATFORMS
 
 DEPENDENCIES
   acts_as_commentable!
+  addressable
   bootstrap (= 5.3.5)
   capybara
   coffee-rails (= 5.0.0)
@@ -449,6 +452,7 @@ DEPENDENCIES
   listen
   mini_racer
   pg
+  puma
   rack-attack
   rspec-rails
   sassc-rails
