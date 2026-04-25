@@ -81,12 +81,12 @@ describe 'when merging accounts' do
   describe "many to many associations" do
 
     it "should be combined" do
-      emails = @duplicate.emails.dup
-      comments = @duplicate.comments.dup
-      opportunities = @duplicate.opportunities.dup
-      contacts = @duplicate.contacts.dup
-      tasks = @duplicate.tasks.dup
-      tags = @duplicate.tags.dup
+      emails = @duplicate.emails.dup.to_a
+      comments = @duplicate.comments.dup.to_a
+      opportunities = @duplicate.opportunities.dup.to_a
+      contacts = @duplicate.contacts.dup.to_a
+      tasks = @duplicate.tasks.dup.to_a
+      tags = @duplicate.tags.dup.to_a
       
       @duplicate.merge_with(@master)
       @master.reload
