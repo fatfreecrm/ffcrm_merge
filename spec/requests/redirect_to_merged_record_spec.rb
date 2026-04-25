@@ -18,7 +18,9 @@ RSpec.describe "Redirect merged", type: :request do
       expect(response).to redirect_to(subject)
     end
     it "normal behaviour" do
-      expect{get "/accounts/12345"}.to raise_error(ActiveRecord::RecordNotFound)
+      get "/accounts/12345"
+
+      expect(response.status).to eq 404
     end
   end
 
@@ -30,7 +32,9 @@ RSpec.describe "Redirect merged", type: :request do
       expect(response).to redirect_to(subject)
     end
     it "normal behaviour" do
-      expect{get "/contacts/12345"}.to raise_error(ActiveRecord::RecordNotFound)
+      get "/contacts/12345"
+
+      expect(response.status).to eq 404
     end
   end
 

@@ -13,7 +13,6 @@ gem "sparql-client"
 group :development, :test do
   gem "jquery-rails" # jquery-rails is used by the dummy application
   gem "factory_bot_rails" # Including here ensures 'fat_free_crm' factories are loading into spec/dummy
-  gem "byebug"
   gem 'bootstrap', '5.3.5' # for request specs
   gem 'coffee-rails', '5.0.0' # for request specs
   gem "sassc-rails" # for request specs
