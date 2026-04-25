@@ -80,6 +80,10 @@ To run tests:
     rails db:test:prepare
     rspec spec/
 
+To run the UI:
+    cd spec/dummy
+    bin/dev
+
 
 ## KNOWN ISSUES
 

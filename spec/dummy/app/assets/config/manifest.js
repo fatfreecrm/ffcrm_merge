@@ -1,2 +1,4 @@
-//= link fat_free_crm
-//= link application.css//= link_tree ../builds
+//= link application.css
+//= link loading.gif
+//= link info_tiny.png
+//= link_tree ../builds
