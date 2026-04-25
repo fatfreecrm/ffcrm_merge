@@ -77,16 +77,16 @@ describe "when merging contacts" do
   describe "many to many associations" do
 
     it "should be combined" do
-      emails = @duplicate.emails.dup
-      comments = @duplicate.comments.dup
-      opportunities = @duplicate.opportunities.dup
-      tasks = @duplicate.tasks.dup
-      tags = @duplicate.tags.dup
+      emails = @duplicate.emails.dup.to_a
+      comments = @duplicate.comments.dup.to_a
+      opportunities = @duplicate.opportunities.dup.to_a
+      tasks = @duplicate.tasks.dup.to_a
+      tags = @duplicate.tags.dup.to_a
       account_contact_ids = @duplicate.account_contact.id
 
       @duplicate.merge_with(@master)
       @master.reload
-      
+
       expect(@master.emails.size).to eq(2)
       expect(@master.emails).to include(*emails)
       expect(@master.comments.size).to eq(2)
