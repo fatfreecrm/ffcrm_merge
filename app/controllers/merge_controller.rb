@@ -27,9 +27,13 @@ class MergeController < EntitiesController
     elsif !valid_object?(@duplicate)
       flash[:error] = I18n.t('assets_merge_invalid', name: @duplicate.name)
     elsif request.patch?
-      do_merge(@master, @duplicate)
-      @success = true # do_merge will throw error if problem
-      flash[:error] = I18n.t('assets_merge_error', assets: klass.to_s.humanize) unless @success
+      begin
+        do_merge(@master, @duplicate)
+        @success = true # do_merge will throw error if problem
+        flash[:error] = I18n.t('assets_merge_error', assets: klass.to_s.humanize) unless @success
+      rescue ActiveRecord::ValueTooLong => e
+        flash[:error] = I18n.t('assets_merge_error', assets: klass.to_s.humanize)
+      end
     end
 
     respond_to do |format|
