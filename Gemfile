@@ -10,6 +10,7 @@ gem "devise-security"
 gem "rack-attack"
 gem "sparql-client"
 gem "addressable"
+gem "validates_lengths_from_database"
 
 group :development, :test do
   gem "jquery-rails" # jquery-rails is used by the dummy application
