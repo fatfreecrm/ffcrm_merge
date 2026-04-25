@@ -7,13 +7,14 @@ GIT
 
 GIT
   remote: https://github.com/fatfreecrm/fat_free_crm.git
-  revision: 71d660af186a530752e2783787e15015132ca844
+  revision: 418ec1b578cd11971592d7b3c2f874ec03f78b01
   specs:
     fat_free_crm (0.28.0)
       activemodel-serializers-xml
       acts-as-taggable-on (>= 3.4.3)
       acts_as_commentable (>= 6.1)
       acts_as_list
+      addressable
       cancancan (>= 3.3.0)
       coffee-script-source (~> 1.8, >= 1.8.0)
       country_select
@@ -31,6 +32,7 @@ GIT
       nokogiri
       paper_trail (~> 16.0.0)
       premailer
+      rack-attack
       rails (~> 8.0.0)
       rails-i18n
       rails-observers
@@ -45,6 +47,7 @@ GIT
       simple_form
       sprockets-rails (>= 3.0.0)
       thor
+      validates_lengths_from_database
       will_paginate
 
 PATH
@@ -280,6 +283,8 @@ GEM
       date
       stringio
     public_suffix (7.0.5)
+    puma (8.0.0)
+      nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.2.6)
     rack-attack (6.8.0)
@@ -420,6 +425,8 @@ GEM
     unaccent (0.4.0)
     uri (1.1.1)
     useragent (0.16.11)
+    validates_lengths_from_database (0.8.0)
+      activerecord (>= 4)
     warden (1.2.9)
       rack (>= 2.0.9)
     websocket-driver (0.8.0)
@@ -436,6 +443,7 @@ PLATFORMS
 
 DEPENDENCIES
   acts_as_commentable!
+  addressable
   bootstrap (= 5.3.5)
   capybara
   coffee-rails (= 5.0.0)
@@ -449,10 +457,12 @@ DEPENDENCIES
   listen
   mini_racer
   pg
+  puma
   rack-attack
   rspec-rails
   sassc-rails
   sparql-client
+  validates_lengths_from_database
 
 BUNDLED WITH
    2.4.20

@@ -9,6 +9,8 @@ gem 'csv'
 gem "devise-security"
 gem "rack-attack"
 gem "sparql-client"
+gem "addressable"
+gem "validates_lengths_from_database"
 
 group :development, :test do
   gem "jquery-rails" # jquery-rails is used by the dummy application
@@ -17,4 +19,5 @@ group :development, :test do
   gem 'coffee-rails', '5.0.0' # for request specs
   gem "sassc-rails" # for request specs
   gem "mini_racer"
+  gem "puma"
 end
