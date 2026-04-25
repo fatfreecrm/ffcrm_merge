@@ -8,6 +8,7 @@ gem 'acts_as_commentable', git: 'https://github.com/fatfreecrm/acts_as_commentab
 gem 'csv'
 gem "devise-security"
 gem "rack-attack"
+gem "sparql-client"
 
 group :development, :test do
   gem "jquery-rails" # jquery-rails is used by the dummy application
