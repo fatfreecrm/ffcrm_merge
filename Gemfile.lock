@@ -225,6 +225,7 @@ GEM
       thor (>= 0.14, < 2.0)
     jquery-ui-rails (8.0.0)
       railties (>= 3.2.16)
+    libv8-node (24.12.0.1-x86_64-linux)
     link_header (0.0.8)
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
@@ -242,6 +243,8 @@ GEM
     marcel (1.1.0)
     matrix (0.4.2)
     mini_mime (1.1.5)
+    mini_racer (0.21.0)
+      libv8-node (~> 24.12.0.1)
     minitest (6.0.5)
       drb (~> 2.0)
       prism (~> 1.5)
@@ -444,6 +447,7 @@ DEPENDENCIES
   ffcrm_merge!
   jquery-rails
   listen
+  mini_racer
   pg
   rack-attack
   rspec-rails
