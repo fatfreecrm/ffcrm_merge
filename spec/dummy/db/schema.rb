@@ -11,21 +11,8 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[8.0].define(version: 2026_04_13_041448) do
-# Could not dump table "account_aliases" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
-# Could not dump table "account_contacts" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
-# Could not dump table "account_opportunities" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
-# Could not dump table "accounts" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -55,54 +42,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_13_041448) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-# Could not dump table "activities" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
-# Could not dump table "addresses" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
-# Could not dump table "avatars" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
-# Could not dump table "campaigns" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
-# Could not dump table "comments" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
-# Could not dump table "contact_aliases" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
-# Could not dump table "contact_opportunities" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
-# Could not dump table "contacts" because of following StandardError
-#   Unknown type '' for column 'id'
-
-
-# Could not dump table "emails" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
-# Could not dump table "field_groups" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
-# Could not dump table "fields" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
-# Could not dump table "groups" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
   create_table "groups_users", id: false, force: :cascade do |t|
     t.integer "group_id"
     t.integer "user_id"
@@ -111,26 +50,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_13_041448) do
     t.index ["user_id"], name: "index_groups_users_on_user_id"
   end
 
-# Could not dump table "leads" because of following StandardError
-#   Unknown type '' for column 'id'
-
-
-# Could not dump table "lists" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
-# Could not dump table "opportunities" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
-# Could not dump table "permissions" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
-# Could not dump table "preferences" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
   create_table "research_tools", force: :cascade do |t|
     t.string "name"
     t.string "url_template"
@@ -138,14 +57,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_13_041448) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
-
-# Could not dump table "sessions" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
-# Could not dump table "settings" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
     t.bigint "job_id", null: false
@@ -267,26 +178,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_13_041448) do
     t.index ["key", "value"], name: "index_solid_queue_semaphores_on_key_and_value"
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
-
-# Could not dump table "taggings" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
-# Could not dump table "tags" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
-# Could not dump table "tasks" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
-
-# Could not dump table "users" because of following StandardError
-#   Unknown type '' for column 'id'
-
-
-# Could not dump table "versions" because of following StandardError
-#   Unknown type 'serial' for column 'id'
-
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"

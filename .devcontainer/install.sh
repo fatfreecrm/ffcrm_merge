@@ -13,4 +13,8 @@ sudo apt install -y libpq-dev # Not strictly needed, but easier than explaining 
 sudo apt install -y firefox 
 sudo apt install -y codespell
 
+echo 'CREATE DATABASE ffcrm_merge_development' | psql -U postgres
+echo 'CREATE DATABASE ffcrm_merge_test' | psql -U postgres
+
 bundle
+bin/rails db:migrate
