@@ -148,7 +148,7 @@ GEM
     bcrypt (3.1.22)
     benchmark (0.5.0)
     bigdecimal (4.1.2)
-    bootstrap (5.3.5)
+    bootstrap (5.3.8)
       popper_js (>= 2.11.8, < 3)
     builder (3.3.0)
     cancancan (3.6.1)
@@ -447,7 +447,7 @@ PLATFORMS
 DEPENDENCIES
   acts_as_commentable!
   addressable
-  bootstrap (= 5.3.5)
+  bootstrap (= 5.3.8)
   capybara
   coffee-rails (= 5.0.0)
   csv
