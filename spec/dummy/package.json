@@ -7,7 +7,7 @@
     "@rails/ujs": "^7.1.600",
     "turbolinks": "^5.2.0",
     "webpack": "^5.108.4",
-    "webpack-cli": "^7.1.0"
+    "webpack-cli": "^7.2.1"
   },
   "version": "0.1.0",
   "devDependencies": {},
