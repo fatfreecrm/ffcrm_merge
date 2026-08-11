@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/fatfreecrm/acts_as_commentable.git
-  revision: fbd76b115846fb5494f12c077f754a43fe9e5db4
+  revision: 4c620f620c4802ffea2c4739d29f44a026168892
   specs:
     acts_as_commentable (8.0.0)
       activerecord (>= 8.0, < 8.2)
