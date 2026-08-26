@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: https://github.com/fatfreecrm/fat_free_crm.git
-  revision: 9420254ac50e0f97ad81dcb3a5848813dfcc4045
+  revision: 3bb64ca0d59d9ad46ea28129481d2a979d2a8de5
   specs:
     fat_free_crm (0.28.0)
       activemodel-serializers-xml
@@ -209,7 +209,7 @@ GEM
       railties (>= 3.2, < 9.0)
     globalid (1.4.0)
       activesupport (>= 6.1)
-    haml (7.3.0)
+    haml (7.3.1)
       prism (>= 1.1.0)
       temple (>= 0.8.2)
       thor
@@ -288,7 +288,7 @@ GEM
     puma (8.0.2)
       nio4r (~> 2.0)
     racc (1.8.1)
-    rack (3.2.6)
+    rack (3.2.7)
     rack-attack (6.8.0)
       rack (>= 1.0, < 4)
     rack-session (2.1.2)
@@ -413,8 +413,8 @@ GEM
     sparql-client (3.3.0)
       net-http-persistent (~> 4.0, >= 4.0.2)
       rdf (~> 3.3)
-    sprockets (4.2.2)
-      concurrent-ruby (~> 1.0)
+    sprockets (4.3.0)
+      concurrent-ruby (~> 1.1)
       logger
       rack (>= 2.2.4, < 4)
     sprockets-rails (3.5.2)
