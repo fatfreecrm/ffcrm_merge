@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: https://github.com/fatfreecrm/fat_free_crm.git
-  revision: 3bb64ca0d59d9ad46ea28129481d2a979d2a8de5
+  revision: 059c4d0c79d5628bed33026372d17390965bdad5
   specs:
     fat_free_crm (0.28.0)
       activemodel-serializers-xml
@@ -209,7 +209,7 @@ GEM
       railties (>= 3.2, < 9.0)
     globalid (1.4.0)
       activesupport (>= 6.1)
-    haml (7.3.1)
+    haml (7.5.0)
       prism (>= 1.1.0)
       temple (>= 0.8.2)
       thor
@@ -263,7 +263,7 @@ GEM
       net-protocol
     net-pop (0.1.2)
       net-protocol
-    net-protocol (0.2.2)
+    net-protocol (0.3.0)
       timeout
     net-smtp (0.5.1)
       net-protocol
@@ -278,7 +278,7 @@ GEM
     popper_js (2.11.8)
     pp (0.6.4)
       prettyprint
-    premailer (1.29.0)
+    premailer (1.30.0)
       addressable
       css_parser (>= 1.19.0)
       htmlentities (>= 4.0.0)
@@ -353,7 +353,7 @@ GEM
     rb-fsevent (0.11.2)
     rb-inotify (0.11.1)
       ffi (~> 1.0)
-    rbs (4.1.3)
+    rbs (4.2.0)
       logger
       prism (>= 1.6.0)
       tsort
@@ -370,7 +370,7 @@ GEM
       io-console (~> 0.5)
     request_store (1.7.0)
       rack (>= 1.4)
-    responders (3.2.0)
+    responders (3.2.1)
       actionpack (>= 7.0)
       railties (>= 7.0)
     responds_to_parent2 (2.2.0)
@@ -413,7 +413,7 @@ GEM
     sparql-client (3.3.0)
       net-http-persistent (~> 4.0, >= 4.0.2)
       rdf (~> 3.3)
-    sprockets (4.3.0)
+    sprockets (4.4.1)
       concurrent-ruby (~> 1.1)
       logger
       rack (>= 2.2.4, < 4)
@@ -422,9 +422,9 @@ GEM
       activesupport (>= 6.1)
       sprockets (>= 3.0.0)
     ssrf_filter (1.5.0)
-    temple (0.10.6)
+    temple (0.10.7)
     thor (1.5.0)
-    tilt (2.8.0)
+    tilt (2.9.0)
     timeout (0.6.1)
     tsort (0.2.0)
     tzinfo (2.0.6)
