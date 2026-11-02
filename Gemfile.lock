@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/fatfreecrm/acts_as_commentable.git
-  revision: 7878b6a6d1730280144a5be2a3b21eb5c7edb537
+  revision: dd1506b5f37c3e52d6ee3e9ff53bbf70c181720a
   specs:
     acts_as_commentable (8.0.0)
       activerecord (>= 8.0, < 8.2)
@@ -431,7 +431,7 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unaccent (0.4.0)
-    uri (1.1.1)
+    uri (1.1.2)
     useragent (0.16.11)
     validates_lengths_from_database (0.8.0)
       activerecord (>= 4)
