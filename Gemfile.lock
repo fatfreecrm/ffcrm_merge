@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/fatfreecrm/acts_as_commentable.git
-  revision: 1ce21e8f206b1b84e495e79fab5e480bb73a6e45
+  revision: d3ee3a95ed75017b903584c6448ac11a5608880d
   specs:
     acts_as_commentable (8.0.0)
       activerecord (>= 8.0, < 8.2)
@@ -170,7 +170,7 @@ GEM
       execjs
     coffee-script-source (1.12.2)
     concurrent-ruby (1.3.8)
-    connection_pool (3.0.2)
+    connection_pool (3.0.3)
     countries (8.1.0)
       unaccent (~> 0.3)
     country_select (11.0.0)
